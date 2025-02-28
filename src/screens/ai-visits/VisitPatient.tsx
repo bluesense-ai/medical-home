@@ -1,4 +1,4 @@
-import { StackNavigationProp } from "@react-navigation/stack";
+import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/Router";
 import {
   SafeAreaView,
@@ -6,25 +6,28 @@ import {
   View,
   Platform,
   StyleSheet,
+  Text,
 } from "react-native";
 import { Header } from "./components/Header";
 import VisitsPatientInfo from "./components/VisitsPatientInfo";
+import { patients } from "../../data/patients";
 
-type AIVisitPatientScreenProps = StackNavigationProp<
-  RootStackParamList,
-  "AIVisitPatient"
->;
+type Props = StackScreenProps<RootStackParamList, "AIVisitPatient">;
 
-const AIVisitPatient: React.FC<AIVisitPatientScreenProps> = (props) => {
-  console.log(props);
-  function action() {}
+const AIVisitPatient: React.FC<Props> = (props) => {
+  const patientId = props.route.params.id;
+  const patient = patients.find((p) => p.id === patientId);
 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
       <View style={styles.content}>
-        <Header title="Visits" action={action} />
-        <VisitsPatientInfo />
+        <Header title="Visits" action={() => {}} />
+        {!patient ? (
+          <Text>Patient not found</Text>
+        ) : (
+          <VisitsPatientInfo patient={patient} />
+        )}
       </View>
     </SafeAreaView>
   );

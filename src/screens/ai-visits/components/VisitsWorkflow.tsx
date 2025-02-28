@@ -6,13 +6,17 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { patients } from "../../../data/patients";
+import { type Patient, patients } from "../../../data/patients";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../navigation/Router";
 
 const VisitsWorkflow = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
+  function handlePatientSelection(id: Patient["id"]) {
+    navigation.navigate("AIVisitPatient", { id });
+  }
 
   return (
     <View style={styles.container}>
@@ -26,7 +30,9 @@ const VisitsWorkflow = () => {
             <TouchableOpacity
               key={index}
               style={styles.patientItem}
-              // onPress={() => { /* Handle patient selection */ }}  Add your navigation or action here
+              onPress={() => {
+                handlePatientSelection(patient.id);
+              }}
             >
               <Text style={styles.patientName}>{patient.name}</Text>
               <Text style={styles.patientDate}>{patient.date}</Text>
