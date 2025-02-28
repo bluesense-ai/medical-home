@@ -12,7 +12,9 @@ import RegisterPage2 from '../screens/auth/RegisterPage2';
 import VerificationCode from '../screens/auth/VerificationCode';
 import RegisterVerification from '../screens/auth/RegisterVerification';
 import WantToRegister from '../screens/auth/WantToRegister';
-import HomeScreen from '../screens/tabs/HomeScreen';
+import DashboardScreen from '../screens/dashboard/DashboardScreen';
+import DashboardEventsScreen from '../screens/dashboard/DashboardEventsScreen';
+import HomeScreen from "../screens/tabs/HomeScreen";
 import ProvideInformation from '../screens/auth/ProvideInformation';
 import WeFoundYou from '../screens/auth/WeFoundYou';
 import VerificationCodeLogin from '../screens/auth/VerificationCodeLogin';
@@ -30,10 +32,12 @@ export type RootStackParamList = {
   RegisterVerification: undefined;
   VerificationCode: undefined;
   WantToRegister: undefined;
+  DashboardScreen: undefined;
+  DashboardEventsScreen: undefined;
   HomeScreen: undefined;
   ProvideInformation: undefined;
   WeFoundYou: undefined;
-  VerificationCodeLogin:undefined;
+  VerificationCodeLogin: undefined;
   LoginVerification: undefined;
   LoginPage: undefined;
   LoginSwitchVerification: undefined;
@@ -60,6 +64,8 @@ const Router = () => {
           <Stack.Screen name="WeFoundYou" component={WeFoundYou} />
           <Stack.Screen name="LoginVerification" component={LoginVerification} />
           <Stack.Screen name="ProvideInformation" component={ProvideInformation} />
+          <Stack.Screen name="DashboardScreen" component={DashboardScreen} />
+          <Stack.Screen name="DashboardEventsScreen" component={DashboardEventsScreen} />
         </>
       ) : (
         <>

@@ -2,15 +2,15 @@ import React from 'react';
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import { colors } from '../../theme/colors';
 
-const CalendarScreen = () => {
+const BookAppointmentScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Takvim</Text>
+        <Text style={styles.title}>BookAppointmentScreen</Text>
       </View>
       
       <View style={styles.content}>
-        <Text style={styles.text}>Yakında...</Text>
+        <Text style={styles.text}>BookAppointment Page...</Text>
       </View>
     </SafeAreaView>
   );
@@ -42,4 +42,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CalendarScreen; 
+export default BookAppointmentScreen; 

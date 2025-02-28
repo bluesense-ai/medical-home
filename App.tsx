@@ -48,8 +48,8 @@ export default function App() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <NavigationContainer>
         <Router />
+        <StatusBar style="auto" />
       </NavigationContainer>
-      <StatusBar style="auto" />
     </GestureHandlerRootView>
   );
 }
