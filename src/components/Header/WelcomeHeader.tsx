@@ -5,13 +5,15 @@ import { colors } from '../../theme/colors';
 interface WelcomeHeaderProps {
   title: string;
   subtitle: string;
+  titleColor: string;
+  subtitleColor: string;
 }
 
-const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({ title, subtitle }) => {
+const WelcomeHeader: React.FC<WelcomeHeaderProps> = ({ title, subtitle, titleColor, subtitleColor }) => {
   return (
     <View style={styles.header}>
-      <Text style={styles.title}>{title}</Text>
-      <Text style={styles.subtitle}>{subtitle}</Text>
+      <Text style={[styles.title, { color: titleColor }]}>{title}</Text>
+      <Text style={[styles.subtitle, { color: subtitleColor }]}>{subtitle}</Text>
     </View>
   );
 };

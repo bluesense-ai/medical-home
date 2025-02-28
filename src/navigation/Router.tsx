@@ -17,6 +17,8 @@ import ProvideInformation from '../screens/auth/ProvideInformation';
 import WeFoundYou from '../screens/auth/WeFoundYou';
 import VerificationCodeLogin from '../screens/auth/VerificationCodeLogin';
 import LoginVerification from '../screens/auth/LoginVerification';
+import LoginPage from '../screens/auth/LoginPage';
+import LoginSwitchVerification from '../screens/auth/LoginSwitchVerification';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -33,6 +35,8 @@ export type RootStackParamList = {
   WeFoundYou: undefined;
   VerificationCodeLogin:undefined;
   LoginVerification: undefined;
+  LoginPage: undefined;
+  LoginSwitchVerification: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -61,8 +65,12 @@ const Router = () => {
         <>
           <Stack.Screen name="MainTabs" component={BottomTabs} />
           <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+
+
         </>
       )}
+      <Stack.Screen name='LoginPage' component={LoginPage} />
+      <Stack.Screen name="LoginSwitchVerification" component={LoginSwitchVerification} />
     </Stack.Navigator>
   );
 };
