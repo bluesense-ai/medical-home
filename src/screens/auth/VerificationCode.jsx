@@ -7,7 +7,7 @@ const { height, width } = Dimensions.get('window');
 
 const VerificationCode = ({ navigation }) => {
   const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
-  
+
   const handleSubmit = async () => {
     await setIsAuthenticated(true); // Önce authentication'ı güncelle
     // Sonra navigasyonu yap
@@ -17,8 +17,8 @@ const VerificationCode = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* Background Image covering only the bottom half */}
-               <ImageBackground source={require('../../../assets/bgimgrg.png')} style={styles.topImage} />
-      
+      <ImageBackground source={require('../../../assets/bgimgrg.png')} style={styles.topImage} />
+
       <ImageBackground source={require('./image.jpg')} style={styles.imageBackground}>
         {/* Form Overlay */}
         <View style={styles.overlay}>
@@ -31,13 +31,13 @@ const VerificationCode = ({ navigation }) => {
             style={styles.input}
             placeholder="acccess code"
             placeholderTextColor="#ddd"
-            // keyboardType="numeric"
+          // keyboardType="numeric"
           />
 
-     
+
           {/* Register Button */}
-          <Pressable 
-            style={styles.registerButton} 
+          <Pressable
+            style={styles.registerButton}
             onPress={handleSubmit}
           >
             <Text style={styles.registerButtonText}>Submit</Text>
@@ -69,7 +69,7 @@ const styles = StyleSheet.create({
     height: height * 0.6, // Covers 60% of the screen
     position: 'absolute', // Keeps it fixed at the top
     top: 0,
-    margin:'40px'
+    margin: '40px'
   },
   title: {
     fontSize: 30,
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     fontSize: 16,
     color: 'white',
-    marginBottom:90,
+    marginBottom: 90,
     borderWidth: 1,
     borderColor: 'white',
   },

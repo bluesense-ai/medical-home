@@ -15,19 +15,32 @@ const WelcomeScreen: React.FC = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const toggleSwitch = () => setIsEnabled(previousState => !previousState);
-  const handleLogin = () => setIsAuthenticated(true);
+  // const handleLogin = () => setIsAuthenticated(true);
+
+  const handleLogin = async () => {
+    await setIsAuthenticated(true); // Önce authentication'ı güncelle
+    if (isEnabled) {
+      navigation.navigate('LoginPage');
+    } else {
+      navigation.navigate('MainTabs');
+    }
+  };
+
+  const textColor = isEnabled ? 'white' : 'black';
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor: isEnabled ? 'black' : colors.base.white }]}>
       <View style={styles.topBar}>
         <View style={styles.toggleContainer}>
           <Toggle isEnabled={isEnabled} onToggle={toggleSwitch} />
         </View>
       </View>
 
-      <WelcomeHeader 
-        title="Hello!" 
-        subtitle="Welcome to medical home." 
+      <WelcomeHeader
+        title="Hello!"
+        subtitle="Welcome to medical home."
+        titleColor={textColor}
+        subtitleColor={textColor}
       />
 
       <View style={styles.imageContainer}>
@@ -39,15 +52,18 @@ const WelcomeScreen: React.FC = () => {
       </View>
 
       <View style={styles.buttonContainer}>
-        <AuthButton 
-          title="Log in" 
-          onPress={handleLogin} 
-          variant="outline" 
+        <AuthButton
+          title="Log in"
+          onPress={handleLogin}
+          variant="outline"
         />
-        <AuthButton 
-          title="Register" 
-          onPress={() => navigation.navigate('RegisterPage')}
-        />
+
+        {!isEnabled && (
+          <AuthButton
+            title="Register"
+            onPress={() => navigation.navigate('RegisterPage')}
+          />
+        )}
       </View>
     </SafeAreaView>
   );
@@ -60,7 +76,7 @@ const styles = StyleSheet.create({
   },
   topBar: {
     paddingHorizontal: 24,
-    paddingTop: 33,
+    paddingTop: 50,
     flexDirection: 'row',
     justifyContent: 'flex-end',
   },
@@ -79,6 +95,8 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     paddingHorizontal: 24,
+    justifyContent: 'center',
+    flex: 1,
     paddingBottom: 40,
     gap: 16,
   },

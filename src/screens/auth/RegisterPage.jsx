@@ -8,32 +8,32 @@ const RegisterPage = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* Top Image covering upper part */}
- <ImageBackground source={require('../../../assets/bgimgrg.png')} style={styles.topImage} />
+      <ImageBackground source={require('../../../assets/bgimgrg.png')} style={styles.topImage} />
 
 
       {/* Bottom Image overlapping top image */}
       <ImageBackground source={require('./image.jpg')} style={styles.bottomImage}>
         <View style={styles.overlay}>
           <Text style={styles.title}>Register</Text>
-<Text style={{marginRight:'90', marginBottom:'20', color:'white'}}>Provide your health card number</Text>
+          <Text style={{ marginRight: '90', marginBottom: '20', color: 'white' }}>Provide your health card number</Text>
           <TextInput
             style={styles.input}
             placeholder="Health Card Number"
             placeholderTextColor="#ddd"
           />
-<Text style={{marginRight:'180', marginBottom:'20', color:'white'}}>Choose your clinic</Text>
+          <Text style={{ marginRight: '180', marginBottom: '20', color: 'white' }}>Choose your clinic</Text>
 
           <TextInput
             style={styles.input}
             placeholder="Choose Your Clinic"
             placeholderTextColor="#ddd"
           />
-       <Svg
-        width={250}
-        height={50}
-        style={{ marginBottom: 20,  padding: 0}}
-        source={require('../../../assets/statusadv.svg')} // Use the path to your SVG file
-      />
+          <Svg
+            width={250}
+            height={50}
+            style={{ marginBottom: 20, padding: 0 }}
+            source={require('../../../assets/statusadv.svg')} // Use the path to your SVG file
+          />
           <Pressable style={styles.registerButton} onPress={() => navigation.navigate('RegisterPage2')}>
             <Text style={styles.registerButtonText}>Next</Text>
           </Pressable>
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'black',
   },
   topImage: {
-    width: width*0.7,
+    width: width * 0.7,
     height: height * 0.7, // Covers 70% of the screen
     alignSelf: 'center', // Center the image horizontally
     marginTop: 0, // No space on top
@@ -83,7 +83,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: 'white',
   },
- registerButton: {
+  registerButton: {
     width: '88%',        // Make button the same width as the TextInput
     height: 50,           // Adjust the height of the button
     backgroundColor: '#32CD32', // Parrot Green color
