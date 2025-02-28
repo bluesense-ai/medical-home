@@ -1,0 +1,47 @@
+{
+  "name": "medical-home",
+  "version": "1.0.0",
+  "main": "index.ts",
+  "scripts": {
+    "start": "expo start",
+    "android": "expo start --android",
+    "ios": "expo start --ios",
+    "web": "expo start --web"
+  },
+  "dependencies": {
+    "@expo/vector-icons": "^14.0.4",
+    "@react-native-community/masked-view": "^0.1.11",
+    "@react-native-masked-view/masked-view": "^0.3.2",
+    "@react-navigation/bottom-tabs": "^7.2.0",
+    "@react-navigation/native": "^7.0.14",
+    "@react-navigation/native-stack": "^7.2.0",
+    "@react-navigation/stack": "^7.1.1",
+    "expo": "~52.0.37",
+    "expo-asset": "^11.0.4",
+    "expo-font": "^13.0.4",
+    "expo-haptics": "^14.0.1",
+    "expo-image": "^2.0.6",
+    "expo-image-picker": "^16.0.6",
+    "expo-status-bar": "~2.0.1",
+    "react": "18.3.1",
+    "react-native": "0.76.7",
+    "react-native-gesture-handler": "^2.24.0",
+    "react-native-mmkv": "^3.2.0",
+    "react-native-radio-buttons-group": "^3.1.0",
+    "react-native-reanimated": "^3.17.0",
+    "react-native-router-flux": "^4.3.1",
+    "react-native-safe-area-context": "^5.2.0",
+    "react-native-screens": "^4.9.1",
+    "react-native-step-indicator": "^1.0.3",
+    "react-native-svg": "15.8.0",
+    "zustand": "^5.0.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@types/react": "~18.3.12",
+    "@types/react-native": "^0.73.0",
+    "react-native-svg-transformer": "^1.5.0",
+    "typescript": "^5.3.3"
+  },
+  "private": true
+}
