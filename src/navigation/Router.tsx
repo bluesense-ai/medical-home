@@ -13,6 +13,10 @@ import VerificationCode from '../screens/auth/VerificationCode';
 import RegisterVerification from '../screens/auth/RegisterVerification';
 import WantToRegister from '../screens/auth/WantToRegister';
 import HomeScreen from '../screens/tabs/HomeScreen';
+import ProvideInformation from '../screens/auth/ProvideInformation';
+import WeFoundYou from '../screens/auth/WeFoundYou';
+import VerificationCodeLogin from '../screens/auth/VerificationCodeLogin';
+import LoginVerification from '../screens/auth/LoginVerification';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -25,6 +29,10 @@ export type RootStackParamList = {
   VerificationCode: undefined;
   WantToRegister: undefined;
   HomeScreen: undefined;
+  ProvideInformation: undefined;
+  WeFoundYou: undefined;
+  VerificationCodeLogin:undefined;
+  LoginVerification: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -44,7 +52,10 @@ const Router = () => {
           <Stack.Screen name="VerificationCode" component={VerificationCode} />
           <Stack.Screen name="WantToRegister" component={WantToRegister} />
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
-
+          <Stack.Screen name="VerificationCodeLogin" component={VerificationCodeLogin} />
+          <Stack.Screen name="WeFoundYou" component={WeFoundYou} />
+          <Stack.Screen name="LoginVerification" component={LoginVerification} />
+          <Stack.Screen name="ProvideInformation" component={ProvideInformation} />
         </>
       ) : (
         <>
@@ -57,5 +68,4 @@ const Router = () => {
 };
 
 export default Router;
-
 
