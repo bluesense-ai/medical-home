@@ -1,5 +1,8 @@
 import React, { useRef } from 'react';
 import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image, Dimensions, ScrollView, Linking, Animated } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import type { BottomTabParamList } from '../../navigation/BottomTabs';
 import { colors } from '../../theme/colors';
 import { useAuthStore } from '../../store/useAuthStore';
 import BackgroundShape from '../../components/BackgroundShape';
@@ -14,6 +17,7 @@ const HERO_IMAGE_WIDTH = 522;
 const HERO_IMAGE_HEIGHT = 447;
 
 const HomeScreen = () => {
+  const navigation = useNavigation<BottomTabNavigationProp<BottomTabParamList>>();
   const scrollY = useRef(new Animated.Value(0)).current;
   const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
 
@@ -41,7 +45,7 @@ const HomeScreen = () => {
         {/* Header */}
         <AnimatedSection isInitial delay={100} style={styles.header}>
           <View style={styles.profileContainer}>
-            <TouchableOpacity style={styles.profileButton}>
+            <TouchableOpacity style={styles.profileButton} onPress={() => navigation.navigate('Profile')}>
               <Image 
                 source={require('../../../assets/images/profile-placeholder.png')} 
                 style={styles.profileImage}

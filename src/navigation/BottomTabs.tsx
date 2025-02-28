@@ -1,7 +1,7 @@
 // BottomTabs.tsx
-// A custom bottom tab navigator with animated tabs and a modern design
+// A custom bottom tab navigator with modern design and smooth animations
 
-import React, { useRef } from 'react';
+import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import {
   View,
   Text,
@@ -15,16 +15,14 @@ import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
 import colors from '../theme/colors';
 
-// Screens
+// Import screens for tab navigation
 import HomeScreen from '../screens/tabs/HomeScreen';
 import HoursScreen from '../screens/tabs/HoursScreen';
 import BookAppointmentScreen from '../screens/tabs/BookAppointmentScreen';
 import ContactUsScreen from '../screens/tabs/ContactUsScreen';
 import ProfileScreen from '../screens/tabs/ProfileScreen';
 
-// ---------------------
-// 1) Type Definitions
-// ---------------------
+// Type definitions for tab navigation
 export type BottomTabParamList = {
   Home: undefined;
   Hours: undefined;
@@ -33,35 +31,59 @@ export type BottomTabParamList = {
   Profile: undefined;
 };
 
-// ---------------------
-// 2) Custom Tab Bar
-// ---------------------
+// Custom Tab Bar Component with animations
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
-  // Animation values for each tab
+  // State to handle initial render animations
+  const [isFirstRender, setIsFirstRender] = useState(true);
+
+  // Animation values for opacity, scale, and slide effects
   const fadeAnim = useRef(state.routes.map(() => new Animated.Value(0))).current;
   const scaleAnim = useRef(state.routes.map(() => new Animated.Value(1))).current;
   const slideAnim = useRef(state.routes.map(() => new Animated.Value(0))).current;
 
-  const handlePress = (route: any, index: number) => {
-    // Light haptic feedback for better UX
+  // Initialize animations on component mount
+  useEffect(() => {
+    // Set initial values for the selected tab
+    state.routes.forEach((_, i) => {
+      if (i === state.index) {
+        fadeAnim[i].setValue(1);
+        scaleAnim[i].setValue(1);
+        slideAnim[i].setValue(0);
+      } else {
+        fadeAnim[i].setValue(0);
+        scaleAnim[i].setValue(0.85);
+        slideAnim[i].setValue(i < state.index ? -15 : 15);
+      }
+    });
+    setIsFirstRender(false);
+  }, [state.index]);
+
+  // Handle tab press with animations
+  const handlePress = useCallback((route: any, index: number) => {
+    if (isFirstRender) return;
+
+    // Provide haptic feedback for better UX
     Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
 
-    // Animate all tabs
+    // Animate all tabs when one is selected
     state.routes.forEach((_, i) => {
       if (i === index) {
-        // Selected tab animations
+        // Animations for the selected tab
         Animated.parallel([
+          // Scale up the selected tab
           Animated.spring(scaleAnim[i], {
             toValue: 1,
-            tension: 50,  // Increased for snappier response
-            friction: 7,  // Reduced for faster movement
+            tension: 50,
+            friction: 7,
             useNativeDriver: true,
           }),
+          // Fade in the label
           Animated.timing(fadeAnim[i], {
             toValue: 1,
-            duration: 100,  // Faster fade in
+            duration: 100,
             useNativeDriver: true,
           }),
+          // Reset position
           Animated.spring(slideAnim[i], {
             toValue: 0,
             tension: 50,
@@ -70,20 +92,22 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           }),
         ]).start();
       } else {
-        // Unselected tabs animations
+        // Animations for unselected tabs
         Animated.parallel([
+          // Scale down unselected tabs
           Animated.spring(scaleAnim[i], {
             toValue: 0.85,
             tension: 50,
             friction: 7,
             useNativeDriver: true,
           }),
+          // Fade out labels
           Animated.timing(fadeAnim[i], {
             toValue: 0,
-            duration: 100,  // Faster fade out
+            duration: 100,
             useNativeDriver: true,
           }),
-          // Slide effect based on position
+          // Slide tabs away from the selected one
           Animated.spring(slideAnim[i], {
             toValue: i < index ? -15 : 15,
             tension: 50,
@@ -94,7 +118,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
       }
     });
 
-    // Default React Navigation tab press event
+    // Handle navigation
     const event = navigation.emit({
       type: 'tabPress',
       target: route.key,
@@ -104,62 +128,66 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     if (!event.defaultPrevented) {
       navigation.navigate(route.name);
     }
-  };
+  }, [isFirstRender, navigation]);
+
+  // Memoize tab rendering for better performance
+  const renderTabs = useMemo(() => {
+    return state.routes.map((route, index) => {
+      const { options } = descriptors[route.key];
+      const label = typeof options.tabBarLabel === 'string'
+        ? options.tabBarLabel
+        : typeof options.title === 'string'
+        ? options.title
+        : route.name;
+
+      const isFocused = state.index === index;
+
+      return (
+        <TouchableOpacity
+          key={route.key}
+          onPress={() => handlePress(route, index)}
+          style={styles.tab}
+          activeOpacity={0.7}
+        >
+          <Animated.View
+            style={[
+              styles.tabItem,
+              isFocused && styles.tabItemFocused,
+              {
+                transform: [
+                  { scale: scaleAnim[index] },
+                  { translateX: slideAnim[index] },
+                ],
+              },
+            ]}
+          >
+            <Ionicons
+              name={getIconName(route.name)}
+              size={isFocused ? 18 : 23}
+              color={isFocused ? colors.base.black : colors.base.white}
+            />
+            {isFocused && (
+              <Animated.Text
+                numberOfLines={1}
+                style={[
+                  styles.label,
+                  { opacity: fadeAnim[index] }
+                ]}
+              >
+                {label}
+              </Animated.Text>
+            )}
+          </Animated.View>
+        </TouchableOpacity>
+      );
+    });
+  }, [state.routes, state.index, handlePress]);
 
   return (
     <View style={styles.tabContainer}>
       <View style={styles.tabBackground}>
         <View style={styles.tabRow}>
-          {state.routes.map((route, index) => {
-            const { options } = descriptors[route.key];
-            const label =
-              typeof options.tabBarLabel === 'string'
-                ? options.tabBarLabel
-                : typeof options.title === 'string'
-                ? options.title
-                : route.name;
-
-            const isFocused = state.index === index;
-
-            return (
-              <TouchableOpacity
-                key={route.key}
-                onPress={() => handlePress(route, index)}
-                style={styles.tab}
-                activeOpacity={0.7}  // More responsive touch feedback
-              >
-                <Animated.View
-                  style={[
-                    styles.tabItem,
-                    isFocused && styles.tabItemFocused,
-                    {
-                      transform: [
-                        { scale: scaleAnim[index] },
-                        { translateX: slideAnim[index] },
-                      ],
-                    },
-                  ]}
-                >
-                  <Ionicons
-                    name={getIconName(route.name)}
-                    size={isFocused ? 18 : 23}
-                    color={isFocused ? colors.base.black : colors.base.white}
-                  />
-                  {isFocused && (
-                    <Animated.Text
-                      numberOfLines={1}
-                      style={[
-                        styles.label,
-                        { opacity: fadeAnim[index] },
-                      ]}
-                    >
-                      {label as string}
-                    </Animated.Text>
-                  )}
-                </Animated.View>
-              </TouchableOpacity>
-            );
-          })}
+          {renderTabs}
         </View>
       </View>
     </View>
