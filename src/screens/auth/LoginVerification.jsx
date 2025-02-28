@@ -1,16 +1,13 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
   ImageBackground,
-  TextInput,
   Pressable,
   StyleSheet,
   Dimensions,
 } from "react-native";
-import RadioGroup from "react-native-radio-buttons-group";
 import { useAuthStore } from "../../store/useAuthStore";
-import VerificationCodeLogin from "./VerificationCodeLogin";
 
 const { height, width } = Dimensions.get("window");
 

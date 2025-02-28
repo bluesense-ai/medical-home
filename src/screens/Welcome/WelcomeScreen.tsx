@@ -8,24 +8,25 @@ import { useAuthStore } from '../../store/useAuthStore';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/Router';
+import { useProvider } from '../../store/useProvider';
 
 const WelcomeScreen: React.FC = () => {
-  const [isEnabled, setIsEnabled] = useState(false);
-  const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
+  const provider = useProvider((state) => state.provider);
+  const toggleProvider = useProvider((state) => state.toggleProvider);
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const fadeAnim1 = new Animated.Value(1);
   const fadeAnim2 = new Animated.Value(0);
 
-  const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+  const toggleSwitch = () => toggleProvider();
   
   // Temporarily navigate to Dashboard for development
   const handleLogin = () => {
     // Geçici olarak authentication'ı kaldırıyoruz
     // setIsAuthenticated(true);
-    navigation.navigate('DashboardScreen');
+    navigation.navigate('LoginPage');
   };
 
-  const textColor = isEnabled ? "white" : "black";
+  const textColor = provider === "patient" ? "white" : "black";
 
   useEffect(() => {
     const animate = () => {
@@ -63,10 +64,17 @@ const WelcomeScreen: React.FC = () => {
   }, []);
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: isEnabled ? 'black' : colors.base.white }]}>
+    <SafeAreaView
+      style={[
+        styles.container,
+        {
+          backgroundColor: provider === "doctor" ? "black" : colors.base.white,
+        },
+      ]}
+    >
       <View style={styles.topBar}>
         <View style={styles.toggleContainer}>
-          <Toggle isEnabled={isEnabled} onToggle={toggleSwitch} />
+          <Toggle isEnabled={provider === "doctor"} onToggle={toggleSwitch} />
         </View>
       </View>
 
@@ -79,28 +87,30 @@ const WelcomeScreen: React.FC = () => {
 
       <View style={styles.imageContainer}>
         <Animated.Image
-          source={require('../../../assets/images/welcome.png')}
-          style={[styles.welcomeImage, { opacity: fadeAnim1, position: 'absolute' }]}
+          source={require("../../../assets/images/welcome.png")}
+          style={[
+            styles.welcomeImage,
+            { opacity: fadeAnim1, position: "absolute" },
+          ]}
           resizeMode="contain"
         />
         <Animated.Image
-          source={require('../../../assets/images/doctor-patient.png')}
-          style={[styles.welcomeImage, { opacity: fadeAnim2, position: 'absolute' }]}
+          source={require("../../../assets/images/doctor-patient.png")}
+          style={[
+            styles.welcomeImage,
+            { opacity: fadeAnim2, position: "absolute" },
+          ]}
           resizeMode="contain"
         />
       </View>
 
       <View style={styles.buttonContainer}>
-        <AuthButton
-          title="Log in"
-          onPress={handleLogin}
-          variant="outline"
-        />
+        <AuthButton title="Log in" onPress={handleLogin} variant="outline" />
 
-        {!isEnabled && (
+        {provider === "patient" && (
           <AuthButton
             title="Register"
-            onPress={() => navigation.navigate('RegisterPage')}
+            onPress={() => navigation.navigate("RegisterPage")}
           />
         )}
       </View>

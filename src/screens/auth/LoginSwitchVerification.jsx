@@ -10,15 +10,18 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useAuthStore } from "../../store/useAuthStore";
+import { useProvider } from "../../store/useProvider";
 
 const { height, width } = Dimensions.get("window");
 
 const LoginSwitchVerification = ({ navigation }) => {
+  const provider = useProvider((state) => state.provider);
   const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
 
   async function handleLogin() {
     setIsAuthenticated(true);
-    navigation.navigate("MainTabs");
+    if (provider === "doctor") navigation.navigate("DashboardScreen");
+    else navigation.navigate("MainTabs");
   }
 
   return (

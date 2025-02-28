@@ -18,7 +18,7 @@ const DashboardMenuButtons: React.FC = () => {
         <Text style={styles.buttonText}>Dashboard</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AIVisitsLanding')}>
         <Text style={styles.buttonText}>AI Visits</Text>
       </TouchableOpacity>
 

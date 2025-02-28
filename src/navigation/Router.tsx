@@ -58,34 +58,25 @@ const Router = () => {
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {!isAuthenticated ? (
-        <>
-          <Stack.Screen name="Welcome" component={WelcomeScreen} />
-          <Stack.Screen name="Loading" component={LoadingScreen} />
-          <Stack.Screen name="RegisterPage" component={RegisterPage} />
-          <Stack.Screen name="RegisterPage2" component={RegisterPage2} />
-          <Stack.Screen name="RegisterVerification" component={RegisterVerification} />
-          <Stack.Screen name="VerificationCode" component={VerificationCode} />
-          <Stack.Screen name="WantToRegister" component={WantToRegister} />
-          <Stack.Screen name="HomeScreen" component={HomeScreen} />
-          <Stack.Screen name="VerificationCodeLogin" component={VerificationCodeLogin} />
-          <Stack.Screen name="WeFoundYou" component={WeFoundYou} />
-          <Stack.Screen name="LoginVerification" component={LoginVerification} />
-          <Stack.Screen name="ProvideInformation" component={ProvideInformation} />
-          <Stack.Screen name="DashboardScreen" component={DashboardScreen} />
-          <Stack.Screen name="DashboardEventsScreen" component={DashboardEventsScreen} />          <Stack.Screen name="AIVisitsLanding" component={AIVisitsLanding} />
-          <Stack.Screen name="AIVisitsDashboard" component={AIVisitsDashboard} />
-          <Stack.Screen name="AIVisitsPage" component={AIVisitsPage} />
-
-        </>
-      ) : (
-        <>
-          <Stack.Screen name="MainTabs" component={BottomTabs} />
-          <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-
-
-        </>
-      )}
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+      <Stack.Screen name="Loading" component={LoadingScreen} />
+      <Stack.Screen name="RegisterPage" component={RegisterPage} />
+      <Stack.Screen name="RegisterPage2" component={RegisterPage2} />
+      <Stack.Screen name="RegisterVerification" component={RegisterVerification} />
+      <Stack.Screen name="VerificationCode" component={VerificationCode} />
+      <Stack.Screen name="WantToRegister" component={WantToRegister} />
+      <Stack.Screen name="HomeScreen" component={HomeScreen} />
+      <Stack.Screen name="VerificationCodeLogin" component={VerificationCodeLogin} />
+      <Stack.Screen name="WeFoundYou" component={WeFoundYou} />
+      <Stack.Screen name="LoginVerification" component={LoginVerification} />
+      <Stack.Screen name="ProvideInformation" component={ProvideInformation} />
+      <Stack.Screen name="DashboardScreen" component={DashboardScreen} />
+      <Stack.Screen name="DashboardEventsScreen" component={DashboardEventsScreen} />
+      <Stack.Screen name="AIVisitsLanding" component={AIVisitsLanding} />
+      <Stack.Screen name="AIVisitsDashboard" component={AIVisitsDashboard} />
+      <Stack.Screen name="AIVisitsPage" component={AIVisitsPage} />
+      <Stack.Screen name="MainTabs" component={BottomTabs} />
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
       <Stack.Screen name='LoginPage' component={LoginPage} />
       <Stack.Screen name="LoginSwitchVerification" component={LoginSwitchVerification} />
     </Stack.Navigator>
