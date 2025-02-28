@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons"; // For icons (install if not already installed)
-import StepIndicator from "react-native-step-indicator";
+// import StepIndicator from "react-native-step-indicator";
 
 // const labels = ["Step 1", "Step 2", "Step 3", "Step 4", "Step 5"];
 
