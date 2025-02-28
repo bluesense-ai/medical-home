@@ -1,0 +1,86 @@
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
+import { patients } from "../../../data/patients";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../../../navigation/Router";
+
+const VisitsWorkflow = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>Visits Workflow</Text>
+      </View>
+      <View style={styles.patientsContainer}>
+        <Text style={styles.patientsTitle}>Patients</Text>
+        <ScrollView>
+          {patients.map((patient, index) => (
+            <TouchableOpacity
+              key={index}
+              style={styles.patientItem}
+              // onPress={() => { /* Handle patient selection */ }}  Add your navigation or action here
+            >
+              <Text style={styles.patientName}>{patient.name}</Text>
+              <Text style={styles.patientDate}>{patient.date}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#0f0f0f",
+    borderRadius: 10,
+  },
+  header: {
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "white",
+    textAlign: "center",
+  },
+  patientsContainer: {},
+  patientsTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white",
+    marginBottom: 10,
+  },
+  patientItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 15,
+    paddingBottom: 10,
+    paddingTop: 10,
+    backgroundColor: "#333",
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  patientName: {
+    fontSize: 16,
+    color: "white",
+  },
+  patientDate: {
+    fontSize: 16,
+    color: "white",
+  },
+});
+
+export default VisitsWorkflow;
