@@ -21,6 +21,10 @@ import VerificationCodeLogin from '../screens/auth/VerificationCodeLogin';
 import LoginVerification from '../screens/auth/LoginVerification';
 import LoginPage from '../screens/auth/LoginPage';
 import LoginSwitchVerification from '../screens/auth/LoginSwitchVerification';
+import AIVisitsLanding from '../screens/ai-visits/Landing';
+import AIVisitsDashboard from '../screens/ai-visits/Dashboard';
+import AIVisitsPage from '../screens/ai-visits/VisitsPage';
+import type { Patient } from '../data/patients';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -41,6 +45,10 @@ export type RootStackParamList = {
   LoginVerification: undefined;
   LoginPage: undefined;
   LoginSwitchVerification: undefined;
+  AIVisitsLanding: undefined;
+  AIVisitsDashboard: undefined;
+  AIVisitsPage: undefined;
+  AIVisitPatient: { id: Patient['id'] };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -65,7 +73,10 @@ const Router = () => {
           <Stack.Screen name="LoginVerification" component={LoginVerification} />
           <Stack.Screen name="ProvideInformation" component={ProvideInformation} />
           <Stack.Screen name="DashboardScreen" component={DashboardScreen} />
-          <Stack.Screen name="DashboardEventsScreen" component={DashboardEventsScreen} />
+          <Stack.Screen name="DashboardEventsScreen" component={DashboardEventsScreen} />          <Stack.Screen name="AIVisitsLanding" component={AIVisitsLanding} />
+          <Stack.Screen name="AIVisitsDashboard" component={AIVisitsDashboard} />
+          <Stack.Screen name="AIVisitsPage" component={AIVisitsPage} />
+
         </>
       ) : (
         <>
