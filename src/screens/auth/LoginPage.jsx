@@ -19,7 +19,7 @@ const Login = ({ navigation }) => {
                     placeholder="Enter Username"
                     placeholderTextColor="black"
                 />
-                <Pressable style={styles.submitButton} onPress={() => navigation.navigate('LoginVerification')}>
+                <Pressable style={styles.submitButton} onPress={() => navigation.navigate('LoginSwitchVerification')}>
                     <Text style={styles.submitButtonText}>Next</Text>
                 </Pressable>
             </View>
