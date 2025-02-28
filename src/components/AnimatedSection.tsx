@@ -25,7 +25,7 @@ const AnimatedSection: React.FC<AnimatedSectionProps> = ({
 
   useEffect(() => {
     if (isInitial) {
-      // İlk komponentler için başlangıç animasyonu
+      // Initial animation for first components
       Animated.parallel([
         Animated.timing(fadeAnim, {
           toValue: 1,
@@ -42,8 +42,8 @@ const AnimatedSection: React.FC<AnimatedSectionProps> = ({
         }),
       ]).start();
     } else if (scrollY) {
-      // Scroll bazlı animasyon
-      const startPosition = index * 150; // Daha geç başlaması için arttırıldı
+      // Scroll-based animation
+      const startPosition = index * 150; // Increased for later start
       const scrollListener = scrollY.addListener(({ value }) => {
         const offset = value - startPosition;
         if (offset > 0 && offset < SCREEN_HEIGHT) {

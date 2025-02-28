@@ -9,8 +9,8 @@ const VerificationCode = ({ navigation }) => {
   const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
 
   const handleSubmit = async () => {
-    await setIsAuthenticated(true); // Önce authentication'ı güncelle
-    // Sonra navigasyonu yap
+    await setIsAuthenticated(true); // First update authentication
+    // Then navigate
     navigation.navigate('MainTabs');
   };
 

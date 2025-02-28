@@ -18,8 +18,8 @@ const VerificationCodeLogin = ({ navigation }) => {
   //   async
   const handleSubmit = () => {
     // await
-    setIsAuthenticated(true); // Önce authentication'ı güncelle
-    // Sonra navigasyonu yap
+    setIsAuthenticated(true); // First update authentication
+    // Then navigate
     navigation.navigate("HomeScreen");
   };
 
