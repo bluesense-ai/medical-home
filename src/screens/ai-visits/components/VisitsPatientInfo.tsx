@@ -1,88 +1,136 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
+import type { Patient } from "../../../data/patients";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../../../navigation/Router";
 
-const VisitsPatientInfoForm = () => {
-  const [patientName, setPatientName] = useState("");
-  const [dateTime, setDateTime] = useState("");
-  const [serviceType, setServiceType] = useState("");
-  const [subjective, setSubjective] = useState("");
-  const [objective, setObjective] = useState("");
-  const [plan, setPlan] = useState("");
+type Props = {
+  patient: Patient;
+};
+
+const VisitsPatientInfoForm: React.FC<Props> = ({ patient }) => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const [patientName, setPatientName] = useState(patient.name);
+  const [dateTime, setDateTime] = useState(patient.date);
+  const [provider, setProvider] = useState("");
+  const [clinic, setClinic] = useState("");
+  const [assessment, setAssessment] = useState("");
+  const [editable, setEditable] = useState(false);
+
+  function onCancel() {
+    setPatientName(patient.name);
+    setDateTime(patient.date);
+    setProvider("");
+    setClinic("");
+    setAssessment("");
+    setEditable(false);
+  }
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Patient Information</Text>
+      <View style={styles.editContainer}>
+        <TouchableOpacity style={styles.backButton}>
+          {editable ? (
+            <Text style={styles.backButtonText} onPress={onCancel}>
+              Cancel
+            </Text>
+          ) : (
+            <Ionicons name="arrow-back" size={24} color="white" onPress={
+              () => navigation.goBack() 
+            } />
+          )}
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.editButton}>
+          <Text
+            style={editable ? styles.doneButtonText : styles.editButtonText}
+            onPress={() => {
+              setEditable(!editable);
+            }}
+          >
+            {editable ? "Done" : "Edit"}
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      {!editable && <Text style={styles.title}>Patient Information</Text>}
+      {editable && <View style={{ marginTop: 30 }} />}
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>(Last name, First name) Visit</Text>
+        <Text style={styles.label}>Name & Last Name</Text>
         <TextInput
           style={styles.input}
           value={patientName}
           onChangeText={setPatientName}
+          editable={editable}
         />
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Date and Time</Text>
+        <Text style={styles.label}>Date</Text>
         <TextInput
           style={styles.input}
           value={dateTime}
           onChangeText={setDateTime}
+          editable={editable}
         />
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Service Type</Text>
+        <Text style={styles.label}>Provider</Text>
         <TextInput
           style={styles.input}
-          value={serviceType}
-          onChangeText={setServiceType}
+          value={provider}
+          onChangeText={setProvider}
+          editable={editable}
         />
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Subjective</Text>
+        <Text style={styles.label}>Clinic</Text>
         <TextInput
           style={styles.inputArea}
-          value={subjective}
-          onChangeText={setSubjective}
+          value={clinic}
+          onChangeText={setClinic}
           multiline={true}
           numberOfLines={4} // Adjust number of lines as needed
+          editable={editable}
         />
       </View>
 
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>Objective</Text>
+        <Text style={styles.label}>Assessment</Text>
         <TextInput
           style={styles.inputArea}
-          value={objective}
-          onChangeText={setObjective}
+          value={assessment}
+          onChangeText={setAssessment}
           multiline={true}
           numberOfLines={4} // Adjust number of lines as needed
+          editable={editable}
         />
       </View>
 
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Plan</Text>
-        <TextInput
-          style={styles.inputArea}
-          value={plan}
-          onChangeText={setPlan}
-          multiline={true}
-          numberOfLines={4} // Adjust number of lines as needed
-        />
-      </View>
-
-      <View style={styles.inputGroup}>
-        <Text style={styles.label}>Notes</Text>
-        <TextInput
-          style={styles.inputArea}
-          value={plan}
-          onChangeText={setPlan}
-          multiline={true}
-          numberOfLines={4} // Adjust number of lines as needed
-        />
-      </View>
+      {editable && (
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#DA4133",
+            padding: 10,
+            borderRadius: 5,
+            alignItems: "center",
+          }}
+        >
+          <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>
+            Delete
+          </Text>
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -94,10 +142,35 @@ const styles = StyleSheet.create({
     backgroundColor: "#0f0f0f",
     borderRadius: 10,
   },
-  title: {
-    fontSize: 24,
+
+  editContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  backButton: {
+    flexDirection: "row",
+  },
+  backButtonText: {
+    color: "white",
+    fontSize: 16,
     fontWeight: "bold",
-    marginBottom: 20,
+  },
+  editButton: {},
+  editButtonText: {
+    color: "white",
+    fontSize: 16,
+  },
+  doneButtonText: {
+    color: "gray",
+    fontSize: 16,
+  },
+
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 20,
+    marginBottom: 40,
     color: "white",
     textAlign: "center", // Center the title text
   },

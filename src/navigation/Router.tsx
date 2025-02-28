@@ -25,6 +25,7 @@ import AIVisitsLanding from '../screens/ai-visits/Landing';
 import AIVisitsDashboard from '../screens/ai-visits/Dashboard';
 import AIVisitsPage from '../screens/ai-visits/VisitsPage';
 import type { Patient } from '../data/patients';
+import AIVisitPatient from '../screens/ai-visits/VisitPatient';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -75,6 +76,7 @@ const Router = () => {
       <Stack.Screen name="AIVisitsLanding" component={AIVisitsLanding} />
       <Stack.Screen name="AIVisitsDashboard" component={AIVisitsDashboard} />
       <Stack.Screen name="AIVisitsPage" component={AIVisitsPage} />
+      <Stack.Screen name="AIVisitPatient" component={AIVisitPatient} />
       <Stack.Screen name="MainTabs" component={BottomTabs} />
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
       <Stack.Screen name='LoginPage' component={LoginPage} />
