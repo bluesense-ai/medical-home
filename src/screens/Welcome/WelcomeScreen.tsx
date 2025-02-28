@@ -21,7 +21,7 @@ const WelcomeScreen: React.FC = () => {
   
   // Temporarily navigate to Dashboard for development
   const handleLogin = () => {
-    // Geçici olarak authentication'ı kaldırıyoruz
+    // Temporarily removing authentication
     // setIsAuthenticated(true);
     navigation.navigate('LoginPage');
   };

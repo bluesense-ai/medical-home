@@ -19,7 +19,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
     
     if (status !== 'granted') {
-      alert('Fotoğraf seçebilmek için izin gerekiyor!');
+      alert('Permission required to access photos!');
       return;
     }
 

@@ -1,8 +1,8 @@
 // src/theme/colors.ts
 
-// Figma'daki hiyerarşiyi korumak için "primary", "secondary", "tertiary" vb.
-// altına "default", "300", "contrastTextLight" gibi alanlar açıyoruz.
-// Bu isimlendirme tamamen tercih meselesi.
+// To maintain the hierarchy from Figma, we create fields like "default", "300", "contrastTextLight"
+// under "primary", "secondary", "tertiary" etc.
+// This naming convention is entirely preferential.
 
 export const colors = {
   primary: {
