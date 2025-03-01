@@ -1,187 +1,179 @@
-import React, { useState, useCallback, useMemo } from 'react';
-import { View, StyleSheet, SafeAreaView, Text, TouchableOpacity, ActivityIndicator, FlatList, Dimensions, StatusBar, Alert } from 'react-native';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import { View, StyleSheet, SafeAreaView, Text, TouchableOpacity, FlatList, Dimensions, StatusBar, Alert, ActivityIndicator, Platform } from 'react-native';
 import { colors } from '../../theme/colors';
 import { Calendar } from 'react-native-calendars';
 import Modal from 'react-native-modal';
 import moment from 'moment';
-import useCalendar from '../../hooks/useCalendar';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import EventForm from '../../components/EventForm';
-import { useCalendarStore } from '../../store/calendarStore';
+import useCalendarStore, { Event, EventType } from '../../store/useCalendarStore';
+import { useNavigation } from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../../navigation/types';
 
 const { width } = Dimensions.get('window');
 
-interface Event {
-  id: string;
-  title: string;
-  startDate: Date;
-  endDate: Date;
-  type: 'short' | 'meeting' | 'urgent' | 'regular';
-  notes?: string;
-}
-
-interface EventFormData {
-  title: string;
-  patientName: string;
-  email: string;
-  phone: string;
-  startDate: Date;
-  endDate: Date;
-  assignedStaff: string;
-  healthCardNumber: string;
-  type: 'short' | 'meeting' | 'urgent' | 'regular';
-}
-
 const EVENT_COLORS = {
-  short: '#E0E0E0',
-  meeting: '#FF6B6B',
-  urgent: '#FF0000',
-  regular: '#FFB6C1',
+  'urgent': colors.secondary.red,
+  'regular': colors.secondary.gray,
+  'check-up': colors.secondary.coral,
+  'consultation': colors.secondary.lightRed,
 } as const;
 
-interface DayComponentProps {
-  date: {
-    day: number;
-    dateString: string;
+type MarkedDates = {
+  [date: string]: {
+    selected?: boolean;
+    selectedColor?: string;
+    selectedTextColor?: string;
+    dots?: Array<{color: string}>;
   };
-  state: string;
-}
+};
 
-interface EventDot {
-  type: keyof typeof EVENT_COLORS;
-  color: string;
-}
+type DashboardEventsScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
-interface DayObject {
-  timestamp: number;
-  dateString: string;
-}
+type DashboardEventsScreenProps = {
+  route?: {
+    params?: {
+      selectedDate?: string;
+    };
+  };
+};
 
-const DashboardEventsScreen: React.FC = () => {
-  const { selectedDate, setSelectedDate } = useCalendarStore();
-  const { events, isLoading, error, createEvent, deleteEvent, refreshEvents } = useCalendar();
-  const [isModalVisible, setIsModalVisible] = useState(false);
+const DashboardEventsScreen: React.FC<DashboardEventsScreenProps> = ({ route }) => {
+  const navigation = useNavigation<DashboardEventsScreenNavigationProp>();
+  const [selectedDate, setSelectedDate] = useState<string>(
+    route?.params?.selectedDate || moment().format('YYYY-MM-DD')
+  );
+  const [showEventForm, setShowEventForm] = useState(false);
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  
+  const { addEvent, getEventsForDate, deleteEvent, events } = useCalendarStore();
+
+  const selectedYear = useMemo(() => moment(selectedDate).year(), [selectedDate]);
+  const months = useMemo(() => [
+    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+  ], []);
+
+  const handleMonthSelect = (monthIndex: number) => {
+    const newDate = moment(selectedDate).month(monthIndex);
+    setSelectedDate(newDate.format('YYYY-MM-DD'));
+  };
+
+  const handleDayPress = useCallback((day: any) => {
+    setSelectedDate(day.dateString);
+  }, [setSelectedDate]);
+
+  const handleCreateEvent = async (eventData: any) => {
+    try {
+      await addEvent({
+        ...eventData,
+        startDate: moment(selectedDate)
+          .hour(moment(eventData.startDate).hour())
+          .minute(moment(eventData.startDate).minute())
+          .toDate(),
+        endDate: moment(selectedDate)
+          .hour(moment(eventData.endDate).hour())
+          .minute(moment(eventData.endDate).minute())
+          .toDate(),
+      });
+      setShowEventForm(false);
+    } catch (error) {
+      console.error('Error creating event:', error);
+    }
+  };
 
   const formattedSelectedDate = useMemo(() => {
     return moment(selectedDate).format('YYYY-MM-DD');
   }, [selectedDate]);
 
-  const filteredEvents = useMemo(() => {
-    return events.filter(event => moment(event.startDate).isSame(moment(selectedDate), 'day'));
-  }, [events, selectedDate]);
+  const filteredEvents = getEventsForDate(selectedDate);
 
   const getMarkedDates = useCallback(() => {
     const marked: any = {};
-    events.forEach(event => {
-      const dateStr = moment(event.startDate).format('YYYY-MM-DD');
-      if (!marked[dateStr]) {
-        marked[dateStr] = {
-          dots: [{
-            color: EVENT_COLORS[event.type],
-          }],
+    events.forEach((event) => {
+      const date = moment(event.startDate).format('YYYY-MM-DD');
+      if (!marked[date]) {
+        marked[date] = {
+          dots: [],
+          selected: date === selectedDate,
+          selectedColor: colors.base.white,
+          selectedTextColor: colors.base.black,
         };
-      } else {
-        marked[dateStr].dots.push({
-          color: EVENT_COLORS[event.type],
-        });
       }
+      marked[date].dots.push({
+        color: event.color,
+      });
     });
 
-    const selectedDateStr = moment(selectedDate).format('YYYY-MM-DD');
-    marked[selectedDateStr] = {
-      ...marked[selectedDateStr],
-      selected: true,
-      selectedColor: colors.base.white,
-      selectedTextColor: colors.base.black,
-      dots: marked[selectedDateStr]?.dots || [],
-    };
+    // If there are no events on selected date, still show it as selected
+    if (!marked[selectedDate]) {
+      marked[selectedDate] = {
+        selected: true,
+        selectedColor: colors.base.white,
+        selectedTextColor: colors.base.black,
+      };
+    }
+
 
     return marked;
   }, [events, selectedDate]);
 
-  const handleDateSelect = (day: DayObject) => {
-    setSelectedDate(new Date(day.timestamp));
-  };
-
   const handleAddEvent = () => {
     if (!selectedDate) {
-      // Show error message if no date is selected
       Alert.alert(
-        'Select Date',
+        'Warning',
         'Please select a date from the calendar first.',
         [{ text: 'OK', onPress: () => {} }]
       );
       return;
     }
-    setIsModalVisible(true);
-  };
-
-  const handleCreateEvent = async (formData: EventFormData) => {
-    try {
-      if (!selectedDate) {
-        throw new Error('Please select a date first');
-      }
-
-      await createEvent({
-        ...formData,
-        startDate: moment(formData.startDate)
-          .year(selectedDate.getFullYear())
-          .month(selectedDate.getMonth())
-          .date(selectedDate.getDate())
-          .toDate(),
-        endDate: moment(formData.endDate)
-          .year(selectedDate.getFullYear())
-          .month(selectedDate.getMonth())
-          .date(selectedDate.getDate())
-          .toDate(),
-      });
-      setIsModalVisible(false);
-      refreshEvents();
-    } catch (e) {
-      Alert.alert(
-        'Error',
-        'An error occurred while creating the event. Please try again.',
-        [{ text: 'OK', onPress: () => {} }]
-      );
-      console.error('Error creating event:', e);
-    }
+    setShowEventForm(true);
   };
 
   const renderEventItem = ({ item }: { item: Event }) => (
-    <View style={styles.eventItem}>
-      <View style={[styles.eventColor, { backgroundColor: EVENT_COLORS[item.type] }]} />
+    <TouchableOpacity 
+      style={styles.eventItem}
+      onPress={() => navigation.navigate('EventDetail', { event: item })}
+    >
+      <View style={[styles.eventColor, { backgroundColor: EVENT_COLORS[item.type as EventType] }]} />
       <View style={styles.eventInfo}>
         <Text style={styles.eventTitle}>{item.title}</Text>
-        <Text style={styles.eventTime}>
-          {moment(item.startDate).format('HH:mm')} - {moment(item.endDate).format('HH:mm')}
-        </Text>
-        {item.notes && <Text style={styles.eventNotes}>{item.notes}</Text>}
+        {item.notes && <Text style={styles.eventNotes}>Meeting details</Text>}
       </View>
-      <TouchableOpacity
-        style={styles.deleteButton}
-        onPress={() => deleteEvent(item.id)}
-      >
-        <Ionicons name="trash-outline" size={20} color="#FF0000" />
-      </TouchableOpacity>
-    </View>
+      <View style={styles.eventTimeContainer}>
+        <Text style={styles.eventTime}>
+          {moment(item.startDate).format('h:mm A')}
+        </Text>
+        <Text style={styles.eventTime}>
+          {moment(item.endDate).format('h:mm A')}
+        </Text>
+      </View>
+    </TouchableOpacity>
   );
 
   const renderHeader = () => {
     return (
       <View style={styles.header}>
-        <TouchableOpacity>
+        <TouchableOpacity 
+          style={styles.headerButton} 
+          onPress={() => navigation.goBack()}
+        >
           <Ionicons name="chevron-back" size={24} color="white" />
         </TouchableOpacity>
-        <Text style={styles.yearText}>2025</Text>
+        <Text style={styles.yearText}>{selectedYear}</Text>
         <View style={styles.headerRight}>
-          <TouchableOpacity style={styles.headerIcon}>
-            <Ionicons name="menu" size={24} color="white" />
+          <TouchableOpacity 
+            style={styles.headerButton}
+            onPress={() => navigation.navigate('YearlyCalendar')}
+          >
+            <MaterialCommunityIcons name="view-grid-outline" size={24} color="white" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.headerIcon}>
+          <TouchableOpacity style={styles.headerButton}>
             <Ionicons name="search" size={24} color="white" />
           </TouchableOpacity>
           <TouchableOpacity 
-            style={styles.headerIcon} 
+            style={styles.headerButton}
             onPress={handleAddEvent}
           >
             <Ionicons name="add" size={24} color="white" />
@@ -191,73 +183,59 @@ const DashboardEventsScreen: React.FC = () => {
     );
   };
 
-  if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#247401" />
-        <Text style={styles.loadingText}>Loading events...</Text>
-      </View>
-    );
-  }
-
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
-      <View style={styles.content}>
-        {renderHeader()}
-        
-        <Text style={styles.monthTitle}>January</Text>
-        
-        <Calendar
-          current={formattedSelectedDate}
-          onDayPress={handleDateSelect}
-          markedDates={getMarkedDates()}
-          theme={{
-            backgroundColor: 'transparent',
-            calendarBackground: 'transparent',
-            textSectionTitleColor: 'rgba(255,255,255,0.5)',
-            selectedDayBackgroundColor: colors.base.white,
-            selectedDayTextColor: colors.base.black,
-            todayTextColor: colors.base.white,
-            dayTextColor: colors.base.white,
-            textDisabledColor: 'rgba(255,255,255,0.3)',
-            dotColor: colors.base.white,
-            selectedDotColor: colors.base.black,
-            arrowColor: 'transparent',
-            monthTextColor: 'transparent',
-            textMonthFontSize: 0,
-            textDayFontSize: 16,
-            textDayFontWeight: '400',
-            'stylesheet.calendar.main': {
-              week: {
-                marginTop: 0,
-                marginBottom: 0,
-                flexDirection: 'row',
-                justifyContent: 'space-around',
-                borderBottomWidth: 1,
-                borderBottomColor: 'rgba(255,255,255,0.1)',
-                paddingVertical: 12,
-              },
-            },
-            'stylesheet.calendar.header': {
-              header: {
-                display: 'none',
-              },
-              dayHeader: {
-                color: 'rgba(255,255,255,0.5)',
-                fontWeight: '400',
-                fontSize: 14,
-                marginBottom: 10,
-              },
-            },
-          }}
-          markingType="multi-dot"
-        />
+    <View style={styles.container}>
+      <StatusBar 
+        barStyle="light-content" 
+        backgroundColor={colors.base.darkGray}
+        translucent
+      />
+      <SafeAreaView style={styles.safeArea}>
+        <View style={styles.content}>
+          {renderHeader()}
+          
+          <Text style={styles.monthTitle}>
+            {moment(selectedDate).format('MMMM')}
+          </Text>
+          
+          <Calendar
+            current={formattedSelectedDate}
+            onDayPress={handleDayPress}
+            markedDates={getMarkedDates()}
+            theme={{
+              backgroundColor: 'transparent',
+              calendarBackground: 'transparent',
+              textSectionTitleColor: 'rgba(255,255,255,0.5)',
+              selectedDayBackgroundColor: '#33C213',
+              selectedDayTextColor: colors.base.white,
+              todayTextColor: '#33C213',
+              dayTextColor: colors.base.white,
+              textDisabledColor: 'rgba(255,255,255,0.3)',
+              dotColor: colors.base.white,
+              selectedDotColor: colors.base.black,
+              arrowColor: colors.base.white,
+              monthTextColor: colors.base.white,
+              textDayFontSize: 12,
+              textDayFontWeight: 'semibold',
+              'stylesheet.calendar.main': {
+                week: {
+                  margin: 0,
+                  flexDirection: 'row',
+                  justifyContent: 'space-around',
+                  borderBottomWidth: 1,
+                  borderBottomColor: colors.base.white,
+                  paddingVertical: 8,
+                },
+                dayContainer: {
+                  flex: 1,
+                  alignItems: 'center',
+                }
+              }
+            }}
+            markingType="multi-dot"
+          />
 
-        <View style={styles.eventsList}>
-          {error ? (
-            <Text style={styles.errorText}>An error occurred while loading events. Please try again.</Text>
-          ) : (
+          <View style={styles.eventsList}>
             <FlatList<Event>
               data={filteredEvents}
               renderItem={renderEventItem}
@@ -267,43 +245,57 @@ const DashboardEventsScreen: React.FC = () => {
               }
               contentContainerStyle={styles.listContent}
             />
+          </View>
+
+          <Modal
+            isVisible={showEventForm}
+            onBackdropPress={() => setShowEventForm(false)}
+            style={styles.modal}
+          >
+            <View style={styles.modalContent}>
+              <EventForm
+                onSubmit={handleCreateEvent}
+                onCancel={() => setShowEventForm(false)}
+                initialDate={new Date(selectedDate)}
+              />
+            </View>
+          </Modal>
+
+          {isRefreshing && (
+            <View style={styles.loadingOverlay}>
+              <ActivityIndicator size="large" color={colors.base.white} />
+            </View>
           )}
         </View>
-
-        <Modal
-          isVisible={isModalVisible}
-          onBackdropPress={() => setIsModalVisible(false)}
-          style={styles.modal}
-        >
-          <View style={styles.modalContent}>
-            <EventForm
-              onSubmit={handleCreateEvent}
-              onCancel={() => setIsModalVisible(false)}
-              initialDate={selectedDate}
-            />
-          </View>
-        </Modal>
-      </View>
-    </SafeAreaView>
+      </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#272727',
+    backgroundColor: colors.base.darkGray,
+  },
+  safeArea: {
+    flex: 1,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   content: {
     flex: 1,
-    paddingTop: 16,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-    marginBottom: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.1)',
+  },
+  headerButton: {
+    padding: 8,
+    borderRadius: 8,
   },
   yearText: {
     fontSize: 20,
@@ -313,96 +305,66 @@ const styles = StyleSheet.create({
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 20,
-  },
-  headerIcon: {
-    padding: 8,
+    gap: 8,
   },
   monthTitle: {
     fontSize: 32,
     fontWeight: 'bold',
     color: colors.base.white,
-    paddingHorizontal: 20,
-    marginBottom: 32,
-  },
-  dayContainer: {
-    width: 40,
-    height: 40,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 8,
-  },
-  selectedDayContainer: {
-    backgroundColor: colors.base.white,
-    borderRadius: 20,
-  },
-  dayText: {
-    fontSize: 16,
-    color: colors.base.white,
-    marginBottom: 4,
-  },
-  selectedDayText: {
-    color: colors.base.black,
-    fontWeight: '600',
-  },
-  disabledDayText: {
-    color: 'rgba(255,255,255,0.3)',
-  },
-  eventDotsContainer: {
-    flexDirection: 'row',
-    gap: 2,
-    position: 'absolute',
-    bottom: 2,
-  },
-  eventDot: {
-    width: 8,
-    height: 3,
-    borderRadius: 1.5,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 24,
   },
   eventsList: {
     flex: 1,
-    marginTop: 20,
+    marginVertical: 20,
+    paddingVertical: 20,
     paddingHorizontal: 20,
   },
   eventItem: {
     flexDirection: 'row',
-    alignItems: 'center',
-    padding: 15,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-    borderRadius: 10,
-    marginBottom: 10,
+    alignItems: 'stretch',
+    marginBottom: 16,
+    overflow: 'hidden',
   },
   eventColor: {
     width: 4,
-    height: '100%',
-    borderRadius: 2,
-    marginRight: 12,
+    height: '80%',
+    alignSelf: 'center',
+    borderTopLeftRadius:24,
+    borderTopRightRadius:24,
+    borderBottomLeftRadius:24,
+    borderBottomRightRadius:24,
   },
   eventInfo: {
     flex: 1,
+    justifyContent: 'center',
+    padding: 16,
   },
   eventTitle: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.base.white,
     marginBottom: 4,
   },
+  eventNotes: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.6)',
+  },
+  eventTimeContainer: {
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    gap: 4,
+  },
   eventTime: {
     fontSize: 14,
-    color: 'rgba(255,255,255,0.7)',
-    marginBottom: 4,
-  },
-  eventNotes: {
-    fontSize: 12,
-    color: 'rgba(255,255,255,0.5)',
+    color: colors.base.white,
+    opacity: 0.8,
   },
   deleteButton: {
     padding: 8,
-  },
-  errorText: {
-    color: '#FF6B6B',
-    textAlign: 'center',
-    marginTop: 20,
   },
   emptyText: {
     textAlign: 'center',
@@ -419,16 +381,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#272727',
     flex: 1,
   },
-  loadingContainer: {
-    flex: 1,
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#272727',
-  },
-  loadingText: {
-    color: colors.base.white,
-    marginTop: 16,
-    fontSize: 16,
+    zIndex: 1000,
   },
 });
 

@@ -11,7 +11,19 @@ export const colors = {
     darkBlue: "#014F73",
     purple: "#9A8DFB",
     lightGray: "#D9D9D9",
+    black: '#0F0F0F'
   },
+
+  secondary: {
+    darkRed: "#440000",
+    gray: "#797979",
+    lightRed: "#823A3A",
+    coral: "#CB5353",
+    lightGray: "#D9D9D9",
+    red: "#FF0000",
+    pink: "#FFCACA"
+  },
+
   base: {
     black: "#000000",
     white: "#FFFFFF",

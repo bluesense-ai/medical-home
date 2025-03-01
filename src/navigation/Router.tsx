@@ -26,6 +26,8 @@ import AIVisitsDashboard from '../screens/ai-visits/Dashboard';
 import AIVisitsPage from '../screens/ai-visits/VisitsPage';
 import type { Patient } from '../data/patients';
 import AIVisitPatient from '../screens/ai-visits/VisitPatient';
+import EventDetailScreen from '../screens/dashboard/EventDetailScreen';
+import YearlyCalendarScreen from '../screens/dashboard/YearlyCalendarScreen';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -38,7 +40,7 @@ export type RootStackParamList = {
   VerificationCode: undefined;
   WantToRegister: undefined;
   DashboardScreen: undefined;
-  DashboardEventsScreen: undefined;
+  DashboardEventsScreen: { selectedDate?: string };
   HomeScreen: undefined;
   ProvideInformation: undefined;
   WeFoundYou: undefined;
@@ -50,6 +52,8 @@ export type RootStackParamList = {
   AIVisitsDashboard: undefined;
   AIVisitsPage: undefined;
   AIVisitPatient: { id: Patient['id'] };
+  EventDetail: undefined;
+  YearlyCalendar: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -81,6 +85,8 @@ const Router = () => {
       <Stack.Screen name="EditProfile" component={EditProfileScreen} />
       <Stack.Screen name='LoginPage' component={LoginPage} />
       <Stack.Screen name="LoginSwitchVerification" component={LoginSwitchVerification} />
+      <Stack.Screen name="EventDetail" component={EventDetailScreen} />
+      <Stack.Screen name="YearlyCalendar" component={YearlyCalendarScreen} />
     </Stack.Navigator>
   );
 };
