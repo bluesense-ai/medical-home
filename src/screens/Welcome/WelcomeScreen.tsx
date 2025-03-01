@@ -23,7 +23,13 @@ const WelcomeScreen: React.FC = () => {
   const handleLogin = () => {
     // Temporarily removing authentication
     // setIsAuthenticated(true);
-    navigation.navigate('LoginPage');
+    if(provider=="patient"){
+    navigation.navigate('ProvideInformation');
+  }
+    if(provider=="doctor"){
+      navigation.navigate('LoginPage');
+
+    }
   };
 
   const textColor = provider === "patient" ? "white" : "black";

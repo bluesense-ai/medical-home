@@ -8,7 +8,10 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons"; // For icons (install if not already installed)
+import { Ionicons } from "@expo/vector-icons"; // For icons (install if not already installed)'
+import AuthHeader from "../../components/Header/AuthHeader";
+import WeFoundYou from "./WeFoundYou";
+
 // import StepIndicator from "react-native-step-indicator";
 
 // const labels = ["Step 1", "Step 2", "Step 3", "Step 4", "Step 5"];
@@ -29,58 +32,35 @@ const { height, width } = Dimensions.get("window"); // Get device dimensions
 
 const ProvideInformation = ({ navigation }) => {
   const realNumber = 123;
-  const [healthCardNumber, setHealthCardNumber] = useState("");
+  const [healthCardNumber, setHealthCardNumber] = useState();
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        {/* Back Arrow */}
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.iconContainer}
-        >
-          <Ionicons name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
+   
 
-        {/* Step Indicator - Wrap it in a flexible View */}
-        <View style={{ flex: 1, alignItems: "center" }}>
-          {/* <StepIndicator
-      customStyles={customStyles}
-      currentPosition={0} // Make sure this is dynamic later
-      labels={labels}
-    /> */}
-
-          <View style={styles.centerTextContainer}>
-            <Text style={styles.centerText}>
-              <Text style={{ color: "green" }}>_</Text>{" "}
-              {/* First step in green */}
-              <Text> _ _ _ _</Text> {/* Remaining steps in default black */}
-            </Text>
-          </View>
-        </View>
-
-        {/* Close Button */}
-        <TouchableOpacity
-          onPress={() => navigation.navigate("Home")}
-          style={styles.iconContainer}
-        >
-          <Ionicons name="close" size={24} color="black" />
-        </TouchableOpacity>
-      </View>
+      <AuthHeader
+        navigation={navigation}
+        currentStep={1} // You can dynamically set this value based on your logic
+        totalSteps={5} // Total steps in your process
+      />
 
       <View style={styles.whiteBackground}>
         {/* Top Image covering 70% of the screen (Empty) */}
+                <View style={styles.topImageWrapper}>
+        
         <ImageBackground
           source={require("../../../assets/bgimgrg.png")}
           style={styles.topImage}
         />
-
+</View>
         {/* Bottom Image covering 50% but overlapping 30% on top image */}
+                <View style={styles.bottomImageWrapper}>
+        
         <ImageBackground
           source={require("./image.jpg")}
           style={styles.bottomImage}
         >
-          <View style={styles.overlayBottom}>
+          <View style={styles.overlay}>
             <Text style={styles.title}>
               Provide Your {"\n"}
               {" Information"}
@@ -90,20 +70,20 @@ const ProvideInformation = ({ navigation }) => {
               {"  your information in our system"}{" "}
             </Text>
             <TextInput
-              onChange={(text) => {
-                setHealthCardNumber(text);
-              }}
+              onChangeText={(text) => /^\d*$/.test(text) ? setHealthCardNumber(text) : null}
               style={styles.textInput}
               placeholder="Enter your information"
               placeholderTextColor="white"
+              keyboardType="numeric" // Shows numeric keyboard on focus
+
             />
             <TouchableOpacity
               style={styles.button}
               onPress={() => {
-                if (healthCardNumber === realNumber) {
-                  navigation.navigate("WantToRegister");
-                } else {
+                if (parseInt(healthCardNumber) == realNumber) {
                   navigation.navigate("WeFoundYou");
+                } else {
+                  navigation.navigate("WantToRegister"); //
                 }
               }}
             >
@@ -112,38 +92,51 @@ const ProvideInformation = ({ navigation }) => {
           </View>
         </ImageBackground>
       </View>
-    </View>
+      </View>
+      </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "black",
+    backgroundColor: "transparent",
+  },
+  topImageWrapper: {
+    width: width * 0.9,
+    height: height * 0.7, // 70% of screen height
+    borderRadius: 20,
+    overflow: "hidden",
+    alignSelf: "center",
+    top:height*0.1,
   },
   topImage: {
-    width: width * 0.7,
-    height: height * 0.7, // Covers 70% of the screen
-    alignSelf: "center", // Center the image horizontally
-    marginTop: 0, // No space on top
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
   },
-  whiteBackground: {
-    flex: 1,
-    backgroundColor: "white",
+  bottomImageWrapper: {
+    width: width ,
+    height: height * 0.57, // 50% of screen height
+    borderRadius: 20,
+    overflow: "hidden",
+    alignSelf: "center",
+    position: "absolute",
+    bottom: height * -0.4, // Overlaps 20% of the top image
+    zIndex: 2,
   },
   bottomImage: {
-    width: width,
-    height: height * 0.5, // Covers bottom half of the screen
-    position: "absolute",
-    bottom: 0, // Anchored at the bottom
-  },
-  overlayBottom: {
     width: "100%",
     height: "100%",
     justifyContent: "center",
     alignItems: "center",
+  },
+  overlay: {
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
-    // backgroundColor: 'rgba(0, 0, 0, 0.4)', // Dark overlay for better contrast
   },
   title: {
     fontSize: 40,
@@ -183,6 +176,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white", // Button text color
     fontSize: 18, // Text size
+    alignSelf:'center',
     fontWeight: "bold", // Make the text bold
   },
   header: {

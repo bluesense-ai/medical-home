@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { View, Text, ImageBackground, TextInput, Pressable, StyleSheet, Dimensions } from 'react-native';
 import RadioGroup from 'react-native-radio-buttons-group';
 import { useAuthStore } from '../../store/useAuthStore';
+import AuthHeader from "../../components/Header/AuthHeader";
 
 const { height, width } = Dimensions.get('window');
 
@@ -16,8 +17,21 @@ const VerificationCode = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+
+<View style={styles.whiteBackground}>
+      
+
+      <AuthHeader
+              navigation={navigation}
+              currentStep={5} // You can dynamically set this value based on your logic
+              totalSteps={4} // Total steps in your process
+            />
       {/* Background Image covering only the bottom half */}
-      <ImageBackground source={require('../../../assets/bgimgrg.png')} style={styles.topImage} />
+  <View style={styles.topImageWrapper}>
+            
+         <ImageBackground source={require('../../../assets/bgimgrg2.jpg')} style={styles.topImage} />
+        </View>   
+        <View style={styles.bottomImageWrapper}>
 
       <ImageBackground source={require('./image.jpg')} style={styles.imageBackground}>
         {/* Form Overlay */}
@@ -45,6 +59,8 @@ const VerificationCode = ({ navigation }) => {
         </View>
       </ImageBackground>
     </View>
+    </View>
+    </View>
   );
 };
 
@@ -53,23 +69,41 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end', // Push everything to the bottom
   },
-  imageBackground: {
-    width: width,
-    height: height * 0.5, // Cover only bottom half of the screen
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  overlay: {
-    width: '100%',
-    padding: 20,
-    alignItems: 'center',
+  topImageWrapper: {
+    width: width * 0.9,
+    height: height * 0.7, // 70% of screen height
+    borderRadius: 20,
+    overflow: "hidden",
+    alignSelf: "center",
+    top:height*0.1,
   },
   topImage: {
-    width: width,
-    height: height * 0.6, // Covers 60% of the screen
-    position: 'absolute', // Keeps it fixed at the top
-    top: 0,
-    margin: '40px'
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  bottomImageWrapper: {
+    width: width ,
+    height: height*0.5, // 50% of screen height
+    borderRadius: 20,
+    overflow: "hidden",
+    alignSelf: "center",
+    position: "absolute",
+    bottom: height *-0.02, // Overlaps 20% of the top image
+    zIndex: 2,
+  },
+  bottomImage: {
+    width: "100%",
+    height: height,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  overlay: {
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
   },
   title: {
     fontSize: 30,
@@ -109,6 +143,10 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  whiteBackground: {
+    flex: 1,
+    backgroundColor: "white",
   },
 });
 

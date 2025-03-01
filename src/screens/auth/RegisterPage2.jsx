@@ -1,16 +1,31 @@
 import React from 'react';
 import { View, Text, ImageBackground, TextInput, Pressable, StyleSheet, Dimensions } from 'react-native';
+import AuthHeader from "../../components/Header/AuthHeader";
 
 const { height, width } = Dimensions.get('window');
 
 const RegisterPage2 = ({ navigation }) => {
   return (
     <View style={styles.container}>
+             <View style={styles.whiteBackground}>
+      
 
-         <ImageBackground source={require('../../../assets/bgimgrg.png')} style={styles.topImage} />
-        
+      <AuthHeader
+              navigation={navigation}
+              currentStep={4} // You can dynamically set this value based on your logic
+              totalSteps={4} // Total steps in your process
+            />
+
+            <View style={styles.topImageWrapper}>
+            
+         <ImageBackground source={require('../../../assets/bgimgrg2.jpg')} style={styles.topImage} />
+        </View>
       {/* Background Image covering only the bottom half */}
-      <ImageBackground source={require('./image.jpg')} style={styles.imageBackground}>
+
+
+                      <View style={styles.bottomImageWrapper}>
+      
+      <ImageBackground source={require('./image.jpg')} style={styles.bottomImage}>
         {/* Form Overlay */}
         <View style={styles.overlay}>
           {/* Heading */}
@@ -61,6 +76,8 @@ const RegisterPage2 = ({ navigation }) => {
         </View>
       </ImageBackground>
     </View>
+    </View>
+    </View>
   );
 };
 
@@ -69,22 +86,41 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'flex-end', // Push everything to the bottom
   },
-  imageBackground: {
-    width: width,
-    height: height * 0.73, // Cover only bottom half of the screen
-    justifyContent: 'flex-end',
-    alignItems: 'center',
+  topImageWrapper: {
+    width: width * 0.9,
+    height: height * 0.7, // 70% of screen height
+    borderRadius: 20,
+    overflow: "hidden",
+    alignSelf: "center",
+    top:height*0.1,
   },
   topImage: {
-    width: width*0.7,
-    height: height * 0.7, // Covers 70% of the screen
-    alignSelf: 'center', // Center the image horizontally
-    marginTop: 0, // No space on top
+    width: "100%",
+    height: "100%",
+    resizeMode: "cover",
+  },
+  bottomImageWrapper: {
+    width: width ,
+    height: height*0.85, // 50% of screen height
+    borderRadius: 20,
+    overflow: "hidden",
+    alignSelf: "center",
+    position: "absolute",
+    bottom: height * -0.12222, // Overlaps 20% of the top image
+    zIndex: 2,
+  },
+  bottomImage: {
+    width: "100%",
+    height: height*0.75,
+    justifyContent: "center",
+    alignItems: "center",
   },
   overlay: {
-    width: '100%',
+    width: "100%",
+    height: "100%",
+    alignItems: "center",
+    justifyContent: "center",
     padding: 20,
-    alignItems: 'center',
   },
   title: {
     fontSize: 34,
@@ -124,6 +160,10 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  whiteBackground: {
+    flex: 1,
+    backgroundColor: "white",
   },
 });
 
