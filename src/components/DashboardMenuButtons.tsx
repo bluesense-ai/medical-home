@@ -13,7 +13,7 @@ const DashboardMenuButtons: React.FC = () => {
     <AnimatedSection isInitial delay={300} style={styles.menuContainer}>
       <TouchableOpacity 
         style={styles.button}
-        onPress={() => navigation.navigate('DashboardEventsScreen')}
+        onPress={() => navigation.navigate('DashboardEventsScreen', { selectedDate: undefined })}
       >
         <Text style={styles.buttonText}>Dashboard</Text>
       </TouchableOpacity>
