@@ -11,7 +11,8 @@ export const colors = {
     darkBlue: "#014F73",
     purple: "#9A8DFB",
     lightGray: "#D9D9D9",
-    black: '#0F0F0F'
+    black: '#0F0F0F',
+    gray: "#6a6a6a",
   },
 
   secondary: {

@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import {
   View,
   Text,
@@ -11,7 +11,7 @@ import {
   Platform,
 } from 'react-native';
 import { colors } from '../../theme/colors';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../navigation/types';
@@ -26,35 +26,32 @@ const CARD_WIDTH = (width - (GRID_MARGIN * 2) - GRID_GAP) / 2;
 
 const YearlyCalendarScreen: React.FC = () => {
   const navigation = useNavigation<YearlyCalendarScreenNavigationProp>();
-  const [selectedYear, setSelectedYear] = useState(moment().year());
+  const currentYear = moment().year();
 
   const years = useMemo(() => {
-    const currentYear = moment().year();
-    return [currentYear - 2, currentYear - 1, currentYear, currentYear + 1, currentYear + 2];
-  }, []);
+    return Array.from({ length: 5 }, (_, i) => currentYear + i);
+  }, [currentYear]);
 
-  const months = useMemo(() => [
-    { name: 'Jan', days: 31 },
-    { name: 'Feb', days: moment().year(selectedYear).month(1).daysInMonth() },
-    { name: 'Mar', days: 31 },
-    { name: 'Apr', days: 30 },
-    { name: 'May', days: 31 },
-    { name: 'Jun', days: 30 },
-    { name: 'Jul', days: 31 },
-    { name: 'Aug', days: 31 },
-    { name: 'Sep', days: 30 },
-    { name: 'Oct', days: 31 },
-    { name: 'Nov', days: 30 },
-    { name: 'Dec', days: 31 },
-  ], [selectedYear]);
-
-  const handleMonthSelect = (monthIndex: number) => {
-    const selectedDate = moment().year(selectedYear).month(monthIndex).format('YYYY-MM-DD');
-    navigation.navigate('DashboardEventsScreen', { selectedDate });
+  const getMonthsForYear = (year: number) => {
+    return [
+      { name: 'Jan', days: 31 },
+      { name: 'Feb', days: moment().year(year).month(1).daysInMonth() },
+      { name: 'Mar', days: 31 },
+      { name: 'Apr', days: 30 },
+      { name: 'May', days: 31 },
+      { name: 'Jun', days: 30 },
+      { name: 'Jul', days: 31 },
+      { name: 'Aug', days: 31 },
+      { name: 'Sep', days: 30 },
+      { name: 'Oct', days: 31 },
+      { name: 'Nov', days: 30 },
+      { name: 'Dec', days: 31 },
+    ];
   };
 
-  const handleYearChange = (year: number) => {
-    setSelectedYear(year);
+  const handleMonthSelect = (year: number, monthIndex: number) => {
+    const selectedDate = moment().year(year).month(monthIndex).format('YYYY-MM-DD');
+    navigation.navigate('DashboardEventsScreen', { selectedDate });
   };
 
   const renderHeader = () => (
@@ -65,7 +62,7 @@ const YearlyCalendarScreen: React.FC = () => {
       >
         <Ionicons name="chevron-back" size={24} color="white" />
       </TouchableOpacity>
-      <Text style={styles.yearText}>{selectedYear}</Text>
+      <Text style={styles.yearText}>Calendar</Text>
       <View style={styles.headerRight}>
         <TouchableOpacity style={styles.headerButton}>
           <Ionicons name="search" size={24} color="white" />
@@ -77,9 +74,9 @@ const YearlyCalendarScreen: React.FC = () => {
     </View>
   );
 
-  const renderMonth = (monthName: string, monthIndex: number) => {
-    const startDay = moment().year(selectedYear).month(monthIndex).startOf('month').day();
-    const totalDays = months[monthIndex].days;
+  const renderMonth = (monthName: string, monthIndex: number, year: number) => {
+    const startDay = moment().year(year).month(monthIndex).startOf('month').day();
+    const totalDays = getMonthsForYear(year)[monthIndex].days;
     const days = [];
 
     // Empty days
@@ -89,7 +86,7 @@ const YearlyCalendarScreen: React.FC = () => {
 
     // Days of month
     for (let i = 1; i <= totalDays; i++) {
-      const isToday = moment().year(selectedYear).month(monthIndex).date(i).isSame(moment(), 'day');
+      const isToday = moment().year(year).month(monthIndex).date(i).isSame(moment(), 'day');
       days.push(
         <Text
           key={i}
@@ -106,8 +103,8 @@ const YearlyCalendarScreen: React.FC = () => {
     return (
       <TouchableOpacity 
         style={styles.monthContainer} 
-        key={monthName}
-        onPress={() => handleMonthSelect(monthIndex)}
+        key={`${year}-${monthName}`}
+        onPress={() => handleMonthSelect(year, monthIndex)}
       >
         <Text style={styles.monthName}>{monthName}</Text>
         <View style={styles.calendarGrid}>
@@ -121,6 +118,17 @@ const YearlyCalendarScreen: React.FC = () => {
       </TouchableOpacity>
     );
   };
+
+  const renderYear = (year: number) => (
+    <View key={year} style={styles.yearSection}>
+      <Text style={styles.yearSectionTitle}>{year}</Text>
+      <View style={styles.monthsGrid}>
+        {getMonthsForYear(year).map((month, index) => 
+          renderMonth(month.name, index, year)
+        )}
+      </View>
+    </View>
+  );
 
   return (
     <View style={styles.container}>
@@ -136,28 +144,7 @@ const YearlyCalendarScreen: React.FC = () => {
             style={styles.scrollContent}
             showsVerticalScrollIndicator={false}
           >
-            <View style={styles.yearSelector}>
-              {years.map((year) => (
-                <TouchableOpacity
-                  key={year}
-                  style={[
-                    styles.yearButton,
-                    selectedYear === year && styles.selectedYearButton
-                  ]}
-                  onPress={() => handleYearChange(year)}
-                >
-                  <Text style={[
-                    styles.yearButtonText,
-                    selectedYear === year && styles.selectedYearButtonText
-                  ]}>
-                    {year}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-            <View style={styles.monthsGrid}>
-              {months.map((month, index) => renderMonth(month.name, index))}
-            </View>
+            {years.map(year => renderYear(year))}
           </ScrollView>
         </View>
       </SafeAreaView>
@@ -203,31 +190,15 @@ const styles = StyleSheet.create({
   scrollContent: {
     flex: 1,
   },
-  yearSelector: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
+  yearSection: {
+    marginBottom: 32,
   },
-  yearButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.1)',
-  },
-  selectedYearButton: {
-    backgroundColor: colors.secondary.red,
-  },
-  yearButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
+  yearSectionTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
     color: colors.base.white,
-    opacity: 0.7,
-  },
-  selectedYearButtonText: {
-    opacity: 1,
+    paddingHorizontal: GRID_MARGIN,
+    paddingVertical: 16,
   },
   monthsGrid: {
     flexDirection: 'row',
@@ -237,10 +208,7 @@ const styles = StyleSheet.create({
   },
   monthContainer: {
     width: CARD_WIDTH,
-    backgroundColor: colors.base.black,
-    borderRadius: 16,
     padding: 12,
-    marginBottom: 16,
   },
   monthName: {
     fontSize: 20,
