@@ -71,42 +71,49 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialDate =
     }
   };
 
-  const validateTime = (selectedTime: Date): boolean => {
-    const hour = selectedTime.getHours();
-    return hour >= BUSINESS_HOURS.start && hour <= BUSINESS_HOURS.end;
-  };
-
-  const handleTimeChange = (time: Date | undefined, isStartTime: boolean) => {
-    if (!time) return;
-
-    if (!validateTime(time)) {
+  const validateTime = (time: Date | undefined, isStartTime: boolean): boolean => {
+    if (!time) return false;
+    const hour = time.getHours();
+    const isValidHour = hour >= BUSINESS_HOURS.start && hour <= BUSINESS_HOURS.end;
+    
+    if (!isValidHour) {
       Alert.alert(
         'Invalid Time',
         `Please select a time between ${BUSINESS_HOURS.start}:00 AM and ${BUSINESS_HOURS.end > 12 ? BUSINESS_HOURS.end - 12 : BUSINESS_HOURS.end}:00 ${BUSINESS_HOURS.end >= 12 ? 'PM' : 'AM'}`
       );
-      return;
+      return false;
     }
 
+    if (!isStartTime && time <= formData.startDate) {
+      Alert.alert('Invalid Time', 'End time must be after start time');
+      return false;
+    }
+
+    return true;
+  };
+
+  const handleTimeChange = (selectedTime: Date | undefined, isStartTime: boolean) => {
+    if (!selectedTime) return;
+
+    if (!validateTime(selectedTime, isStartTime)) return;
+
     if (isStartTime) {
-      setFormData({ ...formData, startDate: time });
-      if (Platform.OS === 'android') {
-        setShowStartPicker(false);
-      }
-      // Set end time to 1 hour after start time by default
-      const endTime = new Date(time);
-      endTime.setHours(endTime.getHours() + 1);
-      if (validateTime(endTime)) {
-        setFormData({ ...formData, endDate: endTime });
+      const newStartDate = new Date(selectedTime);
+      setFormData(prev => ({ ...prev, startDate: newStartDate }));
+      
+      // Set end time to 1 hour after start time
+      const newEndDate = new Date(selectedTime);
+      newEndDate.setHours(newEndDate.getHours() + 1);
+      if (validateTime(newEndDate, false)) {
+        setFormData(prev => ({ ...prev, endDate: newEndDate }));
       }
     } else {
-      if (time <= formData.startDate) {
-        Alert.alert('Invalid Time', 'End time must be after start time');
-        return;
-      }
-      setFormData({ ...formData, endDate: time });
-      if (Platform.OS === 'android') {
-        setShowEndPicker(false);
-      }
+      setFormData(prev => ({ ...prev, endDate: selectedTime }));
+    }
+
+    if (Platform.OS === 'android') {
+      setShowStartPicker(false);
+      setShowEndPicker(false);
     }
   };
 
@@ -412,16 +419,16 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialDate =
           />
 
           <Text style={[styles.sectionTitle, styles.marginTop]}>Meeting Details</Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              value={formData.meetingDetails}
-              onChangeText={(text) => setFormData({ ...formData, meetingDetails: text })}
-              placeholder="Enter meeting details"
-              multiline
-              numberOfLines={3}
-            />
-          </View>
+          <TextInput
+            style={[styles.input, styles.textArea]}
+            placeholder="Enter meeting details"
+            placeholderTextColor="rgba(255,255,255,0.5)"
+            value={formData.meetingDetails}
+            onChangeText={(text) => setFormData(prev => ({ ...prev, meetingDetails: text }))}
+            multiline
+            numberOfLines={4}
+            textAlignVertical="top"
+          />
         </View>
       </ScrollView>
 
@@ -580,7 +587,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   addButton: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: colors.primary.gray,
     borderRadius: 8,
     padding: 16,
     alignItems: 'center',
@@ -681,9 +688,10 @@ const styles = StyleSheet.create({
     color: colors.base.white,
     fontWeight: '600',
   },
-  inputContainer: {
-    marginTop: 24,
+  textArea: {
+    height: 100,
+    paddingTop: 12,
   },
 });
 
-export default EventForm; 
+export default EventForm;

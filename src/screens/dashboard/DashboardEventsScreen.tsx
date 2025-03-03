@@ -139,7 +139,11 @@ const DashboardEventsScreen: React.FC<DashboardEventsScreenProps> = ({ route }) 
       <View style={[styles.eventColor, { backgroundColor: EVENT_COLORS[item.type as EventType] }]} />
       <View style={styles.eventInfo}>
         <Text style={styles.eventTitle}>{item.title}</Text>
-        {item.notes && <Text style={styles.eventNotes}>Meeting details</Text>}
+        {(item.meetingDetails || item.notes) && (
+          <Text style={styles.eventNotes} numberOfLines={1}>
+            {item.meetingDetails || item.notes}
+          </Text>
+        )}
       </View>
       <View style={styles.eventTimeContainer}>
         <Text style={styles.eventTime}>
@@ -206,8 +210,8 @@ const DashboardEventsScreen: React.FC<DashboardEventsScreenProps> = ({ route }) 
               backgroundColor: 'transparent',
               calendarBackground: 'transparent',
               textSectionTitleColor: 'rgba(255,255,255,0.5)',
-              selectedDayBackgroundColor: '#33C213',
-              selectedDayTextColor: colors.base.white,
+              selectedDayBackgroundColor: colors.base.white,
+              selectedDayTextColor: colors.base.black,
               todayTextColor: '#33C213',
               dayTextColor: colors.base.white,
               textDisabledColor: 'rgba(255,255,255,0.3)',
@@ -217,6 +221,12 @@ const DashboardEventsScreen: React.FC<DashboardEventsScreenProps> = ({ route }) 
               monthTextColor: colors.base.white,
               textDayFontSize: 12,
               textDayFontWeight: 'semibold',
+              'stylesheet.calendar.header': {
+                header: {
+                  height: 0,
+                  opacity: 0,
+                },
+              },
               'stylesheet.calendar.main': {
                 week: {
                   margin: 0,
@@ -229,6 +239,13 @@ const DashboardEventsScreen: React.FC<DashboardEventsScreenProps> = ({ route }) 
                 dayContainer: {
                   flex: 1,
                   alignItems: 'center',
+                },
+                day: {
+                  borderRadius: 4,
+                  width: 32,
+                  height: 32,
+                  alignItems: 'center',
+                  justifyContent: 'center',
                 }
               }
             }}
@@ -350,6 +367,7 @@ const styles = StyleSheet.create({
   eventNotes: {
     fontSize: 14,
     color: 'rgba(255,255,255,0.6)',
+    marginTop: 4,
   },
   eventTimeContainer: {
     paddingVertical: 16,
