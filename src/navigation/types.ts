@@ -1,5 +1,11 @@
 import { Event } from '../store/useCalendarStore';
 
+// Serileştirilebilir Event tipi
+export interface SerializableEvent extends Omit<Event, 'startDate' | 'endDate'> {
+  startDate: string | null;
+  endDate: string | null;
+}
+
 export type RootStackParamList = {
   Welcome: undefined;
   Loading: undefined;
@@ -23,7 +29,7 @@ export type RootStackParamList = {
   AIVisitsDashboard: undefined;
   AIVisitsPage: undefined;
   AIVisitPatient: { id: string };
-  EventDetail: { event: Event };
+  EventDetail: { event: SerializableEvent };
   YearlyCalendar: undefined;
 };
 

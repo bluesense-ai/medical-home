@@ -9,7 +9,7 @@ import EventForm from '../../components/EventForm';
 import useCalendarStore, { Event, EventType } from '../../store/useCalendarStore';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../navigation/types';
+import { RootStackParamList, SerializableEvent } from '../../navigation/types';
 
 const { width } = Dimensions.get('window');
 
@@ -131,30 +131,39 @@ const DashboardEventsScreen: React.FC<DashboardEventsScreenProps> = ({ route }) 
     setShowEventForm(true);
   };
 
-  const renderEventItem = ({ item }: { item: Event }) => (
-    <TouchableOpacity 
-      style={styles.eventItem}
-      onPress={() => navigation.navigate('EventDetail', { event: item })}
-    >
-      <View style={[styles.eventColor, { backgroundColor: EVENT_COLORS[item.type as EventType] }]} />
-      <View style={styles.eventInfo}>
-        <Text style={styles.eventTitle}>{item.title}</Text>
-        {(item.meetingDetails || item.notes) && (
-          <Text style={styles.eventNotes} numberOfLines={1}>
-            {item.meetingDetails || item.notes}
+  const renderEventItem = ({ item }: { item: Event }) => {
+    // Tarih nesnelerini string formatına dönüştür
+    const serializedEvent: SerializableEvent = {
+      ...item,
+      startDate: item.startDate ? item.startDate.toISOString() : null,
+      endDate: item.endDate ? item.endDate.toISOString() : null,
+    };
+    
+    return (
+      <TouchableOpacity 
+        style={styles.eventItem}
+        onPress={() => navigation.navigate('EventDetail', { event: serializedEvent })}
+      >
+        <View style={[styles.eventColor, { backgroundColor: EVENT_COLORS[item.type as EventType] }]} />
+        <View style={styles.eventInfo}>
+          <Text style={styles.eventTitle}>{item.title}</Text>
+          {(item.meetingDetails || item.notes) && (
+            <Text style={styles.eventNotes} numberOfLines={1}>
+              {item.meetingDetails || item.notes}
+            </Text>
+          )}
+        </View>
+        <View style={styles.eventTimeContainer}>
+          <Text style={styles.eventTime}>
+            {moment(item.startDate).format('h:mm A')}
           </Text>
-        )}
-      </View>
-      <View style={styles.eventTimeContainer}>
-        <Text style={styles.eventTime}>
-          {moment(item.startDate).format('h:mm A')}
-        </Text>
-        <Text style={styles.eventTime}>
-          {moment(item.endDate).format('h:mm A')}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
+          <Text style={styles.eventTime}>
+            {moment(item.endDate).format('h:mm A')}
+          </Text>
+        </View>
+      </TouchableOpacity>
+    );
+  };
 
   const renderHeader = () => {
     return (

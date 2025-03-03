@@ -4,7 +4,7 @@ import { colors } from '../../theme/colors';
 import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../../navigation/types';
+import { RootStackParamList, SerializableEvent } from '../../navigation/types';
 import moment from 'moment';
 import { mockEvents, BUSINESS_HOURS } from '../../data/mockEvents';
 import { Event, EventType } from '../../store/useCalendarStore';
@@ -32,7 +32,15 @@ const EVENT_COLORS = {
 const EventDetailScreen = () => {
   const navigation = useNavigation<EventDetailScreenNavigationProp>();
   const route = useRoute<EventDetailScreenRouteProp>();
-  const event = route.params.event;
+  const serializedEvent = route.params.event;
+  
+  // String tarihlerini Date nesnelerine dönüştür
+  const event: Event = {
+    ...serializedEvent,
+    startDate: serializedEvent.startDate ? new Date(serializedEvent.startDate) : new Date(),
+    endDate: serializedEvent.endDate ? new Date(serializedEvent.endDate) : new Date(),
+  };
+
   const [isTimelineExpanded, setIsTimelineExpanded] = useState(false);
   const heightAnim = useRef(new Animated.Value(100)).current;
 
@@ -176,7 +184,7 @@ const EventDetailScreen = () => {
               <Text style={styles.participantIconText}>Edit</Text>
             </View>
             <View style={styles.iconGroup}>
-              <MaterialCommunityIcons name="stethoscope" size={12} color={colors.base.white} style={styles.participantIcon} />
+              <MaterialCommunityIcons name="video-outline" size={12} color={colors.base.white} style={styles.participantIcon} />
               <Text style={styles.participantIconText}>Consult</Text>
             </View>
             <View style={styles.iconGroup}>
