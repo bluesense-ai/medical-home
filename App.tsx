@@ -26,7 +26,7 @@ export default function App() {
       await new Promise(resolve => setTimeout(resolve, 2000));
       setIsLoading(false);
     } catch (error) {
-      console.warn('Yükleme sırasında hata:', error);
+      console.warn('Error during loading:', error);
       setIsLoading(false);
     }
   };
