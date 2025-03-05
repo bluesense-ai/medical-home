@@ -11,12 +11,16 @@ import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../navigation/Router";
+import { useTheme } from "../../../store/useTheme";
 
 type Props = {
   patient: Patient;
 };
 
 const VisitsPatientInfoForm: React.FC<Props> = ({ patient }) => {
+  const theme = useTheme((state) => state.theme);
+  const styles = theme === "dark" ? stylesDark : stylesLight;
+
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [patientName, setPatientName] = useState(patient.name);
   const [dateTime, setDateTime] = useState(patient.date);
@@ -43,9 +47,12 @@ const VisitsPatientInfoForm: React.FC<Props> = ({ patient }) => {
               Cancel
             </Text>
           ) : (
-            <Ionicons name="arrow-back" size={24} color="white" onPress={
-              () => navigation.goBack() 
-            } />
+            <Ionicons
+              name="arrow-back"
+              size={24}
+              color="white"
+              onPress={() => navigation.goBack()}
+            />
           )}
         </TouchableOpacity>
         <TouchableOpacity style={styles.editButton}>
@@ -100,7 +107,7 @@ const VisitsPatientInfoForm: React.FC<Props> = ({ patient }) => {
           value={clinic}
           onChangeText={setClinic}
           multiline={true}
-          numberOfLines={4} // Adjust number of lines as needed
+          numberOfLines={4}
           editable={editable}
         />
       </View>
@@ -112,7 +119,7 @@ const VisitsPatientInfoForm: React.FC<Props> = ({ patient }) => {
           value={assessment}
           onChangeText={setAssessment}
           multiline={true}
-          numberOfLines={4} // Adjust number of lines as needed
+          numberOfLines={4}
           editable={editable}
         />
       </View>
@@ -135,7 +142,7 @@ const VisitsPatientInfoForm: React.FC<Props> = ({ patient }) => {
   );
 };
 
-const styles = StyleSheet.create({
+const stylesDark = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
@@ -172,28 +179,89 @@ const styles = StyleSheet.create({
     marginTop: 20,
     marginBottom: 40,
     color: "white",
-    textAlign: "center", // Center the title text
+    textAlign: "center",
   },
   inputGroup: {
     marginBottom: 15,
   },
   label: {
-    color: "white", // Light text for contrast
+    color: "white",
     marginBottom: 5,
   },
   input: {
-    backgroundColor: "#333", // Slightly lighter background for input fields
+    backgroundColor: "#333",
     padding: 10,
     borderRadius: 5,
     color: "white",
   },
   inputArea: {
-    // Style for multiline input
     backgroundColor: "#333",
     padding: 10,
     borderRadius: 5,
     color: "white",
-    height: 80, // Adjust height as needed
+    height: 80,
+    textAlignVertical: "top",
+  },
+});
+
+const stylesLight = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#33C213",
+    borderRadius: 10,
+  },
+
+  editContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  backButton: {
+    flexDirection: "row",
+  },
+  backButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  editButton: {},
+  editButtonText: {
+    color: "white",
+    fontSize: 16,
+  },
+  doneButtonText: {
+    color: "white",
+    fontSize: 16,
+  },
+
+  title: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginTop: 20,
+    marginBottom: 40,
+    color: "white",
+    textAlign: "center",
+  },
+  inputGroup: {
+    marginBottom: 15,
+  },
+  label: {
+    color: "white",
+    marginBottom: 5,
+  },
+  input: {
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 5,
+    color: "black",
+  },
+  inputArea: {
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 5,
+    color: "black",
+    height: 80,
     textAlignVertical: "top",
   },
 });
