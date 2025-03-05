@@ -255,7 +255,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   todayText: {
-    color: colors.secondary.red,
+    color: colors.main.error,
     fontWeight: 'bold',
   },
 });

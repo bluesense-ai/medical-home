@@ -148,7 +148,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     right: 0,
     bottom: 0,
-    backgroundColor: colors.primary.green,
+    backgroundColor: colors.main.secondary,
     width: 32,
     height: 32,
     borderRadius: 16,
@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   doneButton: {
-    backgroundColor: colors.primary.green,
+    backgroundColor: colors.main.secondary,
     paddingVertical: 10,
     paddingHorizontal: 36,
     borderRadius: 12,

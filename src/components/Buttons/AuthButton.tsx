@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: colors.primary.blue,
+    backgroundColor: colors.main.secondary,
   },
   outlineButton: {
     backgroundColor: colors.base.white,

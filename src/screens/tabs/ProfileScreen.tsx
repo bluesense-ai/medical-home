@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   },
   infoCard: {
     width: '100%',
-    backgroundColor: colors.primary.blue,
+    backgroundColor: colors.main.info,
     borderRadius: 2,
     paddingVertical: 20,
     paddingHorizontal: 24,
@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     fontWeight: 'regular',
   },
   editButton: {
-    backgroundColor: colors.primary.green,
+    backgroundColor: colors.main.secondary,
     paddingVertical: 10,
     paddingHorizontal: 36,
     borderRadius: 12,

@@ -23,10 +23,10 @@ const HOURS = Array.from(
 );
 
 const EVENT_COLORS = {
-  'urgent': colors.secondary.red,
-  'regular': colors.secondary.gray,
-  'check-up': colors.secondary.coral,
-  'consultation': colors.secondary.lightRed,
+  'urgent': colors.main.error,
+  'regular': colors.legacy.gray,
+  'check-up': colors.main.warning,
+  'consultation': colors.alternativeLight.error,
 } as const;
 
 const EventDetailScreen = () => {

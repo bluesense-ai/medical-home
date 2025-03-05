@@ -26,7 +26,6 @@ const HomeScreen = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
       <Animated.ScrollView 
         style={styles.scrollView} 
         showsVerticalScrollIndicator={false}
@@ -101,14 +100,14 @@ const HomeScreen = () => {
 
           {/* Contact Section */}
           <AnimatedSection scrollY={scrollY} index={8} style={styles.contactSection}>
-            <Text style={{...styles.sectionTitle, color: colors.primary.darkBlue}}>Contact</Text>
+            <Text style={{...styles.sectionTitle, color: colors.main.primary}}>Contact</Text>
             <View style={styles.contactInfo}>
               <Text style={styles.contactText}>Email: <Text style={styles.contactLink} onPress={() => Linking.openURL('mailto:reception@pacmc.com')}>reception@pacmc.com</Text></Text>
               <Text style={styles.contactText}>Mobile: 306-922-2002</Text>
             </View>
 
           {/* Locations Section */}
-            <Text style={{...styles.sectionTitle, color: colors.primary.darkBlue}}>Locations</Text>
+            <Text style={{...styles.sectionTitle, color: colors.main.primary}}>Locations</Text>
             <View style={styles.locationInfo}>
               <Text style={styles.locationTitle}>Hope Health Centre</Text>
               <Text style={styles.locationLink} onPress={() => Linking.openURL('https://maps.google.com/?q=1135 Central Avenue Prince Albert, SK S6V 4V7')}>
@@ -122,7 +121,7 @@ const HomeScreen = () => {
             </View>
 
           {/* Socials Section */}
-            <Text style={{...styles.sectionTitle, color: colors.primary.darkBlue}}>Socials</Text>
+            <Text style={{...styles.sectionTitle, color: colors.main.primary}}>Socials</Text>
             <View style={styles.socialIcons}>
               <TouchableOpacity style={styles.socialButton} onPress={() => Linking.openURL('https://linkedin.com')}>
                 <Image source={require('../../../assets/icons/linkedin.png')} style={styles.socialIcon} />
@@ -140,14 +139,10 @@ const HomeScreen = () => {
           </AnimatedSection>
         </View>
       </Animated.ScrollView>
-    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   scrollView: {
     flex: 1,
   },
@@ -264,12 +259,12 @@ const styles = StyleSheet.create({
   },
   contactText: {
     fontSize: 16,
-    color: colors.primary.darkBlue,
+    color: colors.main.primary,
     marginBottom: 8,
   },
   contactLink: {
     textDecorationLine: 'underline',
-    color: colors.primary.purple,
+    color: colors.alternativeLight.info,
   },
   locationsSection: {
     width: '100%',
@@ -283,7 +278,7 @@ const styles = StyleSheet.create({
   locationTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: colors.primary.darkBlue,
+    color: colors.main.primary,
     marginBottom: 8,
   },
   secondLocation: {
@@ -291,7 +286,7 @@ const styles = StyleSheet.create({
   },
   locationLink: {
     fontSize: 16,
-    color: colors.primary.purple,
+    color: colors.alternativeLight.info,
     textDecorationLine: 'underline',
     textAlign: 'center',
     marginBottom: 8,
@@ -316,7 +311,7 @@ const styles = StyleSheet.create({
   socialIcon: {
     width: 20,
     height: 20,
-    tintColor: colors.primary.purple,
+    tintColor: colors.main.info,
   },
   scrollViewContent: {
     paddingBottom: 40,

@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
   doctorButton: {
     width: "100%",
     height: 50,
-    backgroundColor: colors.primary.lightGray,
+    backgroundColor: colors.legacy.lightGray,
     borderRadius: 12,
     justifyContent: 'center',
     alignItems: 'center',
