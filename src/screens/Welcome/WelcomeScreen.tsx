@@ -9,10 +9,13 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../navigation/Router';
 import { useProvider } from '../../store/useProvider';
+import { useTheme } from '../../store/useTheme';
 
 const WelcomeScreen: React.FC = () => {
   const provider = useProvider((state) => state.provider);
   const toggleProvider = useProvider((state) => state.toggleProvider);
+  const theme = useTheme((state) => state.theme);
+  const toggleTheme = useTheme((state) => state.toggleTheme);
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   
   // Store animation values in useRef to prevent unnecessary re-renders
@@ -135,6 +138,13 @@ const WelcomeScreen: React.FC = () => {
         <View style={styles.topBar}>
           <View style={styles.toggleContainer}>
             <Toggle isEnabled={provider === "doctor"} onToggle={toggleSwitch} />
+          </View>
+        </View>
+        <View style={styles.topBar}>
+          <View style={styles.toggleContainer}>
+            <Toggle isEnabled={theme === "dark"} onToggle={() => {
+              toggleTheme();
+            }} />
           </View>
         </View>
 
