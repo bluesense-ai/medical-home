@@ -7,8 +7,12 @@ import { colors } from '../../theme/colors';
 import DashboardBackground from '../../components/DashboardBackground';
 import AnimatedSection from '../../components/AnimatedSection';
 import DashboardMenuButtons from '../../components/DashboardMenuButtons';
+import { useTheme } from '../../store/useTheme';
 
 const DashboardScreen: React.FC = () => {
+  const theme = useTheme(state => state.theme);
+  const styles = theme === 'dark' ? stylesDark : stylesLight;
+
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const scrollY = useRef(new Animated.Value(0)).current;
 
@@ -26,7 +30,7 @@ const DashboardScreen: React.FC = () => {
       >
         {/* Background Shape */}
         <View style={styles.backgroundContainer}>
-          <DashboardBackground />
+          <DashboardBackground fill={theme === "dark" ? "#247401" : colors.main.primary} />
         </View>
 
         {/* Profile Image */}
@@ -51,10 +55,65 @@ const DashboardScreen: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const stylesDark = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.base.darkGray,
+  },
+  scrollView: {
+    flex: 1,
+  },
+  scrollViewContent: {
+    flex: 1,
+    paddingBottom: 40,
+  },
+  backgroundContainer: {
+    position: 'absolute',
+    top: -100,
+    left: -20,
+    right: -20,
+    height: "100%",
+    zIndex: -1,
+    transform: [{ scale: 1.2 }],
+  },
+  header: {
+    paddingHorizontal: 24,
+    paddingTop: 74,
+    paddingBottom: 19,
+    alignItems: 'flex-end',
+    zIndex: 1,
+  },
+  profileButton: {
+    width: 58,
+    height: 58,
+    overflow: 'hidden',
+    borderRadius: 29,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+  },
+  profileImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 29,
+  },
+  content: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal:70,
+  },
+});
+
+const stylesLight = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.base.white,
   },
   scrollView: {
     flex: 1,

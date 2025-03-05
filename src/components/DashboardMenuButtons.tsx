@@ -5,8 +5,12 @@ import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../navigation/Router';
 import { colors } from '../theme/colors';
 import AnimatedSection from './AnimatedSection';
+import { useTheme } from '../store/useTheme';
 
 const DashboardMenuButtons: React.FC = () => {
+  const theme = useTheme(state => state.theme);
+  const styles = theme === 'dark' ? stylesDark : stylesLight;
+
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   return (
@@ -29,7 +33,7 @@ const DashboardMenuButtons: React.FC = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const stylesDark = StyleSheet.create({
   menuContainer: {
     width: '100%',
     alignItems: 'center',
@@ -55,6 +59,35 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'semibold',
     color: colors.base.black,
+  },
+});
+
+const stylesLight = StyleSheet.create({
+  menuContainer: {
+    width: '100%',
+    alignItems: 'center',
+    gap: 35,
+  },
+  button: {
+    width: "100%",
+    height: 50,
+    backgroundColor: colors.main.secondary,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  buttonText: {
+    fontSize: 20,
+    fontWeight: 'semibold',
+    color: colors.base.white,
   },
 });
 
