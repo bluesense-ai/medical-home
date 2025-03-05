@@ -11,10 +11,14 @@ import {
 import { Header } from "./components/Header";
 import VisitsPatientInfo from "./components/VisitsPatientInfo";
 import { patients } from "../../data/patients";
+import { useTheme } from "../../store/useTheme";
 
 type Props = StackScreenProps<RootStackParamList, "AIVisitPatient">;
 
 const AIVisitPatient: React.FC<Props> = (props) => {
+  const theme = useTheme((state) => state.theme);
+  const styles = theme === "dark" ? stylesDark : stylesLight;
+
   const patientId = props.route.params.id;
   const patient = patients.find((p) => p.id === patientId);
 
@@ -33,7 +37,7 @@ const AIVisitPatient: React.FC<Props> = (props) => {
   );
 };
 
-const styles = StyleSheet.create({
+const stylesDark = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#272727",
@@ -45,13 +49,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     justifyContent: "flex-start",
   },
+});
 
-  inputStyle: {
-    width: "100%",
-    backgroundColor: "#333",
-    borderRadius: 8,
-    marginBottom: 10,
-    color: "#D9D9D9",
+const stylesLight = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+
+  content: {
+    flex: 1,
+    paddingHorizontal: 20,
+    justifyContent: "flex-start",
   },
 });
 
