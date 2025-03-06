@@ -32,7 +32,7 @@ const styles = StyleSheet.create({
     width: CARD_WIDTH,
     height: CARD_HEIGHT,
     borderRadius: 8,
-    backgroundColor: colors.primary.darkBlue,
+    backgroundColor: "rgba(1, 79, 115, 0.9)",
     overflow: 'hidden',
     marginBottom: 16,
     alignSelf: 'center',
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
   infoContainer: {
     alignItems: 'center',
     paddingVertical: 10,
-    backgroundColor: 'rgba(1, 79, 115, 0.9)', // darkBlue with opacity
+    backgroundColor: colors.alternativeDark.primary, // darkBlue with opacity
   },
   name: {
     fontSize: 18,

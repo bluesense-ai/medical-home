@@ -5,7 +5,38 @@
 // This naming convention is entirely preferential.
 
 export const colors = {
-  primary: {
+  main: {
+    primary: "#016C9D",
+    secondary: "#33C213",
+    tertiary: "#FFFFFF",
+    info: "#2727E3",
+    success: "#9CF200",
+    warning: "#F5B618",
+    error: "#ED4337",
+  },
+
+  alternativeLight: {
+    primary: "#3499D6",
+    secondary: "#5BE548",
+    tertiary: "#F8F8F8",
+    info: "#2BA4E0",
+    success: "#ACFA3B",
+    warning: "#FBD44E",
+    error: "#F77865",
+  },
+
+  alternativeDark: {
+    primary: "#004F62",
+    secondary: "#247401",
+    tertiary: "#FFFFFF",
+    info: "#031285",
+    success: "#87BF00",
+    warning: "#8E5602",
+    error: "#BB1715",
+  },
+
+  // Legacy colors - keeping for backward compatibility
+  legacy: {
     green: "#33C213",
     blue: "#016C9D",
     darkBlue: "#014F73",
@@ -13,16 +44,11 @@ export const colors = {
     lightGray: "#D9D9D9",
     black: '#0F0F0F',
     gray: "#6a6a6a",
-  },
-
-  secondary: {
     darkRed: "#440000",
-    gray: "#797979",
     lightRed: "#823A3A",
     coral: "#CB5353",
-    lightGray: "#D9D9D9",
     red: "#FF0000",
-    pink: "#FFCACA"
+    pink: "#FFCACA",
   },
 
   base: {

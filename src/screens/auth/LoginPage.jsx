@@ -1,9 +1,12 @@
 import React from 'react';
 import { View, Text, TextInput, Pressable, StyleSheet, Dimensions, ImageBackground, SafeAreaView } from 'react-native';
+import { useTheme } from '../../store/useTheme';
 
 const { height, width } = Dimensions.get('window');
 
 const Login = ({ navigation }) => {
+    const theme = useTheme((state) => state.theme);
+
     return (
         <SafeAreaView style={styles.container}>
 
@@ -31,6 +34,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#242222',
+    },
+    containerLight: {
+        flex: 1,
+        backgroundColor: '#FFFFFF',
     },
     imageContainer: {
         flex: 1,

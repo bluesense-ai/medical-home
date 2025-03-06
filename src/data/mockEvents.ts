@@ -22,7 +22,7 @@ export const mockEvents: Event[] = [
   {
     id: '1',
     title: 'Regular Check-up',
-    color: colors.secondary.gray,
+    color: colors.legacy.gray,
     type: 'regular',
     patientName: 'John Smith',
     email: 'john.smith@email.com',
@@ -36,7 +36,7 @@ export const mockEvents: Event[] = [
   {
     id: '2',
     title: 'Emergency Consultation',
-    color: colors.secondary.red,
+    color: colors.main.error,
     type: 'urgent',
     patientName: 'Emma Johnson',
     email: 'emma.j@email.com',
@@ -52,7 +52,7 @@ export const mockEvents: Event[] = [
   {
     id: '3',
     title: 'Dental Check-up',
-    color: colors.secondary.coral,
+    color: colors.main.warning,
     type: 'check-up',
     patientName: 'David Wilson',
     email: 'david.w@email.com',
@@ -66,7 +66,7 @@ export const mockEvents: Event[] = [
   {
     id: '4',
     title: 'Specialist Consultation',
-    color: colors.secondary.lightRed,
+    color: colors.alternativeLight.error,
     type: 'consultation',
     patientName: 'Sophie Miller',
     email: 'sophie.m@email.com',
@@ -82,7 +82,7 @@ export const mockEvents: Event[] = [
   {
     id: '5',
     title: 'Pediatric Check-up',
-    color: colors.secondary.gray,
+    color: colors.legacy.gray,
     type: 'regular',
     patientName: 'Oliver Brown',
     email: 'parent@email.com',
@@ -96,7 +96,7 @@ export const mockEvents: Event[] = [
   {
     id: '6',
     title: 'Urgent Care',
-    color: colors.secondary.red,
+    color: colors.main.error,
     type: 'urgent',
     patientName: 'Liam Taylor',
     email: 'liam.t@email.com',
@@ -110,7 +110,7 @@ export const mockEvents: Event[] = [
   {
     id: '7',
     title: 'Vaccination',
-    color: colors.secondary.coral,
+    color: colors.main.warning,
     type: 'check-up',
     patientName: 'Ava Martinez',
     email: 'ava.m@email.com',
@@ -126,7 +126,7 @@ export const mockEvents: Event[] = [
   {
     id: '8',
     title: 'Cardiology Consultation',
-    color: colors.secondary.lightRed,
+    color: colors.alternativeLight.error,
     type: 'consultation',
     patientName: 'William Anderson',
     email: 'william.a@email.com',
@@ -140,7 +140,7 @@ export const mockEvents: Event[] = [
   {
     id: '9',
     title: 'Physical Therapy',
-    color: colors.secondary.gray,
+    color: colors.legacy.gray,
     type: 'regular',
     patientName: 'Isabella Garcia',
     email: 'isabella.g@email.com',
@@ -154,7 +154,7 @@ export const mockEvents: Event[] = [
   {
     id: '10',
     title: 'Emergency Surgery',
-    color: colors.secondary.red,
+    color: colors.main.error,
     type: 'urgent',
     patientName: 'Mason Thompson',
     email: 'mason.t@email.com',

@@ -9,12 +9,16 @@ import {
 } from "react-native";
 import { Header } from "./components/Header";
 import VisitsWorkflow from "./components/VisitsWorkflow";
+import { useTheme } from "../../store/useTheme";
 
 interface AIVisitsPageScreenProps {
   navigation: StackNavigationProp<RootStackParamList>;
 }
 
 const AIVisitsPage: React.FC<AIVisitsPageScreenProps> = () => {
+  const theme = useTheme((state) => state.theme);
+  const styles = theme === "dark" ? stylesDark : stylesLight;
+
   function action() {}
 
   return (
@@ -28,7 +32,7 @@ const AIVisitsPage: React.FC<AIVisitsPageScreenProps> = () => {
   );
 };
 
-const styles = StyleSheet.create({
+const stylesDark = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#272727",
@@ -40,13 +44,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     justifyContent: "flex-start",
   },
+});
 
-  inputStyle: {
-    width: "100%",
-    backgroundColor: "#333",
-    borderRadius: 8,
-    marginBottom: 10,
-    color: "#D9D9D9",
+const stylesLight = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "white",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+
+  content: {
+    flex: 1,
+    paddingHorizontal: 20,
+    justifyContent: "flex-start",
   },
 });
 

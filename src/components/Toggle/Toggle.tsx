@@ -13,14 +13,14 @@ const Toggle: React.FC<ToggleProps> = ({ isEnabled, onToggle }) => {
       onPress={onToggle}
       style={[
         styles.container,
-        { backgroundColor: isEnabled ? colors.primary.blue : '#E0E0E0' }
+        { backgroundColor: isEnabled ? colors.main.secondary : '#E0E0E0' }
       ]}
     >
       <View style={[
         styles.dot,
         { 
           transform: [{ translateX: isEnabled ? 20 : 0 }],
-          backgroundColor: isEnabled ? colors.primary.green : colors.base.white
+          backgroundColor: isEnabled ? colors.main.primary : colors.base.white
         }
       ]} />
     </TouchableOpacity>

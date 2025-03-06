@@ -1,20 +1,31 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { View, StyleSheet, Image, SafeAreaView, Animated } from 'react-native';
-import { colors } from '../../theme/colors';
-import Toggle from '../../components/Toggle/Toggle';
-import AuthButton from '../../components/Buttons/AuthButton';
-import WelcomeHeader from '../../components/Header/WelcomeHeader';
-import { useAuthStore } from '../../store/useAuthStore';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../navigation/Router';
-import { useProvider } from '../../store/useProvider';
+import React, { useState, useEffect, useRef } from "react";
+import {
+  View,
+  StyleSheet,
+  Image,
+  SafeAreaView,
+  Animated,
+  TouchableOpacity,
+  Text,
+} from "react-native";
+import { colors } from "../../theme/colors";
+import Toggle from "../../components/Toggle/Toggle";
+import AuthButton from "../../components/Buttons/AuthButton";
+import WelcomeHeader from "../../components/Header/WelcomeHeader";
+import { useAuthStore } from "../../store/useAuthStore";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../../navigation/Router";
+import { useProvider } from "../../store/useProvider";
+import { useTheme } from "../../store/useTheme";
 
 const WelcomeScreen: React.FC = () => {
   const provider = useProvider((state) => state.provider);
   const toggleProvider = useProvider((state) => state.toggleProvider);
+  const theme = useTheme((state) => state.theme);
+  const toggleTheme = useTheme((state) => state.toggleTheme);
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  
+
   // Store animation values in useRef to prevent unnecessary re-renders
   const fadeAnim1 = useRef(new Animated.Value(1)).current;
   const fadeAnim2 = useRef(new Animated.Value(0)).current;
@@ -32,38 +43,38 @@ const WelcomeScreen: React.FC = () => {
           Animated.timing(contentFadeAnim, {
             toValue: 0,
             duration: 200,
-            useNativeDriver: true
+            useNativeDriver: true,
           }),
           Animated.timing(slideAnim, {
             toValue: provider === "doctor" ? 50 : -50,
             duration: 200,
-            useNativeDriver: true
-          })
+            useNativeDriver: true,
+          }),
         ]),
         // Provider change animation
         Animated.timing(bgColorAnim, {
           toValue: provider === "doctor" ? 0 : 1,
           duration: 300,
-          useNativeDriver: false
-        })
+          useNativeDriver: false,
+        }),
       ]),
     ]).start(() => {
       toggleProvider();
       // Move content to new position
       slideAnim.setValue(provider === "doctor" ? -50 : 50);
-      
+
       // Fade in and slide animation
       Animated.parallel([
         Animated.timing(contentFadeAnim, {
           toValue: 1,
           duration: 200,
-          useNativeDriver: true
+          useNativeDriver: true,
         }),
         Animated.timing(slideAnim, {
           toValue: 0,
           duration: 200,
-          useNativeDriver: true
-        })
+          useNativeDriver: true,
+        }),
       ]).start();
     });
   };
@@ -72,12 +83,11 @@ const WelcomeScreen: React.FC = () => {
   const handleLogin = () => {
     // Temporarily removing authentication
     // setIsAuthenticated(true);
-    if(provider=="patient"){
-    navigation.navigate('ProvideInformation');
-  }
-    if(provider=="doctor"){
-      navigation.navigate('LoginPage');
-
+    if (provider == "patient") {
+      navigation.navigate("ProvideInformation");
+    }
+    if (provider == "doctor") {
+      navigation.navigate("LoginPage");
     }
   };
 
@@ -119,7 +129,7 @@ const WelcomeScreen: React.FC = () => {
 
   const backgroundColor = bgColorAnim.interpolate({
     inputRange: [0, 1],
-    outputRange: [colors.base.white, colors.base.darkGray]
+    outputRange: [colors.base.white, colors.base.darkGray],
   });
 
   return (
@@ -127,22 +137,44 @@ const WelcomeScreen: React.FC = () => {
       style={[
         styles.container,
         {
-          backgroundColor
+          backgroundColor,
         },
       ]}
     >
       <SafeAreaView style={{ flex: 1 }}>
+        <View style={{
+          position: "absolute",
+          top: 35,
+          left: 15,
+        }}>
+          <TouchableOpacity
+            style={{
+              backgroundColor: theme === "light" ? "black" : "white",
+              padding: 10,
+              borderRadius: 5,
+            }}
+            onPress={() => {
+              toggleTheme();
+            }}
+          >
+            <Text style={{ color: theme === "light" ? "white" : "black" }}>
+              {theme === "light" ? "Set theme to Dark" : "Set theme to Light"}
+            </Text>
+          </TouchableOpacity>
+        </View>
         <View style={styles.topBar}>
           <View style={styles.toggleContainer}>
             <Toggle isEnabled={provider === "doctor"} onToggle={toggleSwitch} />
           </View>
         </View>
 
-        <Animated.View style={{
-          flex: 1,
-          opacity: contentFadeAnim,
-          transform: [{ translateX: slideAnim }]
-        }}>
+        <Animated.View
+          style={{
+            flex: 1,
+            opacity: contentFadeAnim,
+            transform: [{ translateX: slideAnim }],
+          }}
+        >
           {provider === "patient" && (
             <WelcomeHeader
               title="Hello!"
@@ -172,12 +204,14 @@ const WelcomeScreen: React.FC = () => {
           </View>
 
           <View style={styles.buttonContainer}>
-            <AuthButton 
-              title="Log in" 
-              onPress={handleLogin} 
-              variant="outline" 
+            <AuthButton
+              title="Log in"
+              onPress={handleLogin}
+              variant="outline"
               style={provider === "doctor" ? styles.doctorButton : undefined}
-              textStyle={provider === "doctor" ? styles.doctorButtonText : undefined}
+              textStyle={
+                provider === "doctor" ? styles.doctorButtonText : undefined
+              }
             />
 
             {provider === "patient" && (
@@ -211,7 +245,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 20,
-    position: 'relative',
+    position: "relative",
   },
   welcomeImage: {
     width: "100%",
@@ -219,7 +253,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     paddingHorizontal: 24,
-    justifyContent: 'center',
+    justifyContent: "center",
     flex: 1,
     paddingBottom: 40,
     gap: 16,
@@ -227,11 +261,11 @@ const styles = StyleSheet.create({
   doctorButton: {
     width: "100%",
     height: 50,
-    backgroundColor: colors.primary.lightGray,
+    backgroundColor: colors.legacy.lightGray,
     borderRadius: 12,
-    justifyContent: 'center',
-    alignItems: 'center',
-    shadowColor: '#000',
+    justifyContent: "center",
+    alignItems: "center",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -242,7 +276,7 @@ const styles = StyleSheet.create({
   },
   doctorButtonText: {
     fontSize: 20,
-    fontWeight: 'semibold',
+    fontWeight: "semibold",
     color: colors.base.black,
   },
 });

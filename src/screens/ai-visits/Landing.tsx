@@ -10,7 +10,7 @@ import {
   View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useTheme } from "../../store/useTheme";
 
 interface AIVisitsLandingScreenProps {
   navigation: StackNavigationProp<RootStackParamList>;
@@ -19,6 +19,9 @@ interface AIVisitsLandingScreenProps {
 const AIVisitsLanding: React.FC<AIVisitsLandingScreenProps> = ({
   navigation,
 }) => {
+  const theme = useTheme((state) => state.theme);
+  const styles = theme === "dark" ? stylesDark : stylesLight;
+
   const patient = {
     name: "Patient Name",
     additionalContext: "Add any aditional context about the patient",
@@ -30,7 +33,9 @@ const AIVisitsLanding: React.FC<AIVisitsLandingScreenProps> = ({
 
   return (
     <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="light-content" />
+      <StatusBar
+        barStyle={theme === "dark" ? "light-content" : "dark-content"}
+      />
       <View style={styles.content}>
         <View style={styles.actionContainer}>
           <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
@@ -49,7 +54,7 @@ const AIVisitsLanding: React.FC<AIVisitsLandingScreenProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const stylesDark = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#272727",
@@ -82,6 +87,51 @@ const styles = StyleSheet.create({
   patientName: {
     marginTop: 12,
     backgroundColor: "#0F0F0F",
+    borderRadius: 8,
+    padding: 12,
+    marginBottom: 10,
+    color: "#F2F8FF",
+    fontWeight: "500",
+  },
+  additionalContext: {
+    color: "#717171",
+    marginTop: 12,
+  },
+});
+
+const stylesLight = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+  content: {
+    flex: 1,
+    paddingHorizontal: 20,
+    justifyContent: "flex-start",
+  },
+  actionButtonGroup: {
+    flexWrap: "wrap",
+    flexDirection: "row",
+    backgroundColor: "#3499D6",
+    padding: 12,
+    paddingTop: 1,
+    paddingBottom: 1,
+    borderRadius: 8,
+    alignItems: "center",
+    gap: 10,
+  },
+  actionButtonText: {
+    color: "black",
+    fontWeight: "500",
+  },
+  actionContainer: {
+    marginTop: 20,
+    marginBottom: 20,
+  },
+  patientName: {
+    marginTop: 12,
+    backgroundColor: "#33C213",
     borderRadius: 8,
     padding: 12,
     marginBottom: 10,

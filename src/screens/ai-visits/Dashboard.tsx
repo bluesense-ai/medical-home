@@ -9,6 +9,7 @@ import {
 import { RootStackParamList } from "../../navigation/Router";
 import DashboardPatientInfoForm from "./components/DashboardPatientInfo";
 import { Header } from "./components/Header";
+import { useTheme } from "../../store/useTheme";
 
 interface AIVisitsDashboardScreenProps {
   navigation: StackNavigationProp<RootStackParamList>;
@@ -17,6 +18,9 @@ interface AIVisitsDashboardScreenProps {
 const AIVisitsDashboard: React.FC<AIVisitsDashboardScreenProps> = ({
   navigation,
 }) => {
+  const theme = useTheme((state) => state.theme);
+  const styles = theme === "dark" ? stylesDark : stylesLight;
+
   function action() {
     navigation.navigate("AIVisitsPage");
   }
@@ -32,7 +36,7 @@ const AIVisitsDashboard: React.FC<AIVisitsDashboardScreenProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const stylesDark = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#272727",
@@ -44,13 +48,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     justifyContent: "flex-start",
   },
+});
 
-  inputStyle: {
-    width: "100%",
-    backgroundColor: "#333",
-    borderRadius: 8,
-    marginBottom: 10,
-    color: "#D9D9D9",
+const stylesLight = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#FFFFFF",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+  },
+
+  content: {
+    flex: 1,
+    paddingHorizontal: 20,
+    justifyContent: "flex-start",
   },
 });
 

@@ -29,11 +29,12 @@ interface EventFormProps {
 }
 
 const EVENT_TYPES = [
-  { id: 'urgent', color: colors.secondary.red, label: 'Urgent' },
-  { id: 'regular', color: colors.secondary.gray, label: 'Regular' },
-  { id: 'check-up', color: colors.secondary.coral, label: 'Check-up' },
-  { id: 'consultation', color: colors.secondary.lightRed, label: 'Consult' },
+  { id: 'urgent', color: colors.main.error, label: 'Urgent' },
+  { id: 'regular', color: colors.legacy.gray, label: 'Regular' },
+  { id: 'check-up', color: colors.main.warning, label: 'Check-up' },
+  { id: 'consultation', color: colors.alternativeLight.error, label: 'Consult' },
 ] as const;
+
 
 const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialDate = new Date() }) => {
   const [formData, setFormData] = useState<EventFormData>({
@@ -587,7 +588,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   addButton: {
-    backgroundColor: colors.primary.gray,
+    backgroundColor: colors.legacy.gray,
     borderRadius: 8,
     padding: 16,
     alignItems: 'center',

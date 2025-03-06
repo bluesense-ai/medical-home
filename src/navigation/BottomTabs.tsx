@@ -147,7 +147,6 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           key={route.key}
           onPress={() => handlePress(route, index)}
           style={styles.tab}
-          activeOpacity={0.7}
         >
           <Animated.View
             style={[
@@ -169,10 +168,8 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             {isFocused && (
               <Animated.Text
                 numberOfLines={1}
-                style={[
-                  styles.label,
-                  { opacity: fadeAnim[index] }
-                ]}
+                style={
+                  styles.label}
               >
                 {label}
               </Animated.Text>
@@ -261,7 +258,7 @@ const styles = StyleSheet.create({
   tabBackground: {
     width: '100%',
     height: '100%',
-    backgroundColor: colors.primary.green,
+    backgroundColor: colors.main.secondary,
     borderRadius: 55,
     overflow: 'hidden',
   },

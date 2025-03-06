@@ -10,14 +10,15 @@ import useCalendarStore, { Event, EventType } from '../../store/useCalendarStore
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, SerializableEvent } from '../../navigation/types';
+import { useTheme } from '../../store/useTheme';
 
 const { width } = Dimensions.get('window');
 
 const EVENT_COLORS = {
-  'urgent': colors.secondary.red,
-  'regular': colors.secondary.gray,
-  'check-up': colors.secondary.coral,
-  'consultation': colors.secondary.lightRed,
+  'urgent': colors.main.error,
+  'regular': colors.legacy.gray,
+  'check-up': colors.main.warning,
+  'consultation': colors.alternativeLight.error,
 } as const;
 
 type MarkedDates = {
@@ -40,6 +41,9 @@ type DashboardEventsScreenProps = {
 };
 
 const DashboardEventsScreen: React.FC<DashboardEventsScreenProps> = ({ route }) => {
+  const theme = useTheme(state => state.theme);
+  const styles = theme === 'dark' ? stylesDark : stylesLight;
+  
   const navigation = useNavigation<DashboardEventsScreenNavigationProp>();
   const [selectedDate, setSelectedDate] = useState<string>(
     route?.params?.selectedDate || moment().format('YYYY-MM-DD')
@@ -198,9 +202,8 @@ const DashboardEventsScreen: React.FC<DashboardEventsScreenProps> = ({ route }) 
 
   return (
     <View style={styles.container}>
-      <StatusBar 
-        barStyle="light-content" 
-        backgroundColor={colors.base.darkGray}
+      <StatusBar
+        barStyle={theme === "dark" ? "light-content" : "dark-content"}
         translucent
       />
       <SafeAreaView style={styles.safeArea}>
@@ -298,7 +301,126 @@ const DashboardEventsScreen: React.FC<DashboardEventsScreenProps> = ({ route }) 
   );
 };
 
-const styles = StyleSheet.create({
+const stylesDark = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.base.darkGray,
+  },
+  safeArea: {
+    flex: 1,
+    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+  },
+  content: {
+    flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.1)',
+  },
+  headerButton: {
+    padding: 8,
+    borderRadius: 8,
+  },
+  yearText: {
+    fontSize: 20,
+    fontWeight: '600',
+    color: colors.base.white,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  monthTitle: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: colors.base.white,
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 24,
+  },
+  eventsList: {
+    flex: 1,
+    marginVertical: 20,
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+  },
+  eventItem: {
+    flexDirection: 'row',
+    alignItems: 'stretch',
+    marginBottom: 16,
+    overflow: 'hidden',
+  },
+  eventColor: {
+    width: 4,
+    height: '80%',
+    alignSelf: 'center',
+    borderTopLeftRadius:24,
+    borderTopRightRadius:24,
+    borderBottomLeftRadius:24,
+    borderBottomRightRadius:24,
+  },
+  eventInfo: {
+    flex: 1,
+    justifyContent: 'center',
+    padding: 16,
+  },
+  eventTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.base.white,
+    marginBottom: 4,
+  },
+  eventNotes: {
+    fontSize: 14,
+    color: 'rgba(255,255,255,0.6)',
+    marginTop: 4,
+  },
+  eventTimeContainer: {
+    paddingVertical: 16,
+    paddingHorizontal: 12,
+    justifyContent: 'center',
+    alignItems: 'flex-end',
+    gap: 4,
+  },
+  eventTime: {
+    fontSize: 14,
+    color: colors.base.white,
+    opacity: 0.8,
+  },
+  deleteButton: {
+    padding: 8,
+  },
+  emptyText: {
+    textAlign: 'center',
+    color: 'rgba(255,255,255,0.5)',
+    marginTop: 20,
+  },
+  listContent: {
+    flexGrow: 1,
+  },
+  modal: {
+    margin: 0,
+  },
+  modalContent: {
+    backgroundColor: '#272727',
+    flex: 1,
+  },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+});
+
+const stylesLight = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.base.darkGray,

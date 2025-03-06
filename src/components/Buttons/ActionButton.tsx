@@ -20,11 +20,11 @@ const ActionButton: React.FC<ActionButtonProps> = ({ title, onPress }) => {
 const styles = StyleSheet.create({
   button: {
     width: BUTTON_WIDTH,
-    backgroundColor: colors.primary.green,
+    backgroundColor: colors.main.primary,
     paddingVertical: 16,
     borderRadius: 8,
     elevation: 4,
-    shadowColor: colors.primary.green,
+    shadowColor: colors.main.primary,
     shadowOffset: {
       width: 0,
       height: 4,

@@ -1,7 +1,11 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
+import { useTheme } from "../../../store/useTheme";
 
 const DashboardPatientInfoForm = () => {
+  const theme = useTheme((state) => state.theme);
+  const styles = theme === "dark" ? stylesDark : stylesLight;
+
   const [patientName, setPatientName] = useState("");
   const [dateTime, setDateTime] = useState("");
   const [serviceType, setServiceType] = useState("");
@@ -47,7 +51,7 @@ const DashboardPatientInfoForm = () => {
           value={subjective}
           onChangeText={setSubjective}
           multiline={true}
-          numberOfLines={4} // Adjust number of lines as needed
+          numberOfLines={4}
         />
       </View>
 
@@ -58,7 +62,7 @@ const DashboardPatientInfoForm = () => {
           value={objective}
           onChangeText={setObjective}
           multiline={true}
-          numberOfLines={4} // Adjust number of lines as needed
+          numberOfLines={4}
         />
       </View>
 
@@ -69,7 +73,7 @@ const DashboardPatientInfoForm = () => {
           value={plan}
           onChangeText={setPlan}
           multiline={true}
-          numberOfLines={4} // Adjust number of lines as needed
+          numberOfLines={4}
         />
       </View>
 
@@ -80,47 +84,83 @@ const DashboardPatientInfoForm = () => {
           value={plan}
           onChangeText={setPlan}
           multiline={true}
-          numberOfLines={4} // Adjust number of lines as needed
+          numberOfLines={4}
         />
       </View>
     </View>
   );
 };
 
-const styles = StyleSheet.create({
+const stylesDark = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
     backgroundColor: "#0f0f0f",
-    borderRadius: 10,
+    borderRadius: 15,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
     color: "white",
-    textAlign: "center", // Center the title text
+    textAlign: "center",
   },
   inputGroup: {
     marginBottom: 15,
   },
   label: {
-    color: "white", // Light text for contrast
+    color: "white",
     marginBottom: 5,
   },
   input: {
-    backgroundColor: "#333", // Slightly lighter background for input fields
+    backgroundColor: "#333",
     padding: 10,
     borderRadius: 5,
     color: "white",
   },
   inputArea: {
-    // Style for multiline input
     backgroundColor: "#333",
     padding: 10,
     borderRadius: 5,
     color: "white",
-    height: 80, // Adjust height as needed
+    height: 80,
+    textAlignVertical: "top",
+  },
+});
+
+const stylesLight = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: "#33C213",
+    borderRadius: 15,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "white",
+    textAlign: "center",
+  },
+  inputGroup: {
+    marginBottom: 15,
+  },
+  label: {
+    color: "white",
+    marginBottom: 5,
+  },
+  input: {
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 5,
+    color: "white",
+  },
+  inputArea: {
+    backgroundColor: "white",
+    padding: 10,
+    borderRadius: 5,
+    color: "white",
+    height: 80,
     textAlignVertical: "top",
   },
 });
