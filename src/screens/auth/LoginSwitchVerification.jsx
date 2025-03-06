@@ -1,4 +1,4 @@
-import React from "react";
+import { React, useState } from "react";
 import {
   View,
   Text,
@@ -6,22 +6,64 @@ import {
   Pressable,
   StyleSheet,
   Dimensions,
-  ImageBackground,
+  Alert,
   SafeAreaView,
 } from "react-native";
+import { useMutation } from "@tanstack/react-query";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useProvider } from "../../store/useProvider";
+import { useUserStore } from "../../store/useUserStore";
 
 const { height, width } = Dimensions.get("window");
 
+const providerVerification = async (username, accessCode, optChannel) => {
+  const respone = await fetch('https://sandbox-backend.medicalhome.cloud/api/auth/verify-verification-code-provider', {
+    method: 'POST',
+    body: JSON.stringify({
+      username,
+      accessCode,
+      optChannel,
+    })
+  });
+
+  if (!respone.ok) {
+    throw new Error('Provider not found')
+  }
+
+  return respone.json();
+}
+
 const LoginSwitchVerification = ({ navigation }) => {
+
+  const [accessCode, setAccessCode] = useState("");
   const provider = useProvider((state) => state.provider);
   const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
+  const username = useUserStore((state) => state.username);
 
-  async function handleLogin() {
-    setIsAuthenticated(true);
-    if (provider === "doctor") navigation.navigate("DashboardScreen");
-    else navigation.navigate("MainTabs");
+  const { mutate, isLoading, error, data } = useMutation({
+    mutationFn: providerVerification,
+    onSuccess: () => {
+      Alert.alert('Success', 'Access code verified!');
+      if (provider === "doctor") {
+        navigation.navigate("DashboardScreen");
+      } else {
+        navigation.navigate("MainTabs");
+      }
+    },
+    onError: (error) => {
+      Alert.alert('Error', error.message || 'An error occurred');
+    },
+  });
+
+  const handleVerification = async () => {
+    if (!accessCode) {
+      Alert.alert('Error', 'Please enter the access code');
+      return;
+    }
+
+    // commented for development
+    navigation.navigate("DashboardScreen");
+    // mutate(username, accessCode, otpChannel); 
   }
 
   return (
@@ -37,8 +79,10 @@ const LoginSwitchVerification = ({ navigation }) => {
           style={styles.input}
           placeholder="Access Code"
           placeholderTextColor="grey"
+          value={accessCode}
+          onChangeText={setAccessCode}
         />
-        <Pressable style={styles.submitButton} onPress={handleLogin}>
+        <Pressable style={styles.submitButton} onPress={handleVerification}>
           <Text style={styles.submitButtonText}>Submit</Text>
         </Pressable>
       </View>

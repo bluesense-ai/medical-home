@@ -1,11 +1,59 @@
-import React from 'react';
-import { View, Text, TextInput, Pressable, StyleSheet, Dimensions, ImageBackground, SafeAreaView } from 'react-native';
+import { React, useState } from 'react';
+import { View, Text, TextInput, Pressable, StyleSheet, Dimensions, Alert, SafeAreaView } from 'react-native';
 import { useTheme } from '../../store/useTheme';
+import { useUserStore } from '../../store/useUserStore';
+import { useMutation } from '@tanstack/react-query';
 
 const { height, width } = Dimensions.get('window');
 
+
+const loginProvider = async (username, otpChannel) => {
+    const response = await fetch('https://sandbox-backend.medicalhome.cloud/api/auth/provider-login', {
+        method: 'POST',
+        body: JSON.stringify({
+            username,
+            otpChannel,
+        }),
+    });
+
+    if (!response.ok) {
+        throw new Error('Username not found');
+    }
+
+    return response.json();
+};
+
+
 const Login = ({ navigation }) => {
     const theme = useTheme((state) => state.theme);
+    // for passing the username to the verification page
+    const setUsername = useUserStore((state) => state.setUsername);
+    // for this page
+    const [username, setLocalUsername] = useState('');
+    const [otpChannel, setOtpChannel] = useState('sms');
+
+    const { mutate, isLoading, error, data } = useMutation({
+        mutationFn: loginProvider, // Your login API call
+        onSuccess: () => {
+            Alert.alert('Success', 'Code sent successfully!');
+            navigation.navigate('LoginSwitchVerification');
+        },
+        onError: (error) => {
+            Alert.alert('Error', error.message || 'An error occurred');
+        },
+    });
+
+
+    const handleLogin = async () => {
+        if (!username) {
+            Alert.alert('Error', 'Please enter a username');
+            return;
+        }
+
+        // commented for development
+        navigation.navigate('LoginSwitchVerification');
+        // mutate(username, otpChannel); 
+    };
 
     return (
         <SafeAreaView style={styles.container}>
@@ -21,8 +69,10 @@ const Login = ({ navigation }) => {
                     style={styles.input}
                     placeholder="Enter Username"
                     placeholderTextColor="black"
+                    value={username}
+                    onChangeText={setLocalUsername}
                 />
-                <Pressable style={styles.submitButton} onPress={() => navigation.navigate('LoginSwitchVerification')}>
+                <Pressable style={styles.submitButton} onPress={handleLogin}>
                     <Text style={styles.submitButtonText}>Next</Text>
                 </Pressable>
             </View>
