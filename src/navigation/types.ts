@@ -31,6 +31,7 @@ export type RootStackParamList = {
   AIVisitPatient: { id: string };
   EventDetail: { event: SerializableEvent };
   YearlyCalendar: undefined;
+  EventForm: { selectedDate?: string };
 };
 
 export type BottomTabParamList = {

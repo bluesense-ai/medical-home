@@ -30,7 +30,7 @@ const DashboardScreen: React.FC = () => {
       >
         {/* Background Shape */}
         <View style={styles.backgroundContainer}>
-          <DashboardBackground fill={theme === "dark" ? "#247401" : colors.main.primary} />
+          <DashboardBackground fill={theme === "dark" ? colors.alternativeDark.secondary : colors.main.primary} />
         </View>
 
         {/* Profile Image */}
@@ -89,7 +89,7 @@ const stylesDark = StyleSheet.create({
     overflow: 'hidden',
     borderRadius: 29,
     elevation: 5,
-    shadowColor: '#000',
+    shadowColor: colors.base.black,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -106,7 +106,7 @@ const stylesDark = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal:70,
+    paddingHorizontal: 70,
   },
 });
 
@@ -144,7 +144,7 @@ const stylesLight = StyleSheet.create({
     overflow: 'hidden',
     borderRadius: 29,
     elevation: 5,
-    shadowColor: '#000',
+    shadowColor: colors.base.black,
     shadowOffset: {
       width: 0,
       height: 2,
@@ -161,7 +161,7 @@ const stylesLight = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal:70,
+    paddingHorizontal: 70,
   },
 });
 

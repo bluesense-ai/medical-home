@@ -1,14 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, ScrollView, Pressable, Animated, StatusBar, Platform } from 'react-native';
-import { colors } from '../../theme/colors';
-import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
+import { View, Text, StyleSheet, ScrollView, Pressable, Animated, StatusBar, Platform, TouchableOpacity} from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, SerializableEvent } from '../../navigation/types';
 import moment from 'moment';
-import { mockEvents, BUSINESS_HOURS } from '../../data/mockEvents';
+import { BUSINESS_HOURS, mockEvents } from '../../data/mockEvents';
 import { Event, EventType } from '../../store/useCalendarStore';
 import DashboardHeader from '../../components/DashboardHeader';
+import { useTheme } from '../../store/useTheme';
+import { colors } from '../../theme/colors';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 
 type EventDetailScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'EventDetail'>;
 type EventDetailScreenRouteProp = RouteProp<RootStackParamList, 'EventDetail'>;
@@ -22,6 +23,7 @@ const HOURS = Array.from(
   }
 );
 
+// Event color mapping
 const EVENT_COLORS = {
   'urgent': colors.main.error,
   'regular': colors.legacy.gray,
@@ -29,21 +31,113 @@ const EVENT_COLORS = {
   'consultation': colors.alternativeLight.error,
 } as const;
 
+// Participant component props
+interface ParticipantProps {
+  name: string;
+  initial: string;
+  theme: string;
+}
+
+// Participant component for displaying event participants
+const Participant: React.FC<ParticipantProps> = ({ name, initial, theme }) => {
+  return (
+    <View style={styles.participant}>
+      <View style={styles.avatarPlaceholder}>
+        <Text style={styles.avatarText}>{initial}</Text>
+      </View>
+      <View style={styles.participantInfo}>
+        <Text style={[styles.participantName, { color: theme === 'dark' ? colors.base.white : colors.base.black }]}>
+          {name}
+        </Text>
+      </View>
+    </View>
+  );
+};
+
+// Action icon component props
+interface ActionIconProps {
+  icon: string;
+  label: string;
+}
+
+// Action icon component
+const ActionIcon: React.FC<ActionIconProps> = ({ icon, label }) => {
+  return (
+    <View style={styles.iconGroup}>
+      <MaterialCommunityIcons 
+        name={icon as any} 
+        size={12} 
+        color={colors.base.white} 
+        style={styles.participantIcon} 
+      />
+      <Text style={styles.participantIconText}>
+        {label}
+      </Text>
+    </View>
+  );
+};
+
+// Timeline hour component props
+interface TimelineHourProps {
+  hour: string;
+  events: Event[];
+  expanded: boolean;
+  theme: string;
+}
+
+// Timeline hour component
+const TimelineHour: React.FC<TimelineHourProps> = ({ hour, events, expanded, theme }) => {
+  return (
+    <View style={styles.timelineHour}>
+      <Text style={[
+        styles.hourText, 
+        { color: theme === 'dark' ? colors.base.white : colors.base.black }
+      ]}>
+        {hour}
+      </Text>
+      <View style={[
+        styles.hourLine, 
+        { backgroundColor: theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' }
+      ]} />
+      {events.map(evt => {
+        const duration = moment(evt.endDate).diff(moment(evt.startDate), 'hours');
+        return (
+          <View
+            key={evt.id}
+            style={[
+              styles.eventIndicator,
+              {
+                backgroundColor: EVENT_COLORS[evt.type as EventType],
+                height: Math.max(duration * 40, 40), // Ensure minimum height
+                top: 0
+              }
+            ]}
+          >
+            <Text style={styles.eventLabel}>{evt.title}</Text>
+          </View>
+        );
+      })}
+    </View>
+  );
+};
+
 const EventDetailScreen = () => {
+  const theme = useTheme(state => state.theme);
   const navigation = useNavigation<EventDetailScreenNavigationProp>();
   const route = useRoute<EventDetailScreenRouteProp>();
-  const serializedEvent = route.params.event;
   
-  // String tarihlerini Date nesnelerine dönüştür
+  const { event: serializedEvent } = route.params;
+  
+  // Deserialize event dates
   const event: Event = {
     ...serializedEvent,
     startDate: serializedEvent.startDate ? new Date(serializedEvent.startDate) : new Date(),
     endDate: serializedEvent.endDate ? new Date(serializedEvent.endDate) : new Date(),
   };
-
+  
   const [isTimelineExpanded, setIsTimelineExpanded] = useState(false);
   const heightAnim = useRef(new Animated.Value(100)).current;
-
+  
   const eventStartHour = moment(event.startDate).format('h A');
   const eventDuration = moment(event.endDate).diff(moment(event.startDate), 'hours');
 
@@ -52,7 +146,7 @@ const EventDetailScreen = () => {
     moment(e.startDate).isSame(moment(event.startDate), 'day') && 
     e.id !== event.id
   );
-
+  
   useEffect(() => {
     Animated.timing(heightAnim, {
       toValue: isTimelineExpanded ? 600 : 100,
@@ -61,69 +155,63 @@ const EventDetailScreen = () => {
     }).start();
   }, [isTimelineExpanded]);
 
+  // Render timeline based on expanded state
   const renderTimeline = () => {
     if (!isTimelineExpanded) {
       // Show only the selected event's time slot
       return (
-        <View style={styles.timelineHour}>
-          <Text style={styles.hourText}>{eventStartHour}</Text>
-          <View style={styles.hourLine} />
-          <View 
-            style={[
-              styles.eventIndicator, 
-              { 
-                backgroundColor: EVENT_COLORS[event.type as EventType],
-                height: eventDuration * 40,
-                top: 0
-              }
-            ]}
-          >
-            <Text style={styles.eventLabel}>{event.title}</Text>
-          </View>
-        </View>
+        <TimelineHour 
+          hour={eventStartHour} 
+          events={[event]} 
+          expanded={false} 
+          theme={theme} 
+        />
       );
     }
 
-    // Show all hours and events
+    // Show all hours regardless of events
     return HOURS.map((hour) => {
       const currentEvents = [event, ...dayEvents].filter(e => 
         moment(e.startDate).format('h A') === hour
       );
       
       return (
-        <View key={hour} style={styles.timelineHour}>
-          <Text style={styles.hourText}>{hour}</Text>
-          <View style={styles.hourLine} />
-          {currentEvents.map(evt => {
-            const duration = moment(evt.endDate).diff(moment(evt.startDate), 'hours');
-            return (
-              <View
-                key={evt.id}
-                style={[
-                  styles.eventIndicator,
-                  {
-                    backgroundColor: EVENT_COLORS[evt.type as EventType],
-                    height: duration * 40,
-                    top: 0
-                  }
-                ]}
-              >
-                <Text style={styles.eventLabel}>{evt.title}</Text>
-              </View>
-            );
-          })}
-        </View>
+        <TimelineHour 
+          key={hour} 
+          hour={hour} 
+          events={currentEvents} 
+          expanded={true} 
+          theme={theme} 
+        />
       );
     });
   };
 
+  // Action handlers
+  const handleEdit = () => {
+    console.log('Edit event');
+  };
+  
+  const handleConsult = () => {
+    console.log('Consult');
+  };
+  
+  const handleHistory = () => {
+    console.log('View history');
+  };
+  
+  const handleContact = () => {
+    console.log('Contact patient');
+  };
+
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme === 'dark' ? colors.base.darkGray : colors.base.white }]}>
       <StatusBar
-        barStyle="light-content"
+        barStyle={theme === 'dark' ? "light-content" : "dark-content"}
         backgroundColor="transparent"
         translucent
       />
+      
       <View style={styles.header}>
         <DashboardHeader
           title={moment(event.startDate).format('MMMM')}
@@ -138,13 +226,15 @@ const EventDetailScreen = () => {
       
       <ScrollView style={styles.content}>
         <View style={styles.mainCard}>
-          <Text style={styles.title}>{event.title}</Text>
+          <Text style={[styles.title, { color: theme === 'dark' ? colors.base.white : colors.base.black }]}>
+            {event.title}
+          </Text>
           
           <View style={styles.dateSection}>
-            <Text style={styles.dateText}>
+            <Text style={[styles.dateText, { color: theme === 'dark' ? colors.base.white : colors.base.black }]}>
               {moment(event.startDate).format('dddd, MMM D, YYYY')}
             </Text>
-            <Text style={styles.timeText}>
+            <Text style={[styles.timeText, { color: theme === 'dark' ? colors.base.white : colors.base.black }]}>
               from {moment(event.startDate).format('h:mm A')} to {moment(event.endDate).format('h:mm A')}
             </Text>
             <Text style={styles.repeatText}>
@@ -153,50 +243,90 @@ const EventDetailScreen = () => {
           </View>
 
           <Pressable onPress={() => setIsTimelineExpanded(!isTimelineExpanded)}>
-            <Animated.View style={[styles.timelineCard, { height: heightAnim }]}>
+            <Animated.View 
+              style={[
+                styles.timelineCard, 
+                { 
+                  height: heightAnim,
+                  backgroundColor: theme === 'dark' ? colors.base.black : colors.alternativeLight.secondary 
+                }
+              ]}
+            >
               {renderTimeline()}
             </Animated.View>
           </Pressable>
         </View>
 
-        <View style={styles.participantsCard}>
-          <View style={styles.participant}>
-            <View style={styles.avatarPlaceholder}>
-              <Text style={styles.avatarText}>D</Text>
-            </View>
-            <View style={styles.participantInfo}>
-              <Text style={styles.participantName}>Dami Egbeyemi</Text>
-            </View>
-          </View>
+        <View 
+          style={[
+            styles.participantsCard, 
+            { backgroundColor: theme === 'dark' ? colors.base.black : colors.main.secondary}
+          ]}
+        >
+          <Participant 
+            name={event.patientName} 
+            initial={event.patientName.charAt(0).toUpperCase()} 
+            theme={theme} 
+          />
 
-          <View style={styles.participant}>
-            <View style={styles.avatarPlaceholder}>
-              <Text style={styles.avatarText}>S</Text>
-            </View>
-            <View style={styles.participantInfo}>
-              <Text style={styles.participantName}>Santiago Silva</Text>
-            </View>
-          </View>
+          <Participant 
+            name={event.assignedStaff} 
+            initial={event.assignedStaff.charAt(0).toUpperCase()} 
+            theme={theme} 
+          />
 
-          <View style={styles.participantIcons}>
-            <View style={styles.iconGroup}>
-              <MaterialCommunityIcons name="pencil-outline" size={12} color={colors.base.white} style={styles.participantIcon} />
-              <Text style={styles.participantIconText}>Edit</Text>
-            </View>
-            <View style={styles.iconGroup}>
-              <MaterialCommunityIcons name="video-outline" size={12} color={colors.base.white} style={styles.participantIcon} />
-              <Text style={styles.participantIconText}>Consult</Text>
-            </View>
-            <View style={styles.iconGroup}>
-              <MaterialCommunityIcons name="file-document-outline" size={12} color={colors.base.white} style={styles.participantIcon} />
-              <Text style={styles.participantIconText}>History</Text>
-            </View>
-            <View style={styles.iconGroup}>
-              <MaterialCommunityIcons name="phone-outline" size={12} color={colors.base.white} style={styles.participantIcon} />
-              <Text style={styles.participantIconText}>Contact</Text>
-            </View>
+          <View style={[
+            styles.participantIcons, 
+            { 
+              borderTopColor: theme === 'dark' ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)' 
+            }
+          ]}>
+            <TouchableOpacity>
+              <ActionIcon icon="pencil-outline" label="Edit" />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <ActionIcon icon="video-outline" label="Consult" />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <ActionIcon icon="file-document-outline" label="History" />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <ActionIcon icon="phone-outline" label="Contact" />
+            </TouchableOpacity>
           </View>
         </View>
+        
+        {event.notes && (
+          <View 
+            style={[
+              styles.participantsCard, 
+              { backgroundColor: theme === 'dark' ? colors.base.black : colors.base.white }
+            ]}
+          >
+            <Text style={[styles.sectionTitle, { color: theme === 'dark' ? colors.base.white : colors.base.black }]}>
+              Notes
+            </Text>
+            <Text style={[styles.noteText, { color: theme === 'dark' ? colors.base.white : colors.base.black }]}>
+              {event.notes}
+            </Text>
+          </View>
+        )}
+        
+        {event.meetingDetails && (
+          <View 
+            style={[
+              styles.participantsCard, 
+              { backgroundColor: theme === 'dark' ? colors.base.black : colors.base.white }
+            ]}
+          >
+            <Text style={[styles.sectionTitle, { color: theme === 'dark' ? colors.base.white : colors.base.black }]}>
+              Meeting Details
+            </Text>
+            <Text style={[styles.noteText, { color: theme === 'dark' ? colors.base.white : colors.base.black }]}>
+              {event.meetingDetails}
+            </Text>
+          </View>
+        )}
       </ScrollView>
     </View>
   );
@@ -205,12 +335,10 @@ const EventDetailScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.base.darkGray,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   header: {
     width: '100%',
-    backgroundColor: colors.base.darkGray,
   },
   content: {
     flex: 1,
@@ -224,7 +352,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: colors.base.white,
     marginBottom: 24,
   },
   dateSection: {
@@ -232,12 +359,10 @@ const styles = StyleSheet.create({
   },
   dateText: {
     fontSize: 18,
-    color: colors.base.white,
     marginBottom: 8,
   },
   timeText: {
     fontSize: 16,
-    color: colors.base.white,
     marginBottom: 8,
   },
   repeatText: {
@@ -245,7 +370,6 @@ const styles = StyleSheet.create({
     color: '#FF6B6B',
   },
   timelineCard: {
-    backgroundColor: colors.base.black,
     borderRadius: 16,
     padding: 20,
     marginVertical: 16,
@@ -261,13 +385,11 @@ const styles = StyleSheet.create({
   hourText: {
     width: 50,
     fontSize: 16,
-    color: colors.base.white,
     opacity: 0.7,
   },
   hourLine: {
     flex: 1,
     height: 1,
-    backgroundColor: 'rgba(255,255,255,0.1)',
     marginTop: 12,
   },
   eventIndicator: {
@@ -284,7 +406,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   participantsCard: {
-    backgroundColor: colors.base.black,
     borderRadius: 16,
     padding: 20,
     marginBottom: 16,
@@ -323,7 +444,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: 'rgba(255,255,255,0.1)',
   },
   iconGroup: {
     flexDirection: 'row',
@@ -336,6 +456,15 @@ const styles = StyleSheet.create({
     color: colors.base.white,
     fontSize: 12,
     opacity: 0.7,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  noteText: {
+    fontSize: 16,
+    lineHeight: 24,
   },
 });
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useAuthStore } from '../store/useAuthStore';
+import { SerializableEvent } from './types';
 
 // Screens
 import WelcomeScreen from '../screens/Welcome/WelcomeScreen';
@@ -28,6 +29,7 @@ import type { Patient } from '../data/patients';
 import AIVisitPatient from '../screens/ai-visits/VisitPatient';
 import EventDetailScreen from '../screens/dashboard/EventDetailScreen';
 import YearlyCalendarScreen from '../screens/dashboard/YearlyCalendarScreen';
+import EventFormScreen from '../screens/dashboard/EventFormScreen';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -52,8 +54,9 @@ export type RootStackParamList = {
   AIVisitsDashboard: undefined;
   AIVisitsPage: undefined;
   AIVisitPatient: { id: Patient['id'] };
-  EventDetail: undefined;
+  EventDetail: { event: SerializableEvent };
   YearlyCalendar: undefined;
+  EventForm: { selectedDate?: string };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -87,6 +90,7 @@ const Router = () => {
       <Stack.Screen name="LoginSwitchVerification" component={LoginSwitchVerification} />
       <Stack.Screen name="EventDetail" component={EventDetailScreen} />
       <Stack.Screen name="YearlyCalendar" component={YearlyCalendarScreen} />
+      <Stack.Screen name="EventForm" component={EventFormScreen} />
     </Stack.Navigator>
   );
 };
