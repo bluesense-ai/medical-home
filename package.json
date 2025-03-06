@@ -30,6 +30,8 @@
     "expo-localization": "^16.0.1",
     "expo-status-bar": "~2.0.1",
     "moment": "^2.30.1",
+    "openapi-fetch": "^0.13.4",
+    "openapi-react-query": "^0.3.0",
     "react": "18.3.1",
     "react-native": "0.76.7",
     "react-native-calendar-picker": "^8.0.5",
@@ -50,8 +52,9 @@
   "devDependencies": {
     "@babel/core": "^7.25.2",
     "@types/react": "~18.3.12",
+    "openapi-typescript": "^7.6.1",
     "react-native-svg-transformer": "^1.5.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.8.2"
   },
   "private": true
 }

@@ -1,0 +1,1735 @@
+openapi: 3.0.0
+info:
+  title: Medical Home API documentation
+  version: 0.0.1
+  license:
+    name: MIT
+    url: ''
+servers:
+  - url: https://sandbox-backend.medicalhome.cloud/api
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+paths:
+  /auth/patient-register:
+    post:
+      summary: Register a new patient
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                healthCardNumber:
+                  type: string
+                  description: Unique health card number for the patient.
+                mobileNumber:
+                  type: string
+                  description: Mobile number of the patient.
+                emailAddress:
+                  type: string
+                  description: Email address of the patient.
+                otpChannel:
+                  type: string
+                  description: Channel for OTP delivery (either 'sms' or 'email'). Default is 'sms'.
+                preferredClinicId:
+                  type: string
+                  description: ID of the patient's preferred clinic.
+              example:
+                firstName: John
+                lastName: Doe
+                sex: Male
+                dateOfBirth: '1990-01-01'
+                healthCardNumber: '123456789'
+                mobileNumber: '+113069606702'
+                emailAddress: testuser@example.com
+                otpChannel: sms
+                preferredClinicId: 047aede2-edb3-4ab8-8286-39e9f2ef288a
+      responses:
+        '200':
+          description: Code sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Code sent successfully
+                  patientId:
+                    type: string
+                    example: 3e107006-a770-4349-a2f5-6e4ab266cad3
+        '400':
+          description: Invalid input or patient already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                  error:
+                    type: string
+  /auth/admin-register:
+    post:
+      summary: Register a new admin
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                firstName:
+                  type: string
+                  description: First name of the admin.
+                lastName:
+                  type: string
+                  description: Last name of the admin.
+                username:
+                  type: string
+                  description: Unique username for the admin.
+                phoneNumber:
+                  type: string
+                  description: Mobile number of the admin.
+                email:
+                  type: string
+                  description: Email address of the admin.
+              example:
+                firstName: Jane
+                lastName: Smith
+                username: janesmith
+                phoneNumber: '+1234567890'
+                email: admin@example.com
+      responses:
+        '201':
+          description: Admin registered successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Admin registered successfully
+                  adminId:
+                    type: string
+                    example: 047aede2-edb3-4ab8-8286-39e9f2ef288a
+        '400':
+          description: Invalid input or admin already exists
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                  error:
+                    type: string
+  /auth/admin-login:
+    post:
+      summary: Login an admin using username and access code
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Username of the admin
+                otpChannel:
+                  type: string
+                  description: The channel used for OTP delivery (either 'sms' or 'email'). Default is 'sms'.
+              example:
+                username: janesmith
+                otpChannel: sms
+      responses:
+        '200':
+          description: Code sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Code sent successfully
+                  adminId:
+                    type: string
+                    example: 3e107006-a770-4349-a2f5-6e4ab266cad3
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+        '403':
+          description: Invalid credentials (username not found)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid Credentials
+  /auth/verify-access-code-admin:
+    post:
+      summary: Verify access code for an admin
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Username of the admin.
+                otpChannel:
+                  type: string
+                  description: OTP channel (either 'sms' or 'email'). Default is 'sms'.
+                accessCode:
+                  type: string
+                  description: Access code sent to the admin.
+              example:
+                username: janesmith
+                accessCode: '939323'
+                otpChannel: sms
+      responses:
+        '200':
+          description: Access code verified successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    description: Admin details.
+                    properties:
+                      id:
+                        type: string
+                        example: 047aede2-ecb3-4cd8-8286-39e9a1ee288a
+                      email:
+                        type: string
+                        example: admin@example.com
+                      phone_number:
+                        type: string
+                        example: '+447367595421'
+                      username:
+                        type: string
+                        example: adminuser
+                      first_name:
+                        type: string
+                        example: John
+                      last_name:
+                        type: string
+                        example: Doe
+                      access_token:
+                        type: string
+                        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2024-08-23T11:01:40.532Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2024-08-23T11:01:40.532Z'
+        '400':
+          description: Bad request or server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: Detailed error message
+        '401':
+          description: Invalid access code.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid Access Code
+        '403':
+          description: Invalid credentials (admin not found).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid Credentials
+  /auth/patient-login:
+    post:
+      summary: Login a patient using health card number and access code
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                healthCardNumber:
+                  type: string
+                  description: The health card number of the patient.
+                otpChannel:
+                  type: string
+                  description: The channel used for OTP delivery (either 'sms' or 'email'). Default is 'sms'.
+              example:
+                healthCardNumber: '123456789'
+                otpChannel: sms
+      responses:
+        '200':
+          description: Code sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Code sent successfully
+                  patientId:
+                    type: string
+                    example: 3e107006-a770-4349-a2f5-6e4ab266cad3
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+        '403':
+          description: Invalid credentials (health card number not found)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid Credentials
+  /auth/access_code_verification_patient/{uid}:
+    post:
+      summary: Verify patient access code
+      tags:
+        - Auth
+      parameters:
+        - in: path
+          name: uid
+          schema:
+            type: string
+          required: true
+          description: Patient's user ID.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accessCode:
+                  type: string
+                  description: The access code provided to the patient.
+                otpChannel:
+                  type: string
+                  description: The channel used for OTP delivery (either 'sms' or 'email'). Default is 'sms'.
+              example:
+                accessCode: '123122'
+                otpChannel: sms
+      responses:
+        '200':
+          description: Correct access code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  data:
+                    type: object
+                    description: Provider details.
+                    properties:
+                      id:
+                        type: string
+                        example: 047aede2-ecb3-4cd8-8286-39e9a1ee288a
+                      email_address:
+                        type: string
+                        example: khalid@example.com
+                      phone_number:
+                        type: string
+                        example: '+447367595421'
+                      username:
+                        type: string
+                        example: khalid
+                      clinic:
+                        type: string
+                        example: Walmart Clinic
+                      access_token:
+                        type: string
+                        example: string
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2024-08-23T11:01:40.532Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2024-08-23T11:01:40.532Z'
+        '401':
+          description: Incorrect access code
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid Access Code
+        '403':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid Credentials
+  /auth/provider-login:
+    post:
+      summary: Login a provider using username and access code
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Username of the provider
+                otpChannel:
+                  type: string
+                  description: The channel used for OTP delivery (either 'sms' or 'email'). Default is 'sms'.
+              example:
+                username: provider1
+                otpChannel: sms
+      responses:
+        '200':
+          description: Code sent successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  message:
+                    type: string
+                    example: Code sent successfully
+        '400':
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+        '403':
+          description: Invalid credentials (username not found)
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid Credentials
+  /auth/verify-verification-code-provider:
+    post:
+      summary: Verify access code for a provider
+      tags:
+        - Auth
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                  description: Username of the provider.
+                otpChannel:
+                  type: string
+                  description: otp channel
+                accessCode:
+                  type: string
+                  description: Access code sent to the provider.
+              example:
+                username: providerUser
+                accessCode: '123456'
+                otpChannel: sms
+      responses:
+        '200':
+          description: Access code verified successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  data:
+                    type: object
+                    description: Provider details.
+                    properties:
+                      id:
+                        type: string
+                        example: 047aede2-ecb3-4cd8-8286-39e9a1ee288a
+                      email_address:
+                        type: string
+                        example: khalid@example.com
+                      phone_number:
+                        type: string
+                        example: '+447367595421'
+                      username:
+                        type: string
+                        example: khalid
+                      clinic:
+                        type: string
+                        example: Walmart Clinic
+                      access_token:
+                        type: string
+                        example: string
+                      createdAt:
+                        type: string
+                        format: date-time
+                        example: '2024-08-23T11:01:40.532Z'
+                      updatedAt:
+                        type: string
+                        format: date-time
+                        example: '2024-08-23T11:01:40.532Z'
+        '400':
+          description: Bad request or server error.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  error:
+                    type: string
+                    example: Detailed error message
+        '401':
+          description: Invalid access code.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid Access Code
+        '403':
+          description: Invalid credentials (provider not found).
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Invalid Credentials
+  /bookings/get-ms-token:
+    get:
+      summary: Retrieve Microsoft access token
+      tags:
+        - Bookings
+      responses:
+        '200':
+          description: Microsoft access token retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msAccessToken:
+                    type: string
+                    description: The Microsoft access token.
+                    example: eyJ0eXAiOiJKV1QiLCJhb...
+                  expires_in:
+                    type: number
+                    description: Token expiration time in seconds.
+                    example: 3600
+        '400':
+          description: Error retrieving token
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: Invalid client credentials
+  /clinics/get-all-clinics:
+    get:
+      summary: Retrieve a list of clinics with their services
+      tags:
+        - Clinics
+      responses:
+        '200':
+          description: A list of clinics with their associated services
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: 1a2b3c4d
+                    medical_group_id:
+                      type: string
+                      example: 4d33d464-e2d0-4abf-b216-5551b0496505
+                    name:
+                      type: string
+                      example: Health Clinic
+                    location:
+                      type: string
+                      example: 123 Health St.
+                    weekday_hours:
+                      type: string
+                      example: 9 AM - 5 PM
+                    weekend_hours:
+                      type: string
+                      example: 10 AM - 4 PM
+                    contact:
+                      type: string
+                      example: '+123456789'
+                    status:
+                      type: string
+                      example: active
+                    services:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          id:
+                            type: string
+                            example: s1a2b3c4
+                          name:
+                            type: string
+                            example: General Check-up
+        '400':
+          description: Error retrieving clinics
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error message
+  /clinics/create-clinic:
+    post:
+      summary: Create a new clinic
+      tags:
+        - Clinics
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                medical_group_id:
+                  type: string
+                  example: 047aede2-edb3-4ab8-8286-39e9f2ef288a
+                name:
+                  type: string
+                  example: Health Clinic
+                location:
+                  type: string
+                  example: 123 Health St.
+                weekday_hours:
+                  type: string
+                  example: 9 AM - 5 PM
+                weekend_hours:
+                  type: string
+                  example: 10 AM - 4 PM
+                contact:
+                  type: string
+                  example: '+123456789'
+                status:
+                  type: string
+                  example: active
+      responses:
+        '201':
+          description: Clinic created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    example: 1a2b3c4d
+                  medical_group_id:
+                    type: string
+                    example: 047aede2-edb3-4ab8-8286-39e9f2ef288a
+                  name:
+                    type: string
+                    example: Health Clinic
+                  location:
+                    type: string
+                    example: 123 Health St.
+                  weekday_hours:
+                    type: string
+                    example: 9 AM - 5 PM
+                  weekend_hours:
+                    type: string
+                    example: 10 AM - 4 PM
+                  contact:
+                    type: string
+                    example: '+123456789'
+                  status:
+                    type: string
+                    example: active
+        '400':
+          description: Validation error for the input data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Medical group ID and name are required.
+        '500':
+          description: Error creating clinic
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error creating clinic
+  /patients/waiting-list:
+    get:
+      summary: Retrieve the list of patients in the waiting list
+      description: Fetch all patients who are not registered and are on the waiting list.
+      tags:
+        - Patients
+      responses:
+        '200':
+          description: Successfully retrieved the waiting list patients
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicates whether the request was successful
+                    example: true
+                  message:
+                    type: string
+                    description: Message indicating the success of the operation
+                    example: Waiting list patients retrieved successfully
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          format: uuid
+                          description: The unique ID of the patient
+                          example: b6f632a3-d4f9-4ad8-b7ad-3d431ff890d7
+                        first_name:
+                          type: string
+                          description: The first name of the patient
+                          example: John
+                        last_name:
+                          type: string
+                          description: The last name of the patient
+                          example: Doe
+                        phone_number:
+                          type: string
+                          description: The phone number of the patient
+                          example: 123-456-7890
+                        email_address:
+                          type: string
+                          description: The email address of the patient
+                          example: john.doe@example.com
+                        date_of_birth:
+                          type: string
+                          format: date
+                          description: The date of birth of the patient
+                          example: '1980-01-01'
+                        preferred_clinic:
+                          type: string
+                          description: The name of the preferred clinic of the patient
+                          example: Hope Health Center
+                        registered:
+                          type: boolean
+                          description: Whether the patient is registered or not
+                          example: false
+                        createdAt:
+                          type: string
+                          format: date-time
+                          description: The creation date of the patient record
+                          example: '2024-10-18T12:00:00Z'
+                        preferred_provider:
+                          type: string
+                          description: The type of preferred provider for the patient
+                          example: Family physician
+        '500':
+          description: An error occurred while fetching waiting list patients
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Indicates whether the request was successful
+                    example: false
+                  message:
+                    type: string
+                    description: Error message
+                    example: An error occurred while fetching waiting list patients
+                  error:
+                    type: string
+                    description: Error details
+                    example: Database connection error
+  /patients/patient-update/{health_card_number}:
+    put:
+      summary: Update a Patients Details
+      description: Update the patient details using the health card number.
+      tags:
+        - Patients
+      parameters:
+        - in: path
+          name: health_card_number
+          required: true
+          description: The health card number of the patient
+          schema:
+            type: string
+            example: '123456789'
+      responses:
+        '200':
+          description: Successfully updated the patient details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    format: uuid
+                    description: The unique ID of the patient
+                    example: b6f632a3-d4f9-4ad8-b7ad-3d431ff890d7
+                  first_name:
+                    type: string
+                    description: The first name of the patient
+                    example: John
+                  last_name:
+                    type: string
+                    description: The last name of the patient
+                    example: Doe
+                  health_card_number:
+                    type: string
+                    description: The health card number of the patient
+                    example: '123456789'
+                  email_address:
+                    type: string
+                    description: The email address of the patient
+                    example: john.doe@example.com
+                  phone_number:
+                    type: string
+                    description: The phone number of the patient
+                    example: 123-456-7890
+                  sex:
+                    type: string
+                    description: The sex of the patient
+                    example: Male
+                  pronouns:
+                    type: string
+                    description: The pronouns of the patient
+                    example: He/Him
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: Error updating patient data
+        '404':
+          description: Patient not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    description: Error message
+                    example: Patient not found
+  /providers:
+    post:
+      summary: Create a new provider
+      tags:
+        - Providers
+      security:
+        - BearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  description: First name of the provider
+                  example: John
+                last_name:
+                  type: string
+                  description: Last name of the provider
+                  example: Doe
+                username:
+                  type: string
+                  description: Unique username for the provider
+                  example: john_doe
+                mnc_number:
+                  type: string
+                  description: Medical Council Number of the provider
+                  example: '300558123'
+                phone_number:
+                  type: string
+                  description: Provider's phone number
+                  example: '+1234567890'
+                email_address:
+                  type: string
+                  description: Provider's email address
+                  example: johndoe@example.com
+                provider_type:
+                  type: string
+                  description: Type of provider (e.g., family-physician, surgeon, etc.)
+                  example: family-physician
+                provider_status:
+                  type: string
+                  description: Status of the provider (e.g., available, unavailable)
+                  example: available
+                picture:
+                  type: string
+                  format: binary
+                  description: Provider's picture (image file)
+      responses:
+        '201':
+          description: Provider created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Provider created successfully
+                  provider:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: 047aede2-ecb3-4cd8-8286-39e9a1ee288a
+                      first_name:
+                        type: string
+                        example: John
+                      last_name:
+                        type: string
+                        example: Doe
+                      username:
+                        type: string
+                        example: john_doe
+                      mnc_number:
+                        type: string
+                        example: '300558123'
+                      phone_number:
+                        type: string
+                        example: '+1234567890'
+                      email_address:
+                        type: string
+                        example: johndoe@example.com
+                      provider_type:
+                        type: string
+                        example: family-physician
+                      provider_status:
+                        type: string
+                        example: available
+                      picture:
+                        type: string
+                        example: https://res.cloudinary.com/provider_images/sample.jpg
+        '400':
+          description: Error creating provider due to invalid request data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Please provide all required fields
+        '500':
+          description: Server error while creating the provider
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while creating the provider
+  /providers/{id}:
+    put:
+      summary: Update an existing provider
+      tags:
+        - Providers
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the provider to update
+          schema:
+            type: string
+            example: 047aede2-ecb3-4cd8-8286-39e9a1ee288a
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: John
+                last_name:
+                  type: string
+                  example: Doe
+                username:
+                  type: string
+                  example: john_doe
+                mnc_number:
+                  type: string
+                  example: '300558123'
+                phone_number:
+                  type: string
+                  example: '+1234567890'
+                email_address:
+                  type: string
+                  example: johndoe@example.com
+                provider_type:
+                  type: string
+                  example: family-physician
+                provider_status:
+                  type: string
+                  example: available
+                picture:
+                  type: string
+                  format: binary
+                  description: Updated provider's picture
+      responses:
+        '200':
+          description: Provider updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Provider updated successfully
+                  provider:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: 047aede2-ecb3-4cd8-8286-39e9a1ee288a
+                      first_name:
+                        type: string
+                        example: John
+                      last_name:
+                        type: string
+                        example: Doe
+                      username:
+                        type: string
+                        example: john_doe
+                      mnc_number:
+                        type: string
+                        example: '300558123'
+                      phone_number:
+                        type: string
+                        example: '+1234567890'
+                      email_address:
+                        type: string
+                        example: johndoe@example.com
+                      provider_type:
+                        type: string
+                        example: family-physician
+                      provider_status:
+                        type: string
+                        example: available
+                      picture:
+                        type: string
+                        example: https://res.cloudinary.com/provider_images/sample.jpg
+        '400':
+          description: Error updating provider
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Validation error
+        '404':
+          description: Provider not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Provider not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while updating the provider
+  /providers/get-all-providers:
+    get:
+      summary: Retrieve a list of providers with their details
+      tags:
+        - Providers
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: A list of providers with their details
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                      example: 047aede2-ecb3-4cd8-8286-39e9a1ee288a
+                    first_name:
+                      type: string
+                      example: Lanre
+                    last_name:
+                      type: string
+                      example: Egbeyemi
+                    user_name:
+                      type: string
+                      example: lanre_egbeyemi
+                    picture:
+                      type: string
+                      example: https://storage-api.pgrninc.com/internal-dashboard/111225.png
+                    provider_type:
+                      type: string
+                      example: Family physician
+                    provider_status:
+                      type: string
+                      example: Available
+                    patient_count:
+                      type: number
+                      example: 4
+        '400':
+          description: Error retrieving providers
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: An error occurred while fetching providers
+  /providers/{providerId}/patients:
+    get:
+      summary: Retrieve a list of patients for a specific provider
+      tags:
+        - Providers
+      parameters:
+        - name: providerId
+          in: path
+          required: true
+          description: The ID of the provider to retrieve patients for
+          schema:
+            type: string
+            example: 047aede2-ecb3-4df8-8286-3989a1ce288a
+      security:
+        - BearerAuth: []
+      responses:
+        '200':
+          description: A provider and their list of associated patients
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  provider_first_name:
+                    type: string
+                    example: Maya
+                  provider_last_name:
+                    type: string
+                    example: Tandie
+                  provider_username:
+                    type: string
+                    example: tandie_maya
+                  patients:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                          example: 047aede2-edb3-4da8-8286-39e9f2ee2128
+                        first_name:
+                          type: string
+                          example: Olanrewaju
+                        last_name:
+                          type: string
+                          example: Egbeyemi
+                        sex:
+                          type: string
+                          example: Male
+                        email_address:
+                          type: string
+                          example: larrichy@hotmail.com
+                        health_card_number:
+                          type: string
+                          example: '420709096'
+                        phone_number:
+                          type: string
+                          example: '+13069606702'
+                        age:
+                          type: string
+                          example: 56 years
+                        clinic_name:
+                          type: string
+                          example: Walmart Clinic
+                        next_appointment_date:
+                          type: string
+                          example: 5 sep,2024
+        '404':
+          description: Provider not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Provider not found
+        '500':
+          description: Error retrieving patients
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: Error message
+  /providers/{providerId}/assign-patients:
+    post:
+      summary: Assign multiple patients to a provider
+      tags:
+        - Providers
+      security:
+        - BearerAuth: []
+      parameters:
+        - in: path
+          name: providerId
+          required: true
+          schema:
+            type: string
+          description: ID of the provider to whom patients will be assigned
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                patientIds:
+                  type: array
+                  items:
+                    type: string
+                  description: Array of patient IDs to be assigned to the provider
+                  example:
+                    - 5fae1b5c6f8b3c0017e4a234
+                    - 5fae1b5c6f8b3c0017e4a235
+      responses:
+        '200':
+          description: Patients successfully assigned to the provider
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Patients successfully assigned to the provider
+                  assignments:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        patient_id:
+                          type: string
+                          example: 5fae1b5c6f8b3c0017e4a234
+                        provider_id:
+                          type: string
+                          example: 5fae1b5c6f8b3c0017e4a123
+        '400':
+          description: Invalid input, such as missing or incorrect patient IDs
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Please provide valid patient IDs
+        '404':
+          description: Provider or one of the patients not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Provider not found
+        '500':
+          description: Server error occurred while assigning patients to the provider
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while assigning patients to the provider
+  /providers/provider-update/{id}:
+    put:
+      summary: Update a provider's basic information
+      tags:
+        - Providers
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the provider to update
+          schema:
+            type: string
+            example: 047aede2-ecb3-4cd8-8286-39e9a1ee288a
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: John
+                last_name:
+                  type: string
+                  example: Doe
+                phone_number:
+                  type: string
+                  example: '+1234567890'
+                email_address:
+                  type: string
+                  example: johndoe@example.com
+                picture:
+                  type: string
+                  format: binary
+                  description: Updated provider's picture
+                clinics:
+                  type: array
+                  items:
+                    type: string
+                    example: 047aede2-ecb3-4cd8-8286-39e9a1ee288a
+                  description: Array of clinic IDs to associate with the provider
+      responses:
+        '200':
+          description: Provider updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Provider updated successfully
+                  provider:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: 047aede2-ecb3-4cd8-8286-39e9a1ee288a
+                      first_name:
+                        type: string
+                        example: John
+                      last_name:
+                        type: string
+                        example: Doe
+                      phone_number:
+                        type: string
+                        example: '+1234567890'
+                      email_address:
+                        type: string
+                        example: johndoe@example.com
+                      picture:
+                        type: string
+                        example: https://res.cloudinary.com/provider_images/sample.jpg
+                      clinics:
+                        type: array
+                        items:
+                          type: string
+                        example:
+                          - 047aede2-ecb3-4cd8-8286-39e9a1ee288a
+                          - 1234abcd-56ef-78gh-90ij-klmnopqrstuv
+        '400':
+          description: Error updating provider
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Validation error
+        '404':
+          description: Provider not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Provider not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while updating the provider
+  /providers/provider/{id}:
+    get:
+      summary: Retrieve a provider's detailed information
+      tags:
+        - Providers
+      security:
+        - BearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the provider to retrieve information for
+          schema:
+            type: string
+            example: 047aede2-ecb3-4cd8-8286-39e9a1ee288a
+      responses:
+        '200':
+          description: Provider information retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  provider:
+                    type: object
+                    properties:
+                      id:
+                        type: string
+                        example: 047aede2-ecb3-4cd8-8286-39e9a1ee288a
+                      first_name:
+                        type: string
+                        example: John
+                      last_name:
+                        type: string
+                        example: Doe
+                      email_address:
+                        type: string
+                        example: johndoe@example.com
+                      phone_number:
+                        type: string
+                        example: '+1234567890'
+                      picture:
+                        type: string
+                        example: https://res.cloudinary.com/provider_images/sample.jpg
+                      username:
+                        type: string
+                        example: johndoe
+                      provider_type:
+                        type: array
+                        items:
+                          type: string
+                        example:
+                          - chiropractor
+                      clinics:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            id:
+                              type: string
+                              example: 047aede2-edb3-4ab8-8286-39e9f2ef288a
+                            name:
+                              type: string
+                              example: Hope Health Center
+                            location:
+                              type: string
+                              example: 1135 Central Avenue Prince Albert, SK S6V 4V7
+                            weekday_hours:
+                              type: string
+                              example: 8:00 AM - 6:00 PM
+                            weekend_hours:
+                              type: string
+                              example: 9:00 AM - 4:00 PM
+                            contact:
+                              type: string
+                              example: 555-1234
+                            status:
+                              type: string
+                              example: active
+                            ms_calendar_id:
+                              type: string
+                              nullable: true
+                              example: null
+                            medicalGroup:
+                              type: object
+                              properties:
+                                id:
+                                  type: string
+                                  example: 047aede2-edb3-4ab8-8286-39e9f2ef288a
+                                name:
+                                  type: string
+                                  example: PACMC
+                                status:
+                                  type: string
+                                  nullable: true
+                                  example: null
+                                info:
+                                  type: string
+                                  example: pacmc
+                                validity_date:
+                                  type: string
+                                  nullable: true
+                                  example: null
+        '404':
+          description: Provider not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Provider not found
+        '500':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while retrieving the provider information
+tags: []
