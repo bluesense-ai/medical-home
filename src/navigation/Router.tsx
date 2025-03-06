@@ -29,6 +29,8 @@ import type { Patient } from '../data/patients';
 import AIVisitPatient from '../screens/ai-visits/VisitPatient';
 import EventDetailScreen from '../screens/dashboard/EventDetailScreen';
 import YearlyCalendarScreen from '../screens/dashboard/YearlyCalendarScreen';
+
+import { QueryClient, QueryClientProvider, QueryErrorResetBoundary } from '@tanstack/react-query';
 import EventFormScreen from '../screens/dashboard/EventFormScreen';
 
 export type RootStackParamList = {
@@ -63,9 +65,12 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 const Router = () => {
   const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+  const queryClient = new QueryClient();
 
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+
+    <QueryClientProvider client={queryClient}>
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Welcome" component={WelcomeScreen} />
       <Stack.Screen name="Loading" component={LoadingScreen} />
       <Stack.Screen name="RegisterPage" component={RegisterPage} />
@@ -92,6 +97,8 @@ const Router = () => {
       <Stack.Screen name="YearlyCalendar" component={YearlyCalendarScreen} />
       <Stack.Screen name="EventForm" component={EventFormScreen} />
     </Stack.Navigator>
+    </QueryClientProvider>
+
   );
 };
 

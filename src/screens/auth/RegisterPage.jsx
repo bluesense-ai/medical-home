@@ -3,57 +3,58 @@ import { View, Text, ImageBackground, TextInput, Pressable, StyleSheet, Dimensio
 import Svg from 'react-native-svg';
 import AuthHeader from "../../components/Header/AuthHeader";
 
+
 const { height, width } = Dimensions.get('window');
 
 const RegisterPage = ({ navigation }) => {
   return (
     <View style={styles.container}>
-                    <View style={styles.whiteBackground}>
-      
+      <View style={styles.whiteBackground}>
 
-<AuthHeader
-        navigation={navigation}
-        currentStep={4} // You can dynamically set this value based on your logic
-        totalSteps={4} // Total steps in your process
-      />
-      {/* Top Image covering upper part */}
-                      <View style={styles.topImageWrapper}>
-      
-      <ImageBackground source={require('../../../assets/bgimgrg.png')} style={styles.topImage} />
-</View>
 
-      {/* Bottom Image overlapping top image */}
-                      <View style={styles.bottomImageWrapper}>
-      
-      <ImageBackground source={require('./image.jpg')} style={styles.bottomImage}>
-        <View style={styles.overlay}>
-          <Text style={styles.title}>Register</Text>
-          <Text style={{ marginRight: '90', marginBottom: '20', color: 'white' }}>Provide your health card number</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="Health Card Number"
-            placeholderTextColor="#ddd"
-          />
-          <Text style={{ marginRight: '180', marginBottom: '20', color: 'white' }}>Choose your clinic</Text>
+        <AuthHeader
+          navigation={navigation}
+          currentStep={4} // You can dynamically set this value based on your logic
+          totalSteps={4} // Total steps in your process
+        />
+        {/* Top Image covering upper part */}
+        <View style={styles.topImageWrapper}>
 
-          <TextInput
-            style={styles.input}
-            placeholder="Choose Your Clinic"
-            placeholderTextColor="#ddd"
-          />
-          <Svg
-            width={250}
-            height={50}
-            style={{ marginBottom: 20, padding: 0 }}
-            source={require('../../../assets/statusadv.svg')} // Use the path to your SVG file
-          />
-          <Pressable style={styles.registerButton} onPress={() => navigation.navigate('RegisterPage2')}>
-            <Text style={styles.registerButtonText}>Next</Text>
-          </Pressable>
+          <ImageBackground source={require('../../../assets/bgimgrg.png')} style={styles.topImage} />
         </View>
-      </ImageBackground>
-    </View>
-    </View>
+
+        {/* Bottom Image overlapping top image */}
+        <View style={styles.bottomImageWrapper}>
+
+          <ImageBackground source={require('./image.jpg')} style={styles.bottomImage}>
+            <View style={styles.overlay}>
+              <Text style={styles.title}>Register</Text>
+              <Text style={{ marginRight: '90', marginBottom: '20', color: 'white' }}>Provide your health card number</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Health Card Number"
+                placeholderTextColor="#ddd"
+              />
+              <Text style={{ marginRight: '180', marginBottom: '20', color: 'white' }}>Choose your clinic</Text>
+
+              <TextInput
+                style={styles.input}
+                placeholder="Choose Your Clinic"
+                placeholderTextColor="#ddd"
+              />
+              <Svg
+                width={250}
+                height={50}
+                style={{ marginBottom: 20, padding: 0 }}
+                source={require('../../../assets/statusadv.svg')} // Use the path to your SVG file
+              />
+              <Pressable style={styles.registerButton} onPress={() => navigation.navigate('RegisterPage2')}>
+                <Text style={styles.registerButtonText}>Next</Text>
+              </Pressable>
+            </View>
+          </ImageBackground>
+        </View>
+      </View>
     </View>
   );
 };
@@ -69,7 +70,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",
-    top:height*0.1,
+    top: height * 0.1,
   },
   topImage: {
     width: "100%",
@@ -77,7 +78,7 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   bottomImageWrapper: {
-    width: width ,
+    width: width,
     height: height * 0.57, // 50% of screen height
     borderRadius: 20,
     overflow: "hidden",

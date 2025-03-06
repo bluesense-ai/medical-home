@@ -8,92 +8,101 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons"; // For icons (install if not already installed)'
 import AuthHeader from "../../components/Header/AuthHeader";
-import WeFoundYou from "./WeFoundYou";
+import { useMutation } from "@tanstack/react-query";
 
-// import StepIndicator from "react-native-step-indicator";
 
-// const labels = ["Step 1", "Step 2", "Step 3", "Step 4", "Step 5"];
-
-// const customStyles = {
-//   stepIndicatorSize: 20,
-//   currentStepIndicatorSize: 25,
-//   separatorStrokeWidth: 3,
-//   stepStrokeWidth: 2,
-//   stepIndicatorFinishedColor: "green",
-//   stepIndicatorUnFinishedColor: "gray",
-//   separatorFinishedColor: "green",
-//   separatorUnFinishedColor: "gray",
-//   stepIndicatorCurrentColor: "green",
-// };
 
 const { height, width } = Dimensions.get("window"); // Get device dimensions
 
+const patientLogin = async (healthCardNumber, otpChannel) => {
+  const respone = await fetch('https://sandbox-backend.medicalhome.cloud/api/auth/patient-login', {
+    methon: 'POST',
+    body: JSON.stringify({
+      healthCardNumber,
+      otpChannel,
+    })
+  });
+
+  if (!respone.ok) {
+    Alert.alert('Error', 'No user with this health card id was found');
+  }
+
+  return respone.json();
+}
+
 const ProvideInformation = ({ navigation }) => {
   const realNumber = 123;
-  const [healthCardNumber, setHealthCardNumber] = useState();
+  const [healthCardNumber, setHealthCardNumber] = useState("");
+  const [otpChannel, setOtpChannel] = useState("sms");
+
+  const { mutate, isLoading, error, data } = useMutation({
+    mutationFn: patientLogin,
+    onSuccess: () => {
+      // Alert.alert('Success', 'Access code verified!');
+      navigation.navigate("WeFoundYou");
+    },
+    onError: (error) => {
+      // Alert.alert('Error', error.message || 'An error occurred');
+      navigation.navigate("WantToRegister");
+    },
+  });
+
+  const handleSubmit = async () => {
+    mutate(healthCardNumber, otpChannel);
+  }
 
   return (
     <View style={styles.container}>
-   
+
 
       <AuthHeader
         navigation={navigation}
-        currentStep={1} // You can dynamically set this value based on your logic
+        currentStep={1} // You can dynam  cally set this value based on your logic
         totalSteps={5} // Total steps in your process
       />
 
       <View style={styles.whiteBackground}>
         {/* Top Image covering 70% of the screen (Empty) */}
-                <View style={styles.topImageWrapper}>
-        
-        <ImageBackground
-          source={require("../../../assets/bgimgrg.png")}
-          style={styles.topImage}
-        />
-</View>
-        {/* Bottom Image covering 50% but overlapping 30% on top image */}
-                <View style={styles.bottomImageWrapper}>
-        
-        <ImageBackground
-          source={require("./image.jpg")}
-          style={styles.bottomImage}
-        >
-          <View style={styles.overlay}>
-            <Text style={styles.title}>
-              Provide Your {"\n"}
-              {" Information"}
-            </Text>
-            <Text style={styles.subtitle}>
-              We use health card number to find {"\n"}{" "}
-              {"  your information in our system"}{" "}
-            </Text>
-            <TextInput
-              onChangeText={(text) => /^\d*$/.test(text) ? setHealthCardNumber(text) : null}
-              style={styles.textInput}
-              placeholder="Enter your information"
-              placeholderTextColor="white"
-              keyboardType="numeric" // Shows numeric keyboard on focus
+        <View style={styles.topImageWrapper}>
 
-            />
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => {
-                if (parseInt(healthCardNumber) == realNumber) {
-                  navigation.navigate("WeFoundYou");
-                } else {
-                  navigation.navigate("WantToRegister"); //
-                }
-              }}
-            >
-              <Text style={styles.buttonText}>Submit</Text>
-            </TouchableOpacity>
-          </View>
-        </ImageBackground>
+          <ImageBackground
+            source={require("../../../assets/bgimgrg.png")}
+            style={styles.topImage}
+          />
+        </View>
+        {/* Bottom Image covering 50% but overlapping 30% on top image */}
+        <View style={styles.bottomImageWrapper}>
+
+          <ImageBackground
+            source={require("./image.jpg")}
+            style={styles.bottomImage}
+          >
+            <View style={styles.overlay}>
+              <Text style={styles.title}>
+                Provide Your {"\n"}
+                {" Information"}
+              </Text>
+              <Text style={styles.subtitle}>
+                We use health card number to find {"\n"}{" "}
+                {"  your information in our system"}{" "}
+              </Text>
+              <TextInput
+                onChangeText={(text) => /^\d*$/.test(text) ? setHealthCardNumber(text) : null}
+                style={styles.textInput}
+                placeholder="Enter your information"
+                placeholderTextColor="white"
+                keyboardType="numeric" // Shows numeric keyboard on focus
+
+              />
+              <TouchableOpacity style={styles.button} onPress={handleSubmit}>
+                <Text style={styles.buttonText}>Submit</Text>
+              </TouchableOpacity>
+            </View>
+          </ImageBackground>
+        </View>
       </View>
-      </View>
-      </View>
+    </View>
   );
 };
 
@@ -108,7 +117,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",
-    top:height*0.1,
+    top: height * 0.1,
   },
   topImage: {
     width: "100%",
@@ -116,7 +125,7 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   bottomImageWrapper: {
-    width: width ,
+    width: width,
     height: height * 0.57, // 50% of screen height
     borderRadius: 20,
     overflow: "hidden",
@@ -176,7 +185,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white", // Button text color
     fontSize: 18, // Text size
-    alignSelf:'center',
+    alignSelf: 'center',
     fontWeight: "bold", // Make the text bold
   },
   header: {
