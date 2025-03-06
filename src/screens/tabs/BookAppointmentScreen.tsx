@@ -17,7 +17,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { api } from "../../api/fetch";
 
 const BookAppointmentScreen = () => {
-  const [selectedProvider, setSelectedProvider] = useState<string>("");
+  const [selectedProviderId, setSelectedProvider] = useState<string>("");
   const [activeTab, setActiveTab] = useState<"walkIn" | "selectProvider">(
     "walkIn"
   );
@@ -30,11 +30,11 @@ const BookAppointmentScreen = () => {
     providersQuery.status === "pending"
       ? "Loading..."
       : providersQuery.status === "error"
-      ? "Error: " + providersQuery.error.error
+      ? "Error: " + JSON.stringify(providersQuery.error)
       : "Select Provider";
 
-  const selectedProviderName =
-    providers.find((p) => p.id === selectedProvider)?.user_name || status;
+  const selectedProvider =
+    providers.find((p) => p.id === selectedProviderId)?.user_name || status;
 
   return (
     <View style={styles.container}>
@@ -97,7 +97,7 @@ const BookAppointmentScreen = () => {
               onPress={() => setShowProviders(true)}
             >
               <Text style={styles.dropdownButtonText}>
-                {selectedProviderName}
+                {selectedProvider || status}
               </Text>
               <Ionicons
                 name="chevron-down"
@@ -131,11 +131,11 @@ const BookAppointmentScreen = () => {
                         <Text
                           style={[
                             styles.providerItemText,
-                            selectedProvider === provider.id &&
+                            selectedProviderId === provider.id &&
                               styles.selectedProviderText,
                           ]}
                         >
-                          {provider.user_name!}
+                          {provider.first_name! + " " + provider.last_name!}
                         </Text>
                       </TouchableOpacity>
                     ))}
