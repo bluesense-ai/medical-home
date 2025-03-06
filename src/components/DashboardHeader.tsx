@@ -5,9 +5,10 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Ionicons, MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors } from '../theme/colors';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../store/useTheme';
 
 export type DashboardHeaderProps = {
   title: string;
@@ -41,6 +42,32 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   rightIcons
 }) => {
   const navigation = useNavigation();
+  const theme = useTheme(state => state.theme);
+  const styles = theme === 'dark' ? stylesDark : stylesLight;
+  const iconColor = theme === 'dark' ? colors.base.white : colors.base.black;
+
+  const renderIcon = (iconName: string, iconFamily: string, onPress: () => void) => {
+    if (iconFamily === 'Ionicons') {
+      return (
+        <TouchableOpacity 
+          style={styles.iconButton}
+          onPress={onPress}
+        >
+          <Ionicons name={iconName as any} size={24} color={iconColor} />
+        </TouchableOpacity>
+      );
+    } else if (iconFamily === 'MaterialCommunityIcons') {
+      return (
+        <TouchableOpacity 
+          style={styles.iconButton}
+          onPress={onPress}
+        >
+          <MaterialCommunityIcons name={iconName as any} size={24} color={iconColor} />
+        </TouchableOpacity>
+      );
+    }
+    return null;
+  };
 
   return (
     <View style={styles.container}>
@@ -48,9 +75,9 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
         {showBackButton && (
           <TouchableOpacity 
             style={styles.iconButton}
-            onPress={() => navigation.goBack()}
+            onPress={onBackPress || (() => navigation.goBack())}
           >
-            <Ionicons name="chevron-back" size={24} color={colors.base.white} />
+            <Ionicons name="chevron-back" size={24} color={iconColor} />
           </TouchableOpacity>
         )}
         {title && <Text style={styles.title}>{title}</Text>}
@@ -58,12 +85,19 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 
       <View style={styles.rightSection}>
         {rightComponent}
+        
+        {rightIcons && rightIcons.map((icon, index) => (
+          <React.Fragment key={`custom-icon-${index}`}>
+            {renderIcon(icon.icon, icon.iconFamily, icon.onPress)}
+          </React.Fragment>
+        ))}
+        
         {showGrid && (
           <TouchableOpacity 
             style={styles.iconButton}
             onPress={onGridPress}
           >
-            <Ionicons name="grid-outline" size={24} color={colors.base.white} />
+            <Ionicons name="grid-outline" size={24} color={iconColor} />
           </TouchableOpacity>
         )}
         {showSearch && (
@@ -71,7 +105,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             style={styles.iconButton}
             onPress={onSearchPress}
           >
-            <Ionicons name="search" size={24} color={colors.base.white} />
+            <Ionicons name="search" size={24} color={iconColor} />
           </TouchableOpacity>
         )}
         {showAdd && (
@@ -79,7 +113,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             style={styles.iconButton}
             onPress={onAddPress}
           >
-            <Ionicons name="add" size={24} color={colors.base.white} />
+            <Ionicons name="add" size={24} color={iconColor} />
           </TouchableOpacity>
         )}
       </View>
@@ -87,7 +121,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   );
 };
 
-const styles = StyleSheet.create({
+const stylesDark = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -110,6 +144,35 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     color: colors.base.white,
+  },
+  iconButton: {
+    padding: 8,
+  },
+});
+
+const stylesLight = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    backgroundColor: colors.base.white,
+  },
+  leftSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  rightSection: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: colors.base.black,
   },
   iconButton: {
     padding: 8,

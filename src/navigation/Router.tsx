@@ -1,6 +1,7 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 import { useAuthStore } from '../store/useAuthStore';
+import { SerializableEvent } from './types';
 
 // Screens
 import WelcomeScreen from '../screens/Welcome/WelcomeScreen';
@@ -28,7 +29,9 @@ import type { Patient } from '../data/patients';
 import AIVisitPatient from '../screens/ai-visits/VisitPatient';
 import EventDetailScreen from '../screens/dashboard/EventDetailScreen';
 import YearlyCalendarScreen from '../screens/dashboard/YearlyCalendarScreen';
+
 import { QueryClient, QueryClientProvider, QueryErrorResetBoundary } from '@tanstack/react-query';
+import EventFormScreen from '../screens/dashboard/EventFormScreen';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -53,8 +56,9 @@ export type RootStackParamList = {
   AIVisitsDashboard: undefined;
   AIVisitsPage: undefined;
   AIVisitPatient: { id: Patient['id'] };
-  EventDetail: undefined;
+  EventDetail: { event: SerializableEvent };
   YearlyCalendar: undefined;
+  EventForm: { selectedDate?: string };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -64,34 +68,37 @@ const Router = () => {
   const queryClient = new QueryClient();
 
   return (
+
     <QueryClientProvider client={queryClient}>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="Loading" component={LoadingScreen} />
-        <Stack.Screen name="RegisterPage" component={RegisterPage} />
-        <Stack.Screen name="RegisterPage2" component={RegisterPage2} />
-        <Stack.Screen name="RegisterVerification" component={RegisterVerification} />
-        <Stack.Screen name="VerificationCode" component={VerificationCode} />
-        <Stack.Screen name="WantToRegister" component={WantToRegister} />
-        <Stack.Screen name="HomeScreen" component={HomeScreen} />
-        <Stack.Screen name="VerificationCodeLogin" component={VerificationCodeLogin} />
-        <Stack.Screen name="WeFoundYou" component={WeFoundYou} />
-        <Stack.Screen name="LoginVerification" component={LoginVerification} />
-        <Stack.Screen name="ProvideInformation" component={ProvideInformation} />
-        <Stack.Screen name="DashboardScreen" component={DashboardScreen} />
-        <Stack.Screen name="DashboardEventsScreen" component={DashboardEventsScreen} />
-        <Stack.Screen name="AIVisitsLanding" component={AIVisitsLanding} />
-        <Stack.Screen name="AIVisitsDashboard" component={AIVisitsDashboard} />
-        <Stack.Screen name="AIVisitsPage" component={AIVisitsPage} />
-        <Stack.Screen name="AIVisitPatient" component={AIVisitPatient} />
-        <Stack.Screen name="MainTabs" component={BottomTabs} />
-        <Stack.Screen name="EditProfile" component={EditProfileScreen} />
-        <Stack.Screen name='LoginPage' component={LoginPage} />
-        <Stack.Screen name="LoginSwitchVerification" component={LoginSwitchVerification} />
-        <Stack.Screen name="EventDetail" component={EventDetailScreen} />
-        <Stack.Screen name="YearlyCalendar" component={YearlyCalendarScreen} />
-      </Stack.Navigator>
+      <Stack.Screen name="Welcome" component={WelcomeScreen} />
+      <Stack.Screen name="Loading" component={LoadingScreen} />
+      <Stack.Screen name="RegisterPage" component={RegisterPage} />
+      <Stack.Screen name="RegisterPage2" component={RegisterPage2} />
+      <Stack.Screen name="RegisterVerification" component={RegisterVerification} />
+      <Stack.Screen name="VerificationCode" component={VerificationCode} />
+      <Stack.Screen name="WantToRegister" component={WantToRegister} />
+      <Stack.Screen name="HomeScreen" component={HomeScreen} />
+      <Stack.Screen name="VerificationCodeLogin" component={VerificationCodeLogin} />
+      <Stack.Screen name="WeFoundYou" component={WeFoundYou} />
+      <Stack.Screen name="LoginVerification" component={LoginVerification} />
+      <Stack.Screen name="ProvideInformation" component={ProvideInformation} />
+      <Stack.Screen name="DashboardScreen" component={DashboardScreen} />
+      <Stack.Screen name="DashboardEventsScreen" component={DashboardEventsScreen} />
+      <Stack.Screen name="AIVisitsLanding" component={AIVisitsLanding} />
+      <Stack.Screen name="AIVisitsDashboard" component={AIVisitsDashboard} />
+      <Stack.Screen name="AIVisitsPage" component={AIVisitsPage} />
+      <Stack.Screen name="AIVisitPatient" component={AIVisitPatient} />
+      <Stack.Screen name="MainTabs" component={BottomTabs} />
+      <Stack.Screen name="EditProfile" component={EditProfileScreen} />
+      <Stack.Screen name='LoginPage' component={LoginPage} />
+      <Stack.Screen name="LoginSwitchVerification" component={LoginSwitchVerification} />
+      <Stack.Screen name="EventDetail" component={EventDetailScreen} />
+      <Stack.Screen name="YearlyCalendar" component={YearlyCalendarScreen} />
+      <Stack.Screen name="EventForm" component={EventFormScreen} />
+    </Stack.Navigator>
     </QueryClientProvider>
+
   );
 };
 
