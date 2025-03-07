@@ -35,7 +35,6 @@ const authMiddleware: Middleware = {
 
 fetchClient.use(authMiddleware);
 
-
 const getAuthToken = async (): Promise<string | null> => {
   try {
     return (await AsyncStorage.getItem(AUTH_TOKEN_KEY)) || HARDCODED_TOKEN;
@@ -48,7 +47,6 @@ const getAuthToken = async (): Promise<string | null> => {
 export const saveAuthToken = async (token: string): Promise<void> => {
   try {
     await AsyncStorage.setItem(AUTH_TOKEN_KEY, token);
-    console.log("Auth token saved");
   } catch (error) {
     console.error("Error saving auth token:", error);
   }
@@ -57,7 +55,6 @@ export const saveAuthToken = async (token: string): Promise<void> => {
 const clearAuthToken = async (): Promise<void> => {
   try {
     await AsyncStorage.removeItem(AUTH_TOKEN_KEY);
-    console.log("Auth token cleared");
   } catch (error) {
     console.error("Error clearing auth token:", error);
   }

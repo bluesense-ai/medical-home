@@ -19,7 +19,7 @@ const Toggle: React.FC<ToggleProps> = ({ isEnabled, onToggle }) => {
       <View style={[
         styles.dot,
         { 
-          transform: [{ translateX: isEnabled ? 20 : 0 }],
+          transform: [{ translateX: isEnabled ? 30 : 0 }],
           backgroundColor: isEnabled ? colors.main.primary : colors.base.white
         }
       ]} />
