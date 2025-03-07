@@ -13,25 +13,9 @@ import { useMutation } from "@tanstack/react-query";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useProvider } from "../../store/useProvider";
 import { useUserStore } from "../../store/useUserStore";
+import { api, saveAuthToken } from "../../api/fetch";
 
 const { height, width } = Dimensions.get("window");
-
-const providerVerification = async (username, accessCode, optChannel) => {
-  const respone = await fetch('https://sandbox-backend.medicalhome.cloud/api/auth/verify-verification-code-provider', {
-    method: 'POST',
-    body: JSON.stringify({
-      username,
-      accessCode,
-      optChannel,
-    })
-  });
-
-  if (!respone.ok) {
-    throw new Error('Provider not found')
-  }
-
-  return respone.json();
-}
 
 const LoginSwitchVerification = ({ navigation }) => {
 
@@ -40,10 +24,13 @@ const LoginSwitchVerification = ({ navigation }) => {
   const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
   const username = useUserStore((state) => state.username);
 
-  const { mutate, isLoading, error, data } = useMutation({
-    mutationFn: providerVerification,
-    onSuccess: () => {
+  const { mutate, isLoading, error, data } = api.useMutation("post", "/auth/verify-verification-code-provider",{
+    onSuccess: (data) => {
       Alert.alert('Success', 'Access code verified!');
+
+      saveAuthToken(data.token);
+      setIsAuthenticated(true);
+
       if (provider === "doctor") {
         navigation.navigate("DashboardScreen");
       } else {

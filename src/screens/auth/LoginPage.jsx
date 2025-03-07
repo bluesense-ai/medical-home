@@ -3,25 +3,9 @@ import { View, Text, TextInput, Pressable, StyleSheet, Dimensions, Alert, SafeAr
 import { useTheme } from '../../store/useTheme';
 import { useUserStore } from '../../store/useUserStore';
 import { useMutation } from '@tanstack/react-query';
+import { api } from '../../api/fetch';
 
 const { height, width } = Dimensions.get('window');
-
-
-const loginProvider = async (username, otpChannel) => {
-    const response = await fetch('https://sandbox-backend.medicalhome.cloud/api/auth/provider-login', {
-        method: 'POST',
-        body: JSON.stringify({
-            username,
-            otpChannel,
-        }),
-    });
-
-    if (!response.ok) {
-        throw new Error('Username not found');
-    }
-
-    return response.json();
-};
 
 
 const Login = ({ navigation }) => {
@@ -32,8 +16,7 @@ const Login = ({ navigation }) => {
     const [username, setLocalUsername] = useState('');
     const [otpChannel, setOtpChannel] = useState('sms');
 
-    const { mutate, isLoading, error, data } = useMutation({
-        mutationFn: loginProvider, // Your login API call
+    const { mutate, isLoading, error, data } = api.useMutation("post", "/auth/provider-login", {
         onSuccess: () => {
             Alert.alert('Success', 'Code sent successfully!');
             navigation.navigate('LoginSwitchVerification');
