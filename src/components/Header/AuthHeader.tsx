@@ -1,8 +1,17 @@
 import React from "react";
 import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
+import { RootStackParamList } from "../../navigation/types";
+import { StackNavigationProp } from "@react-navigation/stack";
 // import processbar from '../../../assets/'
-const AuthHeader = ({ navigation, currentStep, totalSteps }) => {
+
+type AuthHeaderProps = {
+  navigation: StackNavigationProp<RootStackParamList>;
+  currentStep: number;
+  totalSteps: number;
+};
+
+const AuthHeader = ({ navigation, currentStep, totalSteps }: AuthHeaderProps) => {
   // Calculate the width of the green bar as a percentage of the current step
   const progress = (currentStep / totalSteps) * 100;
 
@@ -50,7 +59,7 @@ const AuthHeader = ({ navigation, currentStep, totalSteps }) => {
 
       {/* Close Button */}
       <TouchableOpacity
-        onPress={() => navigation.navigate("Home")}
+        onPress={() => navigation.navigate("HomeScreen")}
         style={styles.iconContainer}
       >
         <Ionicons name="close" size={24} color="black" />

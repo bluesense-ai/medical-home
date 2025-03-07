@@ -9,10 +9,15 @@ import {
 } from "react-native";
 import { useAuthStore } from "../../store/useAuthStore";
 import AuthHeader from "../../components/Header/AuthHeader";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../../navigation/types";
 
 const { height, width } = Dimensions.get("window");
 
-const LoginVerification = ({ navigation }) => {
+const LoginVerification = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
   const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
   // async
   const handleSubmit = () => {
@@ -26,43 +31,49 @@ const LoginVerification = ({ navigation }) => {
   return (
     <View style={styles.container}>
       {/* Background Image covering only the bottom half */}
-                    <View style={styles.whiteBackground}>
-      
-      <AuthHeader
-        navigation={navigation}
-        currentStep={4} // You can dynamically set this value based on your logic
-        totalSteps={4} // Total steps in your process
-      />
-           <View style={styles.topImageWrapper}>
-               
-            <ImageBackground source={require('../../../assets/bgimgrg2.jpg')} style={styles.topImage} />
-           </View>      
-   
-        <View style={styles.bottomImageWrapper}>
-
-      <ImageBackground
-        source={require("./image.jpg")}
-        style={styles.imageBackground}
-      >
-        {/* Form Overlay */}
-        <View style={styles.overlay}>
-          {/* Heading */}
-          <Text style={styles.title}>Verification</Text>
-
-          {/* Health Card Number Field */}
-          <Text style={styles.label}>Choose your Verification method</Text>
-
-          <Pressable style={styles.registerButtonPhone} onPress={handleSubmit}>
-            <Text style={styles.registerButtonText}>Phone Number</Text>
-          </Pressable>
-          {/* Register Button */}
-          <Pressable style={styles.registerButtonEmail} onPress={handleSubmit}>
-            <Text style={styles.registerButtonText}>Email Address</Text>
-          </Pressable>
+      <View style={styles.whiteBackground}>
+        <AuthHeader
+          navigation={navigation}
+          currentStep={4} // You can dynamically set this value based on your logic
+          totalSteps={4} // Total steps in your process
+        />
+        <View style={styles.topImageWrapper}>
+          <ImageBackground
+            source={require("../../../assets/bgimgrg2.jpg")}
+            style={styles.topImage}
+          />
         </View>
-      </ImageBackground>
-    </View>
-    </View>
+
+        <View style={styles.bottomImageWrapper}>
+          <ImageBackground
+            source={require("./image.jpg")}
+            style={styles.imageBackground}
+          >
+            {/* Form Overlay */}
+            <View style={styles.overlay}>
+              {/* Heading */}
+              <Text style={styles.title}>Verification</Text>
+
+              {/* Health Card Number Field */}
+              <Text style={styles.label}>Choose your Verification method</Text>
+
+              <Pressable
+                style={styles.registerButtonPhone}
+                onPress={handleSubmit}
+              >
+                <Text style={styles.registerButtonText}>Phone Number</Text>
+              </Pressable>
+              {/* Register Button */}
+              <Pressable
+                style={styles.registerButtonEmail}
+                onPress={handleSubmit}
+              >
+                <Text style={styles.registerButtonText}>Email Address</Text>
+              </Pressable>
+            </View>
+          </ImageBackground>
+        </View>
+      </View>
     </View>
   );
 };
@@ -78,7 +89,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",
-    top:height*0.1,
+    top: height * 0.1,
   },
   topImage: {
     width: "100%",
@@ -86,8 +97,8 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   bottomImageWrapper: {
-    width: width ,
-    height: height*0.8, // 50% of screen height
+    width: width,
+    height: height * 0.8, // 50% of screen height
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",
@@ -97,7 +108,7 @@ const styles = StyleSheet.create({
   },
   bottomImage: {
     width: "100%",
-    height: height*0.70,
+    height: height * 0.7,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -162,8 +173,8 @@ const styles = StyleSheet.create({
   },
   whiteBackground: {
     flex: 1,
-    backgroundColor: "white",},
-},
-);
+    backgroundColor: "white",
+  },
+});
 
 export default LoginVerification;
