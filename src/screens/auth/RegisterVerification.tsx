@@ -7,12 +7,14 @@ import {
   Pressable,
   StyleSheet,
   Dimensions,
+  Alert,
 } from "react-native";
 import RadioGroup, { RadioButtonProps } from "react-native-radio-buttons-group";
 import AuthHeader from "../../components/Header/AuthHeader";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
+import { api } from "../../api/fetch";
 
 const { height, width } = Dimensions.get("window");
 
@@ -21,6 +23,8 @@ type Props = StackScreenProps<RootStackParamList, "RegisterVerification">;
 const RegisterVerification = (props: Props) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
+  const [email, setEmail] = useState("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [selectedId, setselectedId] = useState("");
   const radioButtons = [
     {
@@ -43,11 +47,48 @@ const RegisterVerification = (props: Props) => {
     },
   ] satisfies RadioButtonProps[];
 
+  const register = api.useMutation("post", "/auth/patient-register", {
+    onSuccess: ({ patientId }) => {
+      navigation.navigate("VerificationCode", {
+        ...props.route.params,
+        patientId: patientId!,
+        otpChannel: selectedId,
+      });
+    },
+  });
+
   function handleRegister() {
-    navigation.navigate("VerificationCode", {
-      ...props.route.params,
-      otpChannel: selectedId,
-      patientId: "comes from register patient"
+    if (!selectedId) {
+      Alert.alert("Error", "Please select a verification method");
+      return;
+    }
+
+    if (!email) {
+      Alert.alert("Error", "Please enter your email address");
+      return;
+    }
+
+    if (!phoneNumber) {
+      Alert.alert("Error", "Please enter your phone number");
+      return;
+    }
+
+    if (register.isPending) {
+      return;
+    }
+
+    register.mutate({
+      body: {
+        firstName: props.route.params.firstName,
+        lastName: props.route.params.lastName,
+        dateOfBirth: props.route.params.dateOfBirth,
+        sex: "Male",
+        emailAddress: email,
+        healthCardNumber: props.route.params.healthCardNumber,
+        mobileNumber: phoneNumber,
+        otpChannel: selectedId,
+        preferredClinicId: props.route.params.clinicId,
+      },
     });
   }
 
@@ -74,24 +115,25 @@ const RegisterVerification = (props: Props) => {
               {/* Heading */}
               <Text style={styles.title}>Register</Text>
 
-              {/* Health Card Number Field */}
               <Text style={styles.label}>Email</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Email"
                 placeholderTextColor="#ddd"
+                value={email}
+                onChangeText={setEmail}
               />
 
-              {/* First Name */}
               <Text style={styles.label}>Phone Number</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Phone Number"
                 placeholderTextColor="#ddd"
                 keyboardType="numeric"
+                value={phoneNumber}
+                onChangeText={setPhoneNumber}
               />
 
-              {/* Last Name */}
               <Text style={styles.label}>
                 How would you like to verify your account
               </Text>
@@ -120,6 +162,7 @@ const RegisterVerification = (props: Props) => {
               <Pressable
                 style={styles.registerButton}
                 onPress={handleRegister}
+                disabled={register.isPending}
               >
                 <Text style={styles.registerButtonText}>Register</Text>
               </Pressable>

@@ -17,7 +17,6 @@ import DashboardEventsScreen from '../screens/dashboard/DashboardEventsScreen';
 import HomeScreen from "../screens/tabs/HomeScreen";
 import ProvideInformation from '../screens/auth/ProvideInformation';
 import WeFoundYou from '../screens/auth/WeFoundYou';
-import VerificationCodeLogin from '../screens/auth/VerificationCodeLogin';
 import LoginVerification from '../screens/auth/LoginVerification';
 import LoginPage from '../screens/auth/LoginPage';
 import LoginSwitchVerification from '../screens/auth/LoginSwitchVerification';
@@ -48,7 +47,6 @@ const Router = () => {
         <Stack.Screen name="VerificationCode" component={VerificationCode} />
         <Stack.Screen name="WantToRegister" component={WantToRegister} />
         <Stack.Screen name="HomeScreen" component={HomeScreen} />
-        <Stack.Screen name="VerificationCodeLogin" component={VerificationCodeLogin} />
         <Stack.Screen name="WeFoundYou" component={WeFoundYou} />
         <Stack.Screen name="LoginVerification" component={LoginVerification} />
         <Stack.Screen name="ProvideInformation" component={ProvideInformation} />

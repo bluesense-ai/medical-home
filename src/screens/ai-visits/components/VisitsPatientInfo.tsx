@@ -10,7 +10,7 @@ import type { Patient } from "../../../data/patients";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../../navigation/Router";
+import { RootStackParamList } from "../../../navigation/types";
 import { useTheme } from "../../../store/useTheme";
 
 type Props = {

@@ -9,7 +9,7 @@ import {
 import { type Patient, patients } from "../../../data/patients";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../../navigation/Router";
+import { RootStackParamList } from "../../../navigation/types";
 import { useTheme } from "../../../store/useTheme";
 
 const VisitsWorkflow = () => {

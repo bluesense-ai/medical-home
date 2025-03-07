@@ -7,10 +7,13 @@ import {
   Pressable,
   StyleSheet,
   Dimensions,
+  Alert,
 } from "react-native";
 import AuthHeader from "../../components/Header/AuthHeader";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
+import { api } from "../../api/fetch";
+import { useUserStore } from "../../store/useUserStore";
 
 const { height, width } = Dimensions.get("window");
 
@@ -24,13 +27,32 @@ const VerificationCode = (props: Props) => {
 
   const [accessCode, setAccessCode] = useState("");
 
-  const handleSubmit = async () => {
-    navigation.navigate("MainTabs");
+  const setUser = useUserStore((state) => state.setUser);
 
-    // verify using
-    params.patientId;
-    params.otpChannel;
-    accessCode;
+  const verify = api.useMutation(
+    "post",
+    "/auth/access_code_verification_patient/{uid}",
+    {
+      onSuccess: ({ data }) => {
+        setUser(data!);
+        navigation.navigate("MainTabs");
+      },
+      onError: (error) => {
+        console.error(error);
+      },
+    }
+  );
+
+  const handleSubmit = async () => {
+    if (!accessCode) {
+      Alert.alert("Error", "Please enter the access code");
+      return;
+    }
+
+    verify.mutate({
+      params: { path: { uid: params.patientId } },
+      body: { accessCode },
+    });
   };
 
   return (
@@ -68,7 +90,11 @@ const VerificationCode = (props: Props) => {
               />
 
               {/* Register Button */}
-              <Pressable style={styles.registerButton} onPress={handleSubmit}>
+              <Pressable
+                style={styles.registerButton}
+                onPress={handleSubmit}
+                disabled={verify.isPending}
+              >
                 <Text style={styles.registerButtonText}>Submit</Text>
               </Pressable>
             </View>

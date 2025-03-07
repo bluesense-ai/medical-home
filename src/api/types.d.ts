@@ -24,6 +24,10 @@ export interface paths {
             requestBody: {
                 content: {
                     "application/json": {
+                        firstName?: string;
+                        lastName?: string;
+                        sex?: string;
+                        dateOfBirth?: string;
                         /** @description Unique health card number for the patient. */
                         healthCardNumber?: string;
                         /** @description Mobile number of the patient. */

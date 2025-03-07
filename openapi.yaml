@@ -30,6 +30,14 @@ paths:
             schema:
               type: object
               properties:
+                firstName:
+                  type: string
+                lastName:
+                  type: string
+                sex:
+                  type: string
+                dateOfBirth:
+                  type: string
                 healthCardNumber:
                   type: string
                   description: Unique health card number for the patient.

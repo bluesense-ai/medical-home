@@ -21,7 +21,6 @@ export type RootStackParamList = {
   HomeScreen: undefined;
   ProvideInformation: undefined;
   WeFoundYou: undefined;
-  VerificationCodeLogin: undefined;
   LoginVerification: undefined;
   LoginPage: undefined;
   LoginSwitchVerification: undefined;

@@ -10,18 +10,23 @@ import {
 import { useAuthStore } from "../../store/useAuthStore";
 import AuthHeader from "../../components/Header/AuthHeader";
 import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
 
 const { height, width } = Dimensions.get("window");
 
-const LoginVerification = () => {
+type Props = StackScreenProps<RootStackParamList, "RegisterPage2">;
+
+const LoginVerification = (props: Props) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
   // async
   const handleSubmit = () => {
-    navigation.navigate("VerificationCodeLogin");
+    navigation.navigate("VerificationCode", {
+      clinicId: props.route.params.clinicId,
+      otpChannel: "email",
+    });
 
     // await
     setIsAuthenticated(false); // Önce authentication'ı güncelle
