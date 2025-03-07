@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   View,
   Text,
@@ -8,62 +8,60 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import RadioGroup from "react-native-radio-buttons-group";
-import { useAuthStore } from "../../store/useAuthStore";
 import AuthHeader from "../../components/Header/AuthHeader";
+import { StackScreenProps } from "@react-navigation/stack";
+import { RootStackParamList } from "../../navigation/types";
 const { height, width } = Dimensions.get("window");
 
-const VerificationCodeLogin = ({ navigation }) => {
-  const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
-  //   async
+type Props = StackScreenProps<RootStackParamList, "VerificationCodeLogin">;
+
+const VerificationCodeLogin = ({ navigation }: Props) => {
   const handleSubmit = () => {
-    // await
-    setIsAuthenticated(true); // First update authentication
-    // Then navigate
     navigation.navigate("HomeScreen");
   };
 
   return (
     <View style={styles.container}>
-    <View style={styles.whiteBackground}>
-    <AuthHeader
-        navigation={navigation}
-        currentStep={5} // You can dynamically set this value based on your logic
-        totalSteps={5} // Total steps in your process
-      />
-      {/* Background Image covering only the bottom half */}
-       <View style={styles.topImageWrapper}>
-                 
-              <ImageBackground source={require('../../../assets/bgimgrg2.jpg')} style={styles.topImage} />
-             </View>  
-        <View style={styles.bottomImageWrapper}>
-
-      <ImageBackground
-        source={require("./image.jpg")}
-        style={styles.imageBackground}
-      >
-        {/* Form Overlay */}
-        <View style={styles.overlay}>
-          {/* Heading */}
-          <Text style={styles.title}>Verification</Text>
-
-          {/* Health Card Number Field */}
-          <Text style={styles.label}>Enter the access code provided</Text>
-          <TextInput
-            style={styles.input}
-            placeholder="acccess code"
-            placeholderTextColor="#ddd"
-            // keyboardType="numeric"
+      <View style={styles.whiteBackground}>
+        <AuthHeader
+          navigation={navigation}
+          currentStep={5} // You can dynamically set this value based on your logic
+          totalSteps={5} // Total steps in your process
+        />
+        {/* Background Image covering only the bottom half */}
+        <View style={styles.topImageWrapper}>
+          <ImageBackground
+            source={require("../../../assets/bgimgrg2.jpg")}
+            style={styles.topImage}
           />
-
-          {/* Register Button */}
-          <Pressable style={styles.registerButton} onPress={handleSubmit}>
-            <Text style={styles.registerButtonText}>Submit</Text>
-          </Pressable>
         </View>
-      </ImageBackground>
-    </View>
-    </View>
+        <View style={styles.bottomImageWrapper}>
+          <ImageBackground
+            source={require("./image.jpg")}
+            style={styles.imageBackground}
+          >
+            {/* Form Overlay */}
+            <View style={styles.overlay}>
+              {/* Heading */}
+              <Text style={styles.title}>Verification</Text>
+
+              {/* Health Card Number Field */}
+              <Text style={styles.label}>Enter the access code provided</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="acccess code"
+                placeholderTextColor="#ddd"
+                // keyboardType="numeric"
+              />
+
+              {/* Register Button */}
+              <Pressable style={styles.registerButton} onPress={handleSubmit}>
+                <Text style={styles.registerButtonText}>Submit</Text>
+              </Pressable>
+            </View>
+          </ImageBackground>
+        </View>
+      </View>
     </View>
   );
 };
@@ -79,7 +77,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",
-    top:height*0.1,
+    top: height * 0.1,
   },
   topImage: {
     width: "100%",
@@ -87,8 +85,8 @@ const styles = StyleSheet.create({
     resizeMode: "cover",
   },
   bottomImageWrapper: {
-    width: width ,
-    height: height*0.7, // 50% of screen height
+    width: width,
+    height: height * 0.7, // 50% of screen height
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",
@@ -98,7 +96,7 @@ const styles = StyleSheet.create({
   },
   bottomImage: {
     width: "100%",
-    height: height*0.70,
+    height: height * 0.7,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -150,8 +148,8 @@ const styles = StyleSheet.create({
   },
   whiteBackground: {
     flex: 1,
-    backgroundColor: "white",},
-
+    backgroundColor: "white",
+  },
 });
 
 export default VerificationCodeLogin;

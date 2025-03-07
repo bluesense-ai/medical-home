@@ -12,7 +12,7 @@ import { Ionicons } from "@expo/vector-icons"; // Assuming Expo, adjust if neede
 import AuthHeader from "../../components/Header/AuthHeader";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../navigation/Router";
+import { RootStackParamList } from "../../navigation/types";
 import GreenProfile from "../../components/Svg/GreenProfile";
 
 const { height, width } = Dimensions.get("window");

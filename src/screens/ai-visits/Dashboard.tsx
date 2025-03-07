@@ -6,7 +6,7 @@ import {
   StyleSheet,
   Platform,
 } from "react-native";
-import { RootStackParamList } from "../../navigation/Router";
+import { RootStackParamList } from "../../navigation/types";
 import DashboardPatientInfoForm from "./components/DashboardPatientInfo";
 import { Header } from "./components/Header";
 import { useTheme } from "../../store/useTheme";

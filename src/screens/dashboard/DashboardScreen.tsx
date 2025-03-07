@@ -1,17 +1,24 @@
-import React, { useRef } from 'react';
-import { View, StyleSheet, SafeAreaView, TouchableOpacity, Image, Animated } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../navigation/Router';
-import { colors } from '../../theme/colors';
-import DashboardBackground from '../../components/DashboardBackground';
-import AnimatedSection from '../../components/AnimatedSection';
-import DashboardMenuButtons from '../../components/DashboardMenuButtons';
-import { useTheme } from '../../store/useTheme';
+import React, { useRef } from "react";
+import {
+  View,
+  StyleSheet,
+  SafeAreaView,
+  TouchableOpacity,
+  Image,
+  Animated,
+} from "react-native";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../../navigation/types";
+import { colors } from "../../theme/colors";
+import DashboardBackground from "../../components/DashboardBackground";
+import AnimatedSection from "../../components/AnimatedSection";
+import DashboardMenuButtons from "../../components/DashboardMenuButtons";
+import { useTheme } from "../../store/useTheme";
 
 const DashboardScreen: React.FC = () => {
-  const theme = useTheme(state => state.theme);
-  const styles = theme === 'dark' ? stylesDark : stylesLight;
+  const theme = useTheme((state) => state.theme);
+  const styles = theme === "dark" ? stylesDark : stylesLight;
 
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const scrollY = useRef(new Animated.Value(0)).current;
@@ -30,17 +37,23 @@ const DashboardScreen: React.FC = () => {
       >
         {/* Background Shape */}
         <View style={styles.backgroundContainer}>
-          <DashboardBackground fill={theme === "dark" ? colors.alternativeDark.secondary : colors.main.primary} />
+          <DashboardBackground
+            fill={
+              theme === "dark"
+                ? colors.alternativeDark.secondary
+                : colors.main.primary
+            }
+          />
         </View>
 
         {/* Profile Image */}
         <AnimatedSection isInitial delay={100} style={styles.header}>
-          <TouchableOpacity 
+          <TouchableOpacity
             style={styles.profileButton}
-            onPress={() => navigation.navigate('EditProfile')}
+            onPress={() => navigation.navigate("EditProfile")}
           >
             <Image
-              source={require('../../../assets/images/profile-placeholder.png')}
+              source={require("../../../assets/images/profile-placeholder.png")}
               style={styles.profileImage}
             />
           </TouchableOpacity>
@@ -68,7 +81,7 @@ const stylesDark = StyleSheet.create({
     paddingBottom: 40,
   },
   backgroundContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: -100,
     left: -20,
     right: -20,
@@ -80,13 +93,13 @@ const stylesDark = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 74,
     paddingBottom: 19,
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
     zIndex: 1,
   },
   profileButton: {
     width: 58,
     height: 58,
-    overflow: 'hidden',
+    overflow: "hidden",
     borderRadius: 29,
     elevation: 5,
     shadowColor: colors.base.black,
@@ -98,14 +111,14 @@ const stylesDark = StyleSheet.create({
     shadowRadius: 3.84,
   },
   profileImage: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     borderRadius: 29,
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 70,
   },
 });
@@ -123,7 +136,7 @@ const stylesLight = StyleSheet.create({
     paddingBottom: 40,
   },
   backgroundContainer: {
-    position: 'absolute',
+    position: "absolute",
     top: -100,
     left: -20,
     right: -20,
@@ -135,13 +148,13 @@ const stylesLight = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 74,
     paddingBottom: 19,
-    alignItems: 'flex-end',
+    alignItems: "flex-end",
     zIndex: 1,
   },
   profileButton: {
     width: 58,
     height: 58,
-    overflow: 'hidden',
+    overflow: "hidden",
     borderRadius: 29,
     elevation: 5,
     shadowColor: colors.base.black,
@@ -153,16 +166,16 @@ const stylesLight = StyleSheet.create({
     shadowRadius: 3.84,
   },
   profileImage: {
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     borderRadius: 29,
   },
   content: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: 70,
   },
 });
 
-export default DashboardScreen; 
+export default DashboardScreen;

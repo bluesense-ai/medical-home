@@ -1,9 +1,17 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView } from 'react-native';
-import { colors } from '../../theme/colors';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../navigation/Router';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
+} from "react-native";
+import { colors } from "../../theme/colors";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../../navigation/types";
 
 interface PersonalInfo {
   name: string;
@@ -22,7 +30,7 @@ const PERSONAL_INFO: PersonalInfo = {
   sex: "Male",
   pronouns: "He/Him",
   phone: "306 (123) 4567",
-  email: "santiago@pgrminc.com"
+  email: "santiago@pgrminc.com",
 };
 
 const ProfileScreen = () => {
@@ -35,8 +43,8 @@ const ProfileScreen = () => {
 
         {/* Profile Image */}
         <View style={styles.profileImageContainer}>
-          <Image 
-            source={require('../../../assets/images/profile-placeholder.png')} 
+          <Image
+            source={require("../../../assets/images/profile-placeholder.png")}
             style={styles.profileImage}
           />
           <Text style={styles.name}>{PERSONAL_INFO.name}</Text>
@@ -44,7 +52,10 @@ const ProfileScreen = () => {
 
         {/* Info Card */}
         <View style={styles.infoCard}>
-          <InfoItem label="Health card number" value={PERSONAL_INFO.healthCardNumber} />
+          <InfoItem
+            label="Health card number"
+            value={PERSONAL_INFO.healthCardNumber}
+          />
           <InfoItem label="Date of birth" value={PERSONAL_INFO.dateOfBirth} />
           <InfoItem label="Sex" value={PERSONAL_INFO.sex} />
           <InfoItem label="Pronouns" value={PERSONAL_INFO.pronouns} />
@@ -53,9 +64,9 @@ const ProfileScreen = () => {
         </View>
 
         {/* Edit Button */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.editButton}
-          onPress={() => navigation.navigate('EditProfile')}
+          onPress={() => navigation.navigate("EditProfile")}
         >
           <Text style={styles.editButtonText}>Edit</Text>
         </TouchableOpacity>
@@ -81,20 +92,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     paddingTop: 20,
     paddingBottom: 40,
-    alignItems: 'center',
+    alignItems: "center",
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     lineHeight: 61,
     color: colors.base.black,
     marginBottom: 28,
     marginTop: 28,
-    textAlign:"center",
-    alignSelf: 'center',
+    textAlign: "center",
+    alignSelf: "center",
   },
   profileImageContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 32,
   },
   profileImage: {
@@ -105,11 +116,11 @@ const styles = StyleSheet.create({
   },
   name: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: colors.base.black,
   },
   infoCard: {
-    width: '100%',
+    width: "100%",
     backgroundColor: colors.main.info,
     borderRadius: 2,
     paddingVertical: 20,
@@ -123,12 +134,12 @@ const styles = StyleSheet.create({
   infoLabel: {
     fontSize: 16,
     color: colors.base.white,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   infoValue: {
     fontSize: 14,
     color: colors.base.white,
-    fontWeight: 'regular',
+    fontWeight: "regular",
   },
   editButton: {
     backgroundColor: colors.main.secondary,
@@ -136,14 +147,14 @@ const styles = StyleSheet.create({
     paddingHorizontal: 36,
     borderRadius: 12,
     width: 114,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 80,
   },
   editButtonText: {
     color: colors.base.white,
     fontSize: 14,
-    fontWeight: 'semibold',
+    fontWeight: "semibold",
   },
 });
 
-export default ProfileScreen; 
+export default ProfileScreen;

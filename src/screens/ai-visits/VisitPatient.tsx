@@ -1,5 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import { RootStackParamList } from "../../navigation/Router";
+import { RootStackParamList } from "../../navigation/types";
 import {
   SafeAreaView,
   StatusBar,

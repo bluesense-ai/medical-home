@@ -1,11 +1,20 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, SafeAreaView, TextInput } from 'react-native';
-import { colors } from '../../theme/colors';
-import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../navigation/Router';
-import * as ImagePicker from 'expo-image-picker';
+import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  ScrollView,
+  SafeAreaView,
+  TextInput,
+} from "react-native";
+import { colors } from "../../theme/colors";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../../navigation/types";
+import * as ImagePicker from "expo-image-picker";
 
 interface EditProfileScreenProps {
   navigation: StackNavigationProp<RootStackParamList>;
@@ -17,9 +26,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = () => {
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    
-    if (status !== 'granted') {
-      alert('Permission required to access photos!');
+
+    if (status !== "granted") {
+      alert("Permission required to access photos!");
       return;
     }
 
@@ -39,7 +48,10 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = () => {
     <SafeAreaView style={styles.container}>
       {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={styles.backButton}
+        >
           <Ionicons name="arrow-back" size={24} color={colors.base.black} />
         </TouchableOpacity>
       </View>
@@ -50,8 +62,12 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = () => {
         {/* Profile Image */}
         <View style={styles.profileImageContainer}>
           <TouchableOpacity onPress={pickImage} style={styles.imageWrapper}>
-            <Image 
-              source={image ? { uri: image } : require('../../../assets/images/profile-placeholder.png')} 
+            <Image
+              source={
+                image
+                  ? { uri: image }
+                  : require("../../../assets/images/profile-placeholder.png")
+              }
               style={styles.profileImage}
             />
             <View style={styles.editImageButton}>
@@ -75,7 +91,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = () => {
         </View>
 
         {/* Done Button */}
-        <TouchableOpacity 
+        <TouchableOpacity
           style={styles.doneButton}
           onPress={() => navigation.goBack()}
         >
@@ -94,11 +110,7 @@ interface InputFieldProps {
 const InputField: React.FC<InputFieldProps> = ({ label, value }) => (
   <View style={styles.inputContainer}>
     <Text style={styles.inputLabel}>{label}</Text>
-    <TextInput
-      style={styles.input}
-      value={value}
-      placeholder=""
-    />
+    <TextInput style={styles.input} value={value} placeholder="" />
   </View>
 );
 
@@ -108,8 +120,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.base.white,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomColor: colors.base.lightGray,
@@ -119,12 +131,12 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     lineHeight: 61,
     color: colors.base.black,
     marginBottom: 28,
     textAlign: "center",
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   scrollContent: {
     flexGrow: 1,
@@ -134,10 +146,10 @@ const styles = StyleSheet.create({
     gap: 16,
   },
   profileImageContainer: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   imageWrapper: {
-    position: 'relative',
+    position: "relative",
   },
   profileImage: {
     width: 100,
@@ -145,23 +157,23 @@ const styles = StyleSheet.create({
     borderRadius: 50,
   },
   editImageButton: {
-    position: 'absolute',
+    position: "absolute",
     right: 0,
     bottom: 0,
     backgroundColor: colors.main.secondary,
     width: 32,
     height: 32,
     borderRadius: 16,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
   },
   form: {
-    width: '100%',
+    width: "100%",
     gap: 16,
   },
   sectionTitle: {
     fontSize: 18,
-    fontWeight: '600',
+    fontWeight: "600",
     color: colors.base.black,
   },
   inputContainer: {
@@ -172,7 +184,7 @@ const styles = StyleSheet.create({
     color: colors.base.black,
   },
   input: {
-    width: '100%',
+    width: "100%",
     height: 48,
     backgroundColor: colors.base.lightGray,
     borderRadius: 8,
@@ -185,16 +197,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: 36,
     borderRadius: 12,
     width: 114,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 45,
     marginTop: 45,
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   doneButtonText: {
     color: colors.base.white,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
 });
 
-export default EditProfileScreen; 
+export default EditProfileScreen;

@@ -8,49 +8,54 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import RadioGroup from "react-native-radio-buttons-group";
-import Svg, { Path } from "react-native-svg"; // Updated import
+import RadioGroup, { RadioButtonProps } from "react-native-radio-buttons-group";
 import AuthHeader from "../../components/Header/AuthHeader";
 import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
 
 const { height, width } = Dimensions.get("window");
 
-const RegisterVerification = () => {
+type Props = StackScreenProps<RootStackParamList, "RegisterVerification">;
+
+const RegisterVerification = (props: Props) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-  const [selectedId, setselectedId] = useState("null");
+  const [selectedId, setselectedId] = useState("");
   const radioButtons = [
     {
-      id: "1", // Unique ID for the radio button
+      id: "sms",
       label: "Phone Number",
       value: "Phone Number",
       marginBottom: 10,
       marginLeft: 20,
-      color: "white", // Set radio button color to white
-      labelStyle: { color: "white" }, // Set label color to white
+      color: "white",
+      labelStyle: { color: "white" },
     },
     {
-      id: "2",
+      id: "email",
       label: "Email address",
       value: "Email address",
       marginBottom: 10,
 
-      color: "white", // Set radio button color to white
-      labelStyle: { color: "white" }, // Set label color to white
+      color: "white",
+      labelStyle: { color: "white" },
     },
-  ];
+  ] satisfies RadioButtonProps[];
+
+  function handleRegister() {
+    navigation.navigate("VerificationCode", {
+      ...props.route.params,
+      otpChannel: selectedId,
+      patientId: "comes from register patient"
+    });
+  }
 
   return (
     <View style={styles.container}>
       {/* Background Image covering only the bottom half */}
       <View style={styles.whiteBackground}>
-        <AuthHeader
-          navigation={navigation}
-          currentStep={4} // You can dynamically set this value based on your logic
-          totalSteps={4} // Total steps in your process
-        />
+        <AuthHeader navigation={navigation} currentStep={4} totalSteps={4} />
 
         <View style={styles.topImageWrapper}>
           <ImageBackground
@@ -75,7 +80,6 @@ const RegisterVerification = () => {
                 style={styles.input}
                 placeholder="Email"
                 placeholderTextColor="#ddd"
-                // keyboardType="numeric"
               />
 
               {/* First Name */}
@@ -103,11 +107,11 @@ const RegisterVerification = () => {
                   radioButtons={radioButtons}
                   onPress={setselectedId}
                   selectedId={selectedId}
-                  layout="column" // Ensures layout is column, radio buttons will stack vertically
+                  layout="column"
                   containerStyle={{
                     gap: 6,
-                    flexDirection: "column", // Explicitly set the flexDirection to 'column'
-                    alignItems: "flex-start", // Align the radio buttons to the start of the container
+                    flexDirection: "column",
+                    alignItems: "flex-start",
                   }}
                 />
               </View>
@@ -115,7 +119,7 @@ const RegisterVerification = () => {
               {/* Register Button */}
               <Pressable
                 style={styles.registerButton}
-                onPress={() => navigation.navigate("VerificationCode")} // Change to the actual screen name
+                onPress={handleRegister}
               >
                 <Text style={styles.registerButtonText}>Register</Text>
               </Pressable>
@@ -130,11 +134,11 @@ const RegisterVerification = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-end", // Push everything to the bottom
+    justifyContent: "flex-end",
   },
   topImageWrapper: {
     width: width * 0.9,
-    height: height * 0.7, // 70% of screen height
+    height: height * 0.7,
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",
@@ -147,12 +151,12 @@ const styles = StyleSheet.create({
   },
   bottomImageWrapper: {
     width: width,
-    height: height, // 50% of screen height
+    height: height,
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",
     position: "absolute",
-    bottom: height * -0.3, // Overlaps 20% of the top image
+    bottom: height * -0.3,
     zIndex: 2,
   },
   bottomImage: {
@@ -195,13 +199,13 @@ const styles = StyleSheet.create({
     borderColor: "white",
   },
   registerButton: {
-    width: "88%", // Make button the same width as the TextInput
-    height: 50, // Adjust the height of the button
-    backgroundColor: "#32CD32", // Parrot Green color
+    width: "88%",
+    height: 50,
+    backgroundColor: "#32CD32",
     justifyContent: "center",
-    borderRadius: 20, // Apply border radius for rounded corners
+    borderRadius: 20,
     alignItems: "center",
-    marginTop: 0, // Add space between button and previous field
+    marginTop: 0,
     marginBottom: 10,
   },
   registerButtonText: {

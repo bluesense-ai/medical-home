@@ -13,7 +13,7 @@ import {
 import AuthHeader from "../../components/Header/AuthHeader";
 import { api } from "../../api/fetch";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../navigation/Router";
+import { RootStackParamList } from "../../navigation/types";
 import { useNavigation } from "@react-navigation/native";
 import StatusNotAcceptingPatients from "../../components/Svg/StatusNotAcceptingPatients";
 import { ScrollView } from "react-native-gesture-handler";
@@ -28,6 +28,7 @@ const RegisterPage = () => {
 
   const NOT_ACCEPTING_PATIENTS = true;
 
+  const [healthCardNumber, setHealthCardNumber] = useState("");
   const [showClinics, setShowClinics] = useState(false);
   const [selectedClinicId, setSelectedClinicId] = useState("");
 
@@ -37,7 +38,12 @@ const RegisterPage = () => {
 
   function handleRegister() {
     // Handle registration logic here
-    navigation.navigate("RegisterPage2");
+    // if (!healthCardNumber || !selectedClinicId) return;
+
+    navigation.navigate("RegisterPage2", {
+      healthCardNumber,
+      clinicId: selectedClinicId,
+    });
   }
 
   return (
@@ -77,6 +83,8 @@ const RegisterPage = () => {
                 style={styles.input}
                 placeholder="Health Card Number"
                 placeholderTextColor="#ddd"
+                value={healthCardNumber}
+                onChangeText={setHealthCardNumber}
               />
               <Text
                 style={{
@@ -142,10 +150,7 @@ const RegisterPage = () => {
                   style={{ marginBottom: 20, padding: 0 }}
                 />
               )}
-              <Pressable
-                style={styles.registerButton}
-                onPress={handleRegister}
-              >
+              <Pressable style={styles.registerButton} onPress={handleRegister}>
                 <Text style={styles.registerButtonText}>Next</Text>
               </Pressable>
             </View>

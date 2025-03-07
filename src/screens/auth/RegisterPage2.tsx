@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -10,22 +10,36 @@ import {
 } from "react-native";
 import AuthHeader from "../../components/Header/AuthHeader";
 import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
 
 const { height, width } = Dimensions.get("window");
 
-const RegisterPage2 = () => {
+type Props = StackScreenProps<RootStackParamList, "RegisterPage2">;
+
+const RegisterPage2 = (props: Props) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const clinicId = props.route.params.clinicId;
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [dateOfBirth, setDateOfBirth] = useState("");
+
+  function handleRegister() {
+    // if (!firstName || !lastName || !dateOfBirth) return;
+
+    navigation.navigate("RegisterVerification", {
+      ...props.route.params,
+      firstName,
+      lastName,
+      dateOfBirth,
+    });
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.whiteBackground}>
-        <AuthHeader
-          navigation={navigation}
-          currentStep={4} // You can dynamically set this value based on your logic
-          totalSteps={4} // Total steps in your process
-        />
+        <AuthHeader navigation={navigation} currentStep={4} totalSteps={4} />
 
         <View style={styles.topImageWrapper}>
           <ImageBackground
@@ -51,6 +65,8 @@ const RegisterPage2 = () => {
                 style={styles.input}
                 placeholder="First Name"
                 placeholderTextColor="#ddd"
+                value={firstName}
+                onChangeText={setFirstName}
               />
 
               {/* Last Name */}
@@ -59,6 +75,8 @@ const RegisterPage2 = () => {
                 style={styles.input}
                 placeholder="Last Name"
                 placeholderTextColor="#ddd"
+                value={lastName}
+                onChangeText={setLastName}
               />
 
               {/* Date of Birth */}
@@ -68,6 +86,8 @@ const RegisterPage2 = () => {
                 placeholder="DD/MM/YYYY"
                 placeholderTextColor="#ddd"
                 keyboardType="phone-pad"
+                value={dateOfBirth}
+                onChangeText={setDateOfBirth}
               />
 
               {/* Choose Clinic */}
@@ -76,15 +96,12 @@ const RegisterPage2 = () => {
                 style={styles.input}
                 placeholder="Select Clinic"
                 placeholderTextColor="#ddd"
+                value={clinicId}
+                editable={false}
               />
 
               {/* Register Button */}
-              <Pressable
-                style={styles.registerButton}
-                onPress={() => {
-                  navigation.navigate("RegisterVerification");
-                }} // Change to the actual screen name
-              >
+              <Pressable style={styles.registerButton} onPress={handleRegister}>
                 <Text style={styles.registerButtonText}>Register</Text>
               </Pressable>
             </View>
@@ -98,11 +115,11 @@ const RegisterPage2 = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "flex-end", // Push everything to the bottom
+    justifyContent: "flex-end",
   },
   topImageWrapper: {
     width: width * 0.9,
-    height: height * 0.7, // 70% of screen height
+    height: height * 0.7,
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",
@@ -115,12 +132,12 @@ const styles = StyleSheet.create({
   },
   bottomImageWrapper: {
     width: width,
-    height: height * 0.85, // 50% of screen height
+    height: height * 0.85,
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",
     position: "absolute",
-    bottom: height * -0.12222, // Overlaps 20% of the top image
+    bottom: height * -0.12222,
     zIndex: 2,
   },
   bottomImage: {
@@ -161,13 +178,13 @@ const styles = StyleSheet.create({
     borderColor: "white",
   },
   registerButton: {
-    width: "88%", // Make button the same width as the TextInput
-    height: 50, // Adjust the height of the button
-    backgroundColor: "#32CD32", // Parrot Green color
+    width: "88%",
+    height: 50,
+    backgroundColor: "#32CD32",
     justifyContent: "center",
-    borderRadius: 25, // Apply border radius for rounded corners
+    borderRadius: 25,
     alignItems: "center",
-    marginTop: 0, // Add space between button and previous field
+    marginTop: 0,
     marginBottom: 10,
   },
   registerButtonText: {

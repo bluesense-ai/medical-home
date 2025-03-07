@@ -59,7 +59,7 @@ const AuthHeader = ({ navigation, currentStep, totalSteps }: AuthHeaderProps) =>
 
       {/* Close Button */}
       <TouchableOpacity
-        onPress={() => navigation.navigate("HomeScreen")}
+        onPress={() => navigation.navigate("Welcome")}
         style={styles.iconContainer}
       >
         <Ionicons name="close" size={24} color="black" />
