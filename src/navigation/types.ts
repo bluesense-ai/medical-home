@@ -14,16 +14,16 @@ export type RootStackParamList = {
   RegisterPage: undefined;
   RegisterPage2: { healthCardNumber: string; clinicId: string };
   RegisterVerification: RootStackParamList["RegisterPage2"] & { firstName: string, lastName: string, dateOfBirth: string };
-  VerificationCode: RootStackParamList["RegisterVerification"] & { patientId: string, otpChannel: string }
+  VerificationCode: { patientId: string, otpChannel: string }
   WantToRegister: undefined;
+  ProvideInformation: undefined;
+  WeFoundYou: { healthCardNumber: string, otpChannel: string, patientId: string };
+  LoginVerification: { healthCardNumber: string, otpChannel: string, patientId: string };
   DashboardScreen: undefined;
   DashboardEventsScreen: { selectedDate?: string };
   HomeScreen: undefined;
-  ProvideInformation: undefined;
-  WeFoundYou: undefined;
-  LoginVerification: undefined;
   LoginPage: undefined;
-  LoginSwitchVerification: undefined;
+  LoginSwitchVerification: { userName: string, otpChannel: string };
   AIVisitsLanding: undefined;
   AIVisitsDashboard: undefined;
   AIVisitsPage: undefined;

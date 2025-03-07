@@ -55,6 +55,9 @@ const RegisterVerification = (props: Props) => {
         otpChannel: selectedId,
       });
     },
+    onError: (error) => {
+      Alert.alert("Error", JSON.stringify(error));
+    },
   });
 
   function handleRegister() {
@@ -236,7 +239,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 15,
     fontSize: 16,
-    color: "white",
+    color: "black",
     marginBottom: 20,
     borderWidth: 1,
     borderColor: "white",

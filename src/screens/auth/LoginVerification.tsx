@@ -7,30 +7,53 @@ import {
   StyleSheet,
   Dimensions,
 } from "react-native";
-import { useAuthStore } from "../../store/useAuthStore";
 import AuthHeader from "../../components/Header/AuthHeader";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
+import { api } from "../../api/fetch";
 
 const { height, width } = Dimensions.get("window");
 
-type Props = StackScreenProps<RootStackParamList, "RegisterPage2">;
+type Props = StackScreenProps<RootStackParamList, "LoginVerification">;
 
 const LoginVerification = (props: Props) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-  const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
-  // async
-  const handleSubmit = () => {
-    navigation.navigate("VerificationCode", {
-      clinicId: props.route.params.clinicId,
-      otpChannel: "email",
-    });
+  const { mutate, isPending } = api.useMutation("post", "/auth/patient-login", {
+    onError: (error, variables) => {
+      console.error(error, variables);
+    },
+  });
 
-    // await
-    setIsAuthenticated(false); // Önce authentication'ı güncelle
-    // Sonra navigasyonu yap
+  const handleSubmit = (kind: "email" | "sms") => {
+    if (kind === "email") {
+      // NOTE: we found you screen uses email verification
+      navigation.navigate("VerificationCode", {
+        patientId: props.route.params.patientId,
+        otpChannel: "email",
+      });
+    }
+
+    if (kind === "sms") {
+      // NOTE: we found you screen uses phone verification
+      mutate(
+        {
+          body: {
+            healthCardNumber: props.route.params.healthCardNumber,
+            otpChannel: "sms",
+          },
+        },
+        {
+          onSuccess: (data) => {
+            navigation.navigate("VerificationCode", {
+              patientId: data.patientId!,
+              otpChannel: "sms",
+            });
+          },
+        }
+      );
+    }
   };
 
   return (
@@ -64,14 +87,16 @@ const LoginVerification = (props: Props) => {
 
               <Pressable
                 style={styles.registerButtonPhone}
-                onPress={handleSubmit}
+                onPress={() => handleSubmit("sms")}
+                disabled={isPending}
               >
                 <Text style={styles.registerButtonText}>Phone Number</Text>
               </Pressable>
               {/* Register Button */}
               <Pressable
                 style={styles.registerButtonEmail}
-                onPress={handleSubmit}
+                onPress={() => handleSubmit("email")}
+                disabled={isPending}
               >
                 <Text style={styles.registerButtonText}>Email Address</Text>
               </Pressable>

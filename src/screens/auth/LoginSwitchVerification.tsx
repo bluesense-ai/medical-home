@@ -9,26 +9,28 @@ import {
   Alert,
   SafeAreaView,
 } from "react-native";
-import { useMutation } from "@tanstack/react-query";
-import { useAuthStore } from "../../store/useAuthStore";
 import { useProvider } from "../../store/useProvider";
 import { useUserStore } from "../../store/useUserStore";
 import { api } from "../../api/fetch";
 import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
 
 const { height, width } = Dimensions.get("window");
 
-const LoginSwitchVerification = () => {
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+type Props = StackScreenProps<RootStackParamList, "LoginSwitchVerification">;
+
+const LoginSwitchVerification = (props: Props) => {
+  const {
+    navigation,
+    route: { params },
+  } = props;
 
   const [accessCode, setAccessCode] = useState("");
   const provider = useProvider((state) => state.provider);
-  const username = useUserStore((state) => state.user?.username);
   const setUser = useUserStore((state) => state.setUser);
 
-  const { mutate, error, data } = api.useMutation(
+  const { mutate, isPending } = api.useMutation(
     "post",
     "/auth/verify-verification-code-provider",
     {
@@ -55,7 +57,16 @@ const LoginSwitchVerification = () => {
       Alert.alert("Error", "Please enter the access code");
       return;
     }
-    mutate({ body: { accessCode, otpChannel: "sms", username } });
+
+    if (isPending) return;
+
+    mutate({
+      body: {
+        accessCode,
+        otpChannel: params.otpChannel,
+        username: params.userName,
+      },
+    });
   };
 
   return (
@@ -74,7 +85,11 @@ const LoginSwitchVerification = () => {
           value={accessCode}
           onChangeText={setAccessCode}
         />
-        <Pressable style={styles.submitButton} onPress={handleVerification}>
+        <Pressable
+          style={styles.submitButton}
+          onPress={handleVerification}
+          disabled={isPending}
+        >
           <Text style={styles.submitButtonText}>Submit</Text>
         </Pressable>
       </View>

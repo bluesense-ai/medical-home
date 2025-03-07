@@ -37,8 +37,8 @@ const VerificationCode = (props: Props) => {
         setUser(data!);
         navigation.navigate("MainTabs");
       },
-      onError: (error) => {
-        console.error(error);
+      onError: (error, variables) => {
+        console.error(error, variables);
       },
     }
   );
@@ -86,7 +86,9 @@ const VerificationCode = (props: Props) => {
                 style={styles.input}
                 placeholder="acccess code"
                 placeholderTextColor="#ddd"
-                // keyboardType="numeric"
+                keyboardType="numeric"
+                value={accessCode}
+                onChangeText={setAccessCode}
               />
 
               {/* Register Button */}

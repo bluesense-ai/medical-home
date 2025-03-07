@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 15,
     fontSize: 16,
-    color: "white",
+    color: "black",
     marginBottom: 23,
     borderWidth: 1,
     borderColor: "white",

@@ -14,12 +14,14 @@ import Svg from "react-native-svg";
 import { Ionicons } from "@expo/vector-icons";
 import GreenProfile from "../../components/Svg/GreenProfile";
 import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
+import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
 
 const { height, width } = Dimensions.get("window");
 
-const WeFoundYou = () => {
+type Props = StackScreenProps<RootStackParamList, "WeFoundYou">;
+
+const WeFoundYou = (props: Props) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const [loading, setLoading] = useState(true);
@@ -48,7 +50,11 @@ const WeFoundYou = () => {
     }, 2000);
 
     const navigateTimer = setTimeout(() => {
-      fadeOut.start(() => navigation.navigate("LoginVerification"));
+      fadeOut.start(() =>
+        navigation.navigate("LoginVerification", {
+          ...props.route.params,
+        })
+      );
     }, 5000);
 
     return () => {

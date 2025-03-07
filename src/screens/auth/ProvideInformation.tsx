@@ -22,16 +22,19 @@ const ProvideInformation = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const [healthCardNumber, setHealthCardNumber] = useState("");
-  const [otpChannel, setOtpChannel] = useState("sms");
+  const [otpChannel, setOtpChannel] = useState("email");
 
-  const setUser = useUserStore((state) => state.setUser);
-
+  // NOTE: we should use /auth/check instead of sending the OTP
   const { mutate, isPending, error, data } = api.useMutation(
     "post",
     "/auth/patient-login",
     {
-      onSuccess: () => {
-        navigation.navigate("WeFoundYou");
+      onSuccess: ({ patientId }) => {
+        navigation.navigate("WeFoundYou", {
+          healthCardNumber,
+          otpChannel,
+          patientId: patientId!,
+        });
       },
       onError: (error) => {
         console.error(error);

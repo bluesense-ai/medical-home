@@ -23,8 +23,8 @@ const Login = () => {
 
   const theme = useTheme((state) => state.theme);
 
-  const [username, setLocalUsername] = useState("");
-  const [otpChannel, setOtpChannel] = useState("sms");
+  const [userName, setLocalUsername] = useState("");
+  const [otpChannel, setOtpChannel] = useState("email");
 
   const setUser = useUserStore((state) => state.setUser);
   const { mutate, error, data } = api.useMutation(
@@ -32,8 +32,10 @@ const Login = () => {
     "/auth/provider-login",
     {
       onSuccess: () => {
-        Alert.alert("Success", "Code sent successfully!");
-        navigation.navigate("LoginSwitchVerification");
+        navigation.navigate("LoginSwitchVerification", {
+          userName,
+          otpChannel,
+        });
       },
       onError: (error) => {
         Alert.alert("Error", JSON.stringify(error) || "An error occurred");
@@ -42,15 +44,12 @@ const Login = () => {
   );
 
   const handleLogin = async () => {
-    if (!username) {
+    if (!userName) {
       Alert.alert("Error", "Please enter a username");
       return;
     }
-    setUser({ username });
 
-    // commented for development
-    navigation.navigate("LoginSwitchVerification");
-    // mutate(username, otpChannel);
+    mutate({ body: { username: userName, otpChannel } });
   };
 
   return (
@@ -64,7 +63,7 @@ const Login = () => {
           style={styles.input}
           placeholder="Enter Username"
           placeholderTextColor="black"
-          value={username}
+          value={userName}
           onChangeText={setLocalUsername}
         />
         <Pressable style={styles.submitButton} onPress={handleLogin}>
