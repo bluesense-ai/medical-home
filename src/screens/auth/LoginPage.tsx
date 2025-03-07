@@ -10,8 +10,6 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useTheme } from "../../store/useTheme";
-import { useUserStore } from "../../store/useUserStore";
-import { useMutation } from "@tanstack/react-query";
 import { api } from "../../api/fetch";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -23,10 +21,7 @@ const Login = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const theme = useTheme((state) => state.theme);
-  // for passing the username to the verification page
-  const setUser = useUserStore((state) => state.setUser);
 
-  // for this page
   const [username, setLocalUsername] = useState("");
   const [otpChannel, setOtpChannel] = useState("sms");
 
@@ -35,7 +30,6 @@ const Login = () => {
     "/auth/provider-login",
     {
       onSuccess: () => {
-        setUser({ username });
         Alert.alert("Success", "Code sent successfully!");
         navigation.navigate("LoginSwitchVerification");
       },
