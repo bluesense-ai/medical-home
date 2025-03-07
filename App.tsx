@@ -12,11 +12,18 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { NavigationContainer } from "@react-navigation/native";
 import LoadingScreen from "./src/screens/Loading/LoadingScreen";
 import Router from "./src/navigation/Router";
+import useCalendarStore from './src/store/useCalendarStore';
+import { saveAuthToken } from './src/api/eventService';
 
+// Hardcoded token provided by your colleague
+const HARDCODED_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjQ3MWRjOGE5LWMzZGQtNGNhZS1hZTQ2LTk4MzBlMjdhY2RjOSIsImVtYWlsIjoiaWxrZXJAYmx1ZXNlbnNlLmFpIiwicGhvbmVfbnVtYmVyIjoiKzkwNTM1MjQ4MzgwMCIsInVzZXJuYW1lIjoiaWxrZXIiLCJmaXJzdF9uYW1lIjoixLBsa2VyIiwibGFzdF9uYW1lIjoiR8O8emVsa29rYXIiLCJjcmVhdGVkQXQiOiIyMDI1LTAzLTA2VDA1OjMxOjQyLjU3OVoiLCJ1cGRhdGVkQXQiOiIyMDI1LTAzLTA2VDA1OjMxOjQyLjU3OVoiLCJ0eXBlIjoiYWRtaW4iLCJpYXQiOjE3NDEyMzkyNjMsImV4cCI6MTc0MTMyNTY2M30.MnGo1p5EsBjNxyGK69tvOvV7ouI_EY1QGu5nVwvkmPA";
+
+// Create a client
 const queryClient = new QueryClient();
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
+  const fetchEvents = useCalendarStore(state => state.fetchEvents);
 
   const loadAssets = async () => {
     try {
@@ -28,6 +35,14 @@ export default function App() {
       const loadImages = imageAssets.map((image) => {
         return Asset.fromModule(image).downloadAsync();
       });
+
+      // Save the hardcoded token to ensure we're authenticated
+      await saveAuthToken(HARDCODED_TOKEN);
+      console.log('Hardcoded token saved on app start');
+
+      // Load events from API
+      await fetchEvents();
+      console.log('Events loaded on app start');
 
       await Promise.all(loadImages);
       await new Promise((resolve) => setTimeout(resolve, 2000));

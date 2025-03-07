@@ -1,14 +1,11 @@
 import { create } from 'zustand';
-import moment from 'moment';
-import { mockEvents } from '../data/mockEvents';
-
-export type EventType = 'urgent' | 'regular' | 'check-up' | 'consultation';
+import { getEvents, createEvent, deleteEvent, updateEvent } from '../api/eventService';
 
 export interface Event {
   id: string;
   title: string;
   color: string;
-  type: EventType;
+  type: 'urgent' | 'regular' | 'check-up' | 'consultation';
   patientName: string;
   email: string;
   phone: string;
@@ -16,67 +13,86 @@ export interface Event {
   endDate: Date;
   assignedStaff: string;
   healthCardNumber: string;
-  notes?: string;
-  meetingDetails?: string;
+  notes: string;
+  meetingDetails: string;
 }
 
-interface CalendarStore {
+interface CalendarState {
   events: Event[];
-  selectedDate: string;
-  setSelectedDate: (date: string) => void;
+  isLoading: boolean;
+  error: string | null;
+  fetchEvents: () => Promise<void>;
   addEvent: (event: Omit<Event, 'id'>) => Promise<void>;
-  deleteEvent: (id: string) => Promise<void>;
-  getEventsForDate: (date: string) => Event[];
+  removeEvent: (id: string) => Promise<void>;
+  updateEvent: (event: Event) => Promise<void>;
 }
 
-const useCalendarStore = create<CalendarStore>((set, get) => ({
-  events: [...mockEvents],
-  selectedDate: moment().format('YYYY-MM-DD'),
+const useCalendarStore = create<CalendarState>((set, get) => ({
+  events: [],
+  isLoading: false,
+  error: null,
   
-  setSelectedDate: (date) => {
-    set({ selectedDate: date });
+  fetchEvents: async () => {
+    set({ isLoading: true, error: null });
+    try {
+      console.log('Fetching events from store...');
+      const events = await getEvents();
+      console.log(`Fetched ${events.length} events`);
+      set({ events, isLoading: false });
+    } catch (error) {
+      console.error('Error fetching events:', error);
+      set({ error: 'Failed to fetch events', isLoading: false });
+    }
   },
-
-  addEvent: async (event) => {
-    const newEvent = { ...event, id: Math.random().toString() };
-    
-    // Update state immediately
-    set((state) => {
-      const updatedEvents = [...state.events, newEvent];
-      return {
-        events: updatedEvents,
-      };
-    });
-
-    // Simulate API call
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        // No need to update state after API success
-        // because state is already updated
-        resolve();
-      }, 1000);
-    });
+  
+  addEvent: async (eventData) => {
+    set({ isLoading: true, error: null });
+    try {
+      console.log('Adding new event:', eventData);
+      const newEvent = await createEvent(eventData);
+      set((state) => ({ 
+        events: [...state.events, newEvent],
+        isLoading: false 
+      }));
+      console.log('Event added successfully');
+    } catch (error) {
+      console.error('Error adding event:', error);
+      set({ error: 'Failed to add event', isLoading: false });
+    }
   },
-
-  deleteEvent: async (id) => {
-    // Update state immediately
-    set((state) => ({
-      events: state.events.filter((event) => event.id !== id)
-    }));
-
-    // Simulate API call
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, 500);
-    });
+  
+  removeEvent: async (id) => {
+    set({ isLoading: true, error: null });
+    try {
+      console.log('Removing event with ID:', id);
+      await deleteEvent(id);
+      set((state) => ({ 
+        events: state.events.filter(event => event.id !== id),
+        isLoading: false 
+      }));
+      console.log('Event removed successfully');
+    } catch (error) {
+      console.error('Error removing event:', error);
+      set({ error: 'Failed to remove event', isLoading: false });
+    }
   },
-
-  getEventsForDate: (date) => {
-    const { events } = get();
-    return events.filter((event) => 
-      moment(event.startDate).format('YYYY-MM-DD') === date
-    ).sort((a, b) => moment(a.startDate).valueOf() - moment(b.startDate).valueOf());
+  
+  updateEvent: async (updatedEvent) => {
+    set({ isLoading: true, error: null });
+    try {
+      console.log('Updating event:', updatedEvent);
+      await updateEvent(updatedEvent);
+      set((state) => ({ 
+        events: state.events.map(event => 
+          event.id === updatedEvent.id ? updatedEvent : event
+        ),
+        isLoading: false 
+      }));
+      console.log('Event updated successfully');
+    } catch (error) {
+      console.error('Error updating event:', error);
+      set({ error: 'Failed to update event', isLoading: false });
+    }
   },
 }));
 

@@ -5,7 +5,7 @@ import { colors } from '../theme/colors';
 
 interface ThemedTextProps extends TextProps {
   variant?: 'title' | 'subtitle' | 'body' | 'caption' | 'header';
-  color?: 'primary' | 'secondary' | 'error' | 'warning' | 'success' | 'info' | 'lightGray';
+  color?: 'primary' | 'secondary' | 'error' | 'warning' | 'success' | 'info' | 'gray';
 }
 
 const ThemedText: React.FC<ThemedTextProps> = ({
@@ -26,7 +26,7 @@ const ThemedText: React.FC<ThemedTextProps> = ({
         case 'warning': return colors.main.warning;
         case 'success': return colors.main.success;
         case 'info': return colors.main.info;
-        case 'lightGray': return colors.base.lightGray;
+        case 'gray': return colors.base.lightGray;
         default: return colors.base.white;
       }
     } else {
@@ -37,7 +37,7 @@ const ThemedText: React.FC<ThemedTextProps> = ({
         case 'warning': return colors.main.warning;
         case 'success': return colors.main.success;
         case 'info': return colors.main.info;
-        case 'lightGray': return colors.base.lightGray;
+        case 'gray': return colors.legacy.gray;
         default: return colors.base.black;
       }
     }
