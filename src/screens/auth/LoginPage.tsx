@@ -24,7 +24,8 @@ const Login = () => {
 
   const theme = useTheme((state) => state.theme);
   // for passing the username to the verification page
-  const setUsername = useUserStore((state) => state.setUsername);
+  const setUser = useUserStore((state) => state.setUser);
+
   // for this page
   const [username, setLocalUsername] = useState("");
   const [otpChannel, setOtpChannel] = useState("sms");
@@ -34,6 +35,7 @@ const Login = () => {
     "/auth/provider-login",
     {
       onSuccess: () => {
+        setUser({ username });
         Alert.alert("Success", "Code sent successfully!");
         navigation.navigate("LoginSwitchVerification");
       },

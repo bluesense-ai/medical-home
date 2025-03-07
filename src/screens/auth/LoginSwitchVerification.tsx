@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { useState } from "react";
 import {
   View,
   Text,
@@ -13,45 +13,51 @@ import { useMutation } from "@tanstack/react-query";
 import { useAuthStore } from "../../store/useAuthStore";
 import { useProvider } from "../../store/useProvider";
 import { useUserStore } from "../../store/useUserStore";
-import { api, saveAuthToken } from "../../api/fetch";
+import { api } from "../../api/fetch";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../../navigation/types";
 
 const { height, width } = Dimensions.get("window");
 
-const LoginSwitchVerification = ({ navigation }) => {
+const LoginSwitchVerification = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
   const [accessCode, setAccessCode] = useState("");
   const provider = useProvider((state) => state.provider);
-  const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
-  const username = useUserStore((state) => state.username);
+  const username = useUserStore((state) => state.user?.username);
+  const setUser = useUserStore((state) => state.setUser);
 
-  const { mutate, isLoading, error, data } = api.useMutation("post", "/auth/verify-verification-code-provider",{
-    onSuccess: (data) => {
-      Alert.alert('Success', 'Access code verified!');
+  const { mutate, error, data } = api.useMutation(
+    "post",
+    "/auth/verify-verification-code-provider",
+    {
+      onSuccess: ({ data }) => {
+        Alert.alert("Success", "Access code verified!");
 
-      saveAuthToken(data.token);
-      setIsAuthenticated(true);
+        if (!data) throw new Error("No data returned from the server");
+        setUser(data);
 
-      if (provider === "doctor") {
-        navigation.navigate("DashboardScreen");
-      } else {
-        navigation.navigate("MainTabs");
-      }
-    },
-    onError: (error) => {
-      Alert.alert('Error', error.message || 'An error occurred');
-    },
-  });
+        if (provider === "doctor") {
+          navigation.navigate("DashboardScreen");
+        } else {
+          navigation.navigate("MainTabs");
+        }
+      },
+      onError: (error) => {
+        Alert.alert("Error", JSON.stringify(error) || "An error occurred");
+      },
+    }
+  );
 
   const handleVerification = async () => {
     if (!accessCode) {
-      Alert.alert('Error', 'Please enter the access code');
+      Alert.alert("Error", "Please enter the access code");
       return;
     }
 
-    // commented for development
-    navigation.navigate("DashboardScreen");
-    // mutate(username, accessCode, otpChannel); 
-  }
+    mutate({ body: { accessCode, otpChannel: "sms", username } });
+  };
 
   return (
     <SafeAreaView style={styles.container}>

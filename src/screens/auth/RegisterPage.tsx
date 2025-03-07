@@ -8,24 +8,37 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  Modal,
 } from "react-native";
-import Svg from "react-native-svg";
 import AuthHeader from "../../components/Header/AuthHeader";
 import { api } from "../../api/fetch";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/Router";
 import { useNavigation } from "@react-navigation/native";
 import StatusNotAcceptingPatients from "../../components/Svg/StatusNotAcceptingPatients";
+import { ScrollView } from "react-native-gesture-handler";
+import colors from "../../theme/colors";
 
 const { height, width } = Dimensions.get("window");
 
 const RegisterPage = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const clinicsQuery = api.useQuery("get", "/clinics/get-all-clinics");
+  const clinics = clinicsQuery.data || [];
 
   const NOT_ACCEPTING_PATIENTS = true;
 
+  const [showClinics, setShowClinics] = useState(false);
   const [selectedClinicId, setSelectedClinicId] = useState("");
+
+  const selectedClinic = clinics.find(
+    (clinic) => clinic.id === selectedClinicId
+  );
+
+  function handleRegister() {
+    // Handle registration logic here
+    navigation.navigate("RegisterPage2");
+  }
 
   return (
     <View style={styles.container}>
@@ -75,19 +88,63 @@ const RegisterPage = () => {
                 Choose your clinic
               </Text>
 
-              <TouchableOpacity style={styles.input}>
+              <TouchableOpacity
+                style={styles.input}
+                onPress={() => setShowClinics(true)}
+              >
                 <Text style={{ color: "gray" }}>
-                  {selectedClinicId || "Choose Your Clinic"}
+                  {selectedClinic?.name || "Choose Your Clinic"}
                 </Text>
               </TouchableOpacity>
-              {NOT_ACCEPTING_PATIENTS && <StatusNotAcceptingPatients
-                width={250}
-                height={100}
-                style={{ marginBottom: 20, padding: 0 }}
-              />}
+
+              <Modal
+                visible={showClinics}
+                transparent={true}
+                animationType="slide"
+                onRequestClose={() => setShowClinics(false)}
+              >
+                <TouchableOpacity
+                  style={styles.modalOverlay}
+                  activeOpacity={1}
+                  onPress={() => setShowClinics(false)}
+                >
+                  <View style={styles.modalContent}>
+                    <ScrollView>
+                      {clinics.map((clinic) => (
+                        <TouchableOpacity
+                          key={clinic.id}
+                          style={styles.clinicItem}
+                          onPress={() => {
+                            setSelectedClinicId(clinic.id!);
+                            setShowClinics(false);
+                          }}
+                        >
+                          <Text
+                            style={[
+                              styles.clinicItemText,
+                              selectedClinicId === clinic.id &&
+                                styles.selectedClinicText,
+                            ]}
+                          >
+                            {clinic.name!}
+                          </Text>
+                        </TouchableOpacity>
+                      ))}
+                    </ScrollView>
+                  </View>
+                </TouchableOpacity>
+              </Modal>
+
+              {NOT_ACCEPTING_PATIENTS && (
+                <StatusNotAcceptingPatients
+                  width={250}
+                  height={100}
+                  style={{ marginBottom: 20, padding: 0 }}
+                />
+              )}
               <Pressable
                 style={styles.registerButton}
-                onPress={() => navigation.navigate("RegisterPage2")}
+                onPress={handleRegister}
               >
                 <Text style={styles.registerButtonText}>Next</Text>
               </Pressable>
@@ -176,6 +233,30 @@ const styles = StyleSheet.create({
   whiteBackground: {
     flex: 1,
     backgroundColor: "white",
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "flex-end",
+  },
+  modalContent: {
+    backgroundColor: colors.base.white,
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+    paddingVertical: 20,
+    maxHeight: "50%",
+  },
+  clinicItem: {
+    paddingVertical: 15,
+    paddingHorizontal: 20,
+  },
+  clinicItemText: {
+    fontSize: 16,
+    color: colors.base.black,
+  },
+  selectedClinicText: {
+    color: colors.main.secondary,
+    fontWeight: "bold",
   },
 });
 

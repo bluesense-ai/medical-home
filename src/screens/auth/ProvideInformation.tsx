@@ -7,55 +7,45 @@ import {
   TouchableOpacity,
   StyleSheet,
   Dimensions,
+  Alert,
 } from "react-native";
 import AuthHeader from "../../components/Header/AuthHeader";
-import { useMutation } from "@tanstack/react-query";
-
-
+import { useUserStore } from "../../store/useUserStore";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
+import { RootStackParamList } from "../../navigation/types";
+import { api } from "../../api/fetch";
 
 const { height, width } = Dimensions.get("window"); // Get device dimensions
 
-const patientLogin = async (healthCardNumber, otpChannel) => {
-  const respone = await fetch('https://sandbox-backend.medicalhome.cloud/api/auth/patient-login', {
-    methon: 'POST',
-    body: JSON.stringify({
-      healthCardNumber,
-      otpChannel,
-    })
-  });
+const ProvideInformation = () => {
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
-  if (!respone.ok) {
-    Alert.alert('Error', 'No user with this health card id was found');
-  }
-
-  return respone.json();
-}
-
-const ProvideInformation = ({ navigation }) => {
-  const realNumber = 123;
   const [healthCardNumber, setHealthCardNumber] = useState("");
   const [otpChannel, setOtpChannel] = useState("sms");
 
-  const { mutate, isLoading, error, data } = useMutation({
-    mutationFn: patientLogin,
-    onSuccess: () => {
-      // Alert.alert('Success', 'Access code verified!');
-      navigation.navigate("WeFoundYou");
-    },
-    onError: (error) => {
-      // Alert.alert('Error', error.message || 'An error occurred');
-      navigation.navigate("WantToRegister");
-    },
-  });
+  const setUser = useUserStore((state) => state.setUser);
+
+  const { mutate, isPending, error, data } = api.useMutation(
+    "post",
+    "/auth/patient-login",
+    {
+      onSuccess: () => {
+        navigation.navigate("WeFoundYou");
+      },
+      onError: (error) => {
+        console.error(error);
+        navigation.navigate("WantToRegister");
+      },
+    }
+  );
 
   const handleSubmit = async () => {
-    mutate(healthCardNumber, otpChannel);
-  }
+    mutate({ body: { healthCardNumber, otpChannel } });
+  };
 
   return (
     <View style={styles.container}>
-
-
       <AuthHeader
         navigation={navigation}
         currentStep={1} // You can dynam  cally set this value based on your logic
@@ -65,7 +55,6 @@ const ProvideInformation = ({ navigation }) => {
       <View style={styles.whiteBackground}>
         {/* Top Image covering 70% of the screen (Empty) */}
         <View style={styles.topImageWrapper}>
-
           <ImageBackground
             source={require("../../../assets/bgimgrg.png")}
             style={styles.topImage}
@@ -73,7 +62,6 @@ const ProvideInformation = ({ navigation }) => {
         </View>
         {/* Bottom Image covering 50% but overlapping 30% on top image */}
         <View style={styles.bottomImageWrapper}>
-
           <ImageBackground
             source={require("./image.jpg")}
             style={styles.bottomImage}
@@ -88,12 +76,13 @@ const ProvideInformation = ({ navigation }) => {
                 {"  your information in our system"}{" "}
               </Text>
               <TextInput
-                onChangeText={(text) => /^\d*$/.test(text) ? setHealthCardNumber(text) : null}
+                onChangeText={(text) =>
+                  /^\d*$/.test(text) ? setHealthCardNumber(text) : null
+                }
                 style={styles.textInput}
                 placeholder="Enter your information"
                 placeholderTextColor="white"
                 keyboardType="numeric" // Shows numeric keyboard on focus
-
               />
               <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={styles.buttonText}>Submit</Text>
@@ -185,7 +174,7 @@ const styles = StyleSheet.create({
   buttonText: {
     color: "white", // Button text color
     fontSize: 18, // Text size
-    alignSelf: 'center',
+    alignSelf: "center",
     fontWeight: "bold", // Make the text bold
   },
   header: {
