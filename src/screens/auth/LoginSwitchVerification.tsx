@@ -55,7 +55,6 @@ const LoginSwitchVerification = () => {
       Alert.alert("Error", "Please enter the access code");
       return;
     }
-
     mutate({ body: { accessCode, otpChannel: "sms", username } });
   };
 

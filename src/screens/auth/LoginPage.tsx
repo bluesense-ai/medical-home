@@ -10,6 +10,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useTheme } from "../../store/useTheme";
+import { useUserStore } from "../../store/useUserStore";
 import { api } from "../../api/fetch";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
@@ -25,6 +26,7 @@ const Login = () => {
   const [username, setLocalUsername] = useState("");
   const [otpChannel, setOtpChannel] = useState("sms");
 
+  const setUser = useUserStore((state) => state.setUser);
   const { mutate, error, data } = api.useMutation(
     "post",
     "/auth/provider-login",
@@ -44,6 +46,7 @@ const Login = () => {
       Alert.alert("Error", "Please enter a username");
       return;
     }
+    setUser({ username });
 
     // commented for development
     navigation.navigate("LoginSwitchVerification");
