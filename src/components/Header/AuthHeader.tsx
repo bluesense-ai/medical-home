@@ -31,12 +31,12 @@ const AuthHeader = ({ navigation, currentStep, totalSteps }: AuthHeaderProps) =>
     <View style={styles.Authheader}>
       {/* Back Arrow */}
       {/* {currentStep ? ( */}
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.iconContainer}
-        >
-          <Ionicons name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.iconContainer}
+      >
+        <Ionicons name="arrow-back" size={24} color="black" />
+      </TouchableOpacity>
       {/* ) : null} */}
 
       {/* Progress Bar and Image */}
@@ -82,20 +82,22 @@ const styles = StyleSheet.create({
     top: 0,
     width: "100%",
     zIndex: 10, // Ensures it stays on top of other elements
+    marginTop: 70,
   },
   iconContainer: {
-    marginTop:5,
+    marginTop: 5,
     width: 30,
     alignItems: "center",
+    marginHorizontal: 20,
   },
   centerContainer: {
     flex: 1,
-    marginTop:10,
+    marginTop: 10,
     justifyContent: "center",
     alignItems: "center",
   },
   image: {
-    
+
     width: 150, // Adjust the width as needed
     height: 50, // Adjust the height as needed
     resizeMode: "contain", // Ensures the image fits within the dimensions

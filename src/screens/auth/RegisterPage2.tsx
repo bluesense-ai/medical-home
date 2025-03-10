@@ -64,7 +64,7 @@ const RegisterPage2 = (props: Props) => {
               <TextInput
                 style={styles.input}
                 placeholder="First Name"
-                placeholderTextColor="#ddd"
+                placeholderTextColor="gray"
                 value={firstName}
                 onChangeText={setFirstName}
               />
@@ -74,7 +74,7 @@ const RegisterPage2 = (props: Props) => {
               <TextInput
                 style={styles.input}
                 placeholder="Last Name"
-                placeholderTextColor="#ddd"
+                placeholderTextColor="gray"
                 value={lastName}
                 onChangeText={setLastName}
               />
@@ -84,7 +84,7 @@ const RegisterPage2 = (props: Props) => {
               <TextInput
                 style={styles.input}
                 placeholder="DD/MM/YYYY"
-                placeholderTextColor="#ddd"
+                placeholderTextColor="gray"
                 keyboardType="phone-pad"
                 value={dateOfBirth}
                 onChangeText={setDateOfBirth}
@@ -95,7 +95,7 @@ const RegisterPage2 = (props: Props) => {
               <TextInput
                 style={styles.input}
                 placeholder="Select Clinic"
-                placeholderTextColor="#ddd"
+                placeholderTextColor="gray"
                 value={clinicId}
                 editable={false}
               />
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
   topImageWrapper: {
     width: width * 0.9,
-    height: height * 0.7,
+    height: height * 0.5,
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",
@@ -132,7 +132,7 @@ const styles = StyleSheet.create({
   },
   bottomImageWrapper: {
     width: width,
-    height: height * 0.85,
+    height: height * 0.8,
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",

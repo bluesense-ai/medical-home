@@ -31,8 +31,8 @@ const RegisterVerification = (props: Props) => {
       id: "sms",
       label: "Phone Number",
       value: "Phone Number",
-      marginBottom: 10,
-      marginLeft: 20,
+      // marginBottom: 10,
+      // marginLeft: 20,
       color: "white",
       labelStyle: { color: "white" },
     },
@@ -40,8 +40,7 @@ const RegisterVerification = (props: Props) => {
       id: "email",
       label: "Email address",
       value: "Email address",
-      marginBottom: 10,
-
+      // marginBottom: 10,
       color: "white",
       labelStyle: { color: "white" },
     },
@@ -122,7 +121,7 @@ const RegisterVerification = (props: Props) => {
               <TextInput
                 style={styles.input}
                 placeholder="Email"
-                placeholderTextColor="#ddd"
+                placeholderTextColor="gray"
                 value={email}
                 onChangeText={setEmail}
               />
@@ -131,7 +130,7 @@ const RegisterVerification = (props: Props) => {
               <TextInput
                 style={styles.input}
                 placeholder="Phone Number"
-                placeholderTextColor="#ddd"
+                placeholderTextColor="gray"
                 keyboardType="numeric"
                 value={phoneNumber}
                 onChangeText={setPhoneNumber}
@@ -184,7 +183,7 @@ const styles = StyleSheet.create({
   },
   topImageWrapper: {
     width: width * 0.9,
-    height: height * 0.7,
+    height: height * 0.5,
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",
@@ -202,7 +201,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     alignSelf: "center",
     position: "absolute",
-    bottom: height * -0.3,
+    bottom: height * -0.4,
     zIndex: 2,
   },
   bottomImage: {
@@ -252,7 +251,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     alignItems: "center",
     marginTop: 0,
-    marginBottom: 10,
+    marginBottom: 100,
   },
   registerButtonText: {
     color: "white",

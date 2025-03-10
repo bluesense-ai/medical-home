@@ -72,9 +72,10 @@ const RegisterPage = () => {
               <Text style={styles.title}>Register</Text>
               <Text
                 style={{
-                  marginRight: 90,
+                  marginRight: 120,
                   marginBottom: 20,
                   color: "white",
+                  fontSize: 16,
                 }}
               >
                 Provide your health card number
@@ -82,15 +83,16 @@ const RegisterPage = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Health Card Number"
-                placeholderTextColor="#ddd"
+                placeholderTextColor="gray"
                 value={healthCardNumber}
                 onChangeText={setHealthCardNumber}
               />
               <Text
                 style={{
-                  marginRight: 180,
+                  marginRight: 220,
                   marginBottom: 20,
                   color: "white",
+                  fontSize: 16,
                 }}
               >
                 Choose your clinic
@@ -100,7 +102,7 @@ const RegisterPage = () => {
                 style={styles.input}
                 onPress={() => setShowClinics(true)}
               >
-                <Text style={{ color: "gray" }}>
+                <Text style={styles.clinicText}>
                   {selectedClinic?.name || "Choose Your Clinic"}
                 </Text>
               </TouchableOpacity>
@@ -131,7 +133,7 @@ const RegisterPage = () => {
                             style={[
                               styles.clinicItemText,
                               selectedClinicId === clinic.id &&
-                                styles.selectedClinicText,
+                              styles.selectedClinicText,
                             ]}
                           >
                             {clinic.name!}
@@ -211,14 +213,18 @@ const styles = StyleSheet.create({
   input: {
     width: "90%",
     height: 50,
+    justifyContent: 'center',
     backgroundColor: "white",
     borderRadius: 8,
     paddingHorizontal: 15,
     fontSize: 16,
-    color: "gray",
     marginBottom: 15,
     borderWidth: 1,
     borderColor: "white",
+  },
+  clinicText: {
+    color: 'gray',
+    fontSize: 16,
   },
   registerButton: {
     width: "88%", // Make button the same width as the TextInput
