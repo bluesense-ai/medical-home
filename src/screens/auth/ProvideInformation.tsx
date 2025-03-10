@@ -83,9 +83,10 @@ const ProvideInformation = () => {
                   /^\d*$/.test(text) ? setHealthCardNumber(text) : null
                 }
                 style={styles.textInput}
-                placeholder="Enter your information"
-                placeholderTextColor="white"
+                placeholder="Enter your health card number"
+                placeholderTextColor="#80b6ce"
                 keyboardType="numeric" // Shows numeric keyboard on focus
+                textAlignVertical="center"
               />
               <TouchableOpacity style={styles.button} onPress={handleSubmit}>
                 <Text style={styles.buttonText}>Submit</Text>
@@ -101,11 +102,15 @@ const ProvideInformation = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "transparent",
+    backgroundColor: "white",
+  },
+  whiteBackground: {
+    backgroundColor: 'whtie',
+    marginTop: 65,
   },
   topImageWrapper: {
     width: width * 0.9,
-    height: height * 0.7, // 70% of screen height
+    height: height * 0.5, // 70% of screen height
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",
@@ -118,7 +123,7 @@ const styles = StyleSheet.create({
   },
   bottomImageWrapper: {
     width: width,
-    height: height * 0.57, // 50% of screen height
+    height: height * 0.5, // 50% of screen height
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",
@@ -144,24 +149,23 @@ const styles = StyleSheet.create({
     // fontWeight: '',
     color: "white",
     // marginBottom: 70,
-    marginTop: "0",
+    marginTop: 0,
   },
   subtitle: {
     fontSize: 16,
     color: "white",
-    marginTop: "20",
-    marginBottom: "30",
+    marginTop: 20,
+    marginBottom: 30,
   },
   textInput: {
-    width: "80%",
+    width: "90%",
     height: 40,
     borderColor: "white",
-    borderWidth: 1,
+    borderWidth: 2,
     borderRadius: 15,
     paddingHorizontal: 10,
     color: "white",
     backgroundColor: "transparent", // Light background for better readability
-    borderColor: "white",
     marginBottom: 50,
   },
   button: {

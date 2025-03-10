@@ -106,11 +106,11 @@ const styles = StyleSheet.create({
   },
   topImageWrapper: {
     width: width * 0.9,
-    height: height * 0.7, // 70% of screen height
+    height: height * 0.5, // 70% of screen height
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",
-    top: height * 0.1,
+    top: height * 0.2,
   },
   topImage: {
     width: "100%",
@@ -119,7 +119,7 @@ const styles = StyleSheet.create({
   },
   bottomImageWrapper: {
     width: width,
-    height: height * 0.57, // 50% of screen height
+    height: height * 0.46, // 50% of screen height
     borderRadius: 20,
     overflow: "hidden",
     alignSelf: "center",
@@ -147,23 +147,24 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   title: {
-    fontSize: 22,
+    fontSize: 28,
     fontWeight: "normal",
     color: "#32CD32",
-    marginBottom: 10,
   },
   description: {
-    fontSize: 16,
+    fontSize: 19,
     fontWeight: "300",
     color: "white",
-    textAlign: "center",
-    marginBottom: 20,
+    // textAlign: "center",
     paddingHorizontal: 30,
+    marginTop: 30,
+    marginBottom: 30,
   },
   buttonRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     width: "80%",
+    marginTop: 40,
   },
   backButton: {
     padding: 10,
