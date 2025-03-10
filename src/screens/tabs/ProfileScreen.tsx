@@ -7,11 +7,13 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import { colors } from "../../theme/colors";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
+import { useUserStore } from "../../store/useUserStore";
 
 interface PersonalInfo {
   name: string;
@@ -35,6 +37,34 @@ const PERSONAL_INFO: PersonalInfo = {
 
 const ProfileScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const setUser = useUserStore((state) => state.setUser);
+
+  const handleLogout = () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          onPress: () => {
+            // Clear user data from store
+            setUser(null);
+            // Navigate to Welcome screen
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "Welcome" }],
+            });
+          },
+          style: "destructive",
+        },
+      ],
+      { cancelable: true }
+    );
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -69,6 +99,14 @@ const ProfileScreen = () => {
           onPress={() => navigation.navigate("EditProfile")}
         >
           <Text style={styles.editButtonText}>Edit</Text>
+        </TouchableOpacity>
+
+        {/* Logout Button */}
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={handleLogout}
+        >
+          <Text style={styles.logoutButtonText}>Logout</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -148,9 +186,23 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: 114,
     alignItems: "center",
-    marginBottom: 80,
+    marginBottom: 20,
   },
   editButtonText: {
+    color: colors.base.white,
+    fontSize: 14,
+    fontWeight: "semibold",
+  },
+  logoutButton: {
+    backgroundColor: "#FF3B30",
+    paddingVertical: 10,
+    paddingHorizontal: 36,
+    borderRadius: 12,
+    width: 114,
+    alignItems: "center",
+    marginBottom: 80,
+  },
+  logoutButtonText: {
     color: colors.base.white,
     fontSize: 14,
     fontWeight: "semibold",

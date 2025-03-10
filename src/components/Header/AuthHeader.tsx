@@ -1,9 +1,8 @@
 import React from "react";
-import { View, Text, TouchableOpacity, StyleSheet, Image } from "react-native";
+import { View, TouchableOpacity, StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { RootStackParamList } from "../../navigation/types";
 import { StackNavigationProp } from "@react-navigation/stack";
-// import processbar from '../../../assets/'
 
 type AuthHeaderProps = {
   navigation: StackNavigationProp<RootStackParamList>;
@@ -12,48 +11,37 @@ type AuthHeaderProps = {
 };
 
 const AuthHeader = ({ navigation, currentStep, totalSteps }: AuthHeaderProps) => {
-  // Calculate the width of the green bar as a percentage of the current step
-  const progress = (currentStep / totalSteps) * 100;
-
-  // Array of image sources for each step
-  const stepImages = [
-    require("../../../assets/processbar1.jpg"), // Image for step 1
-    require("../../../assets/processbar2.jpg"), // Image for step 2
-    require("../../../assets/processbar3.jpg"), // Image for step 3
-    require("../../../assets/processbar4.jpg"), // Image for step 4
-    require("../../../assets/processbar5.jpg"), // Image for step 5
-  ];
-
-  // Get the image for the current step
-  const currentImage = stepImages[currentStep - 1];
+  // Generate step indicators (only bars, no numbers)
+  const renderStepIndicators = () => {
+    const indicators = [];
+    for (let i = 1; i <= totalSteps; i++) {
+      indicators.push(
+        <View 
+          key={i} 
+          style={[
+            styles.stepIndicator,
+            i === currentStep ? styles.activeStep : null
+          ]}
+        />
+      );
+    }
+    return indicators;
+  };
 
   return (
-    <View style={styles.Authheader}>
+    <View style={styles.authHeader}>
       {/* Back Arrow */}
-      {/* {currentStep ? ( */}
-        <TouchableOpacity
-          onPress={() => navigation.goBack()}
-          style={styles.iconContainer}
-        >
-          <Ionicons name="arrow-back" size={24} color="black" />
-        </TouchableOpacity>
-      {/* ) : null} */}
+      <TouchableOpacity
+        onPress={() => navigation.goBack()}
+        style={styles.iconContainer}
+      >
+        <Ionicons name="arrow-back" size={24} color="black" />
+      </TouchableOpacity>
 
-      {/* Progress Bar and Image */}
-      <View style={{ flex: 1, alignItems: "center" }}>
-        <View style={styles.centerContainer}>
-          {/* Display the image for the current step */}
-          <Image source={currentImage} style={styles.image} />
-
-          {/* Progress bar
-          <View style={styles.progressContainer}>
-            <View
-              style={[
-                styles.progressBar,
-                { width: `${progress}%` }, // Dynamic width based on current step
-              ]}
-            />
-          </View> */}
+      {/* Progress Indicators - Only Bars */}
+      <View style={styles.progressContainer}>
+        <View style={styles.stepsContainer}>
+          {renderStepIndicators()}
         </View>
       </View>
 
@@ -69,48 +57,40 @@ const AuthHeader = ({ navigation, currentStep, totalSteps }: AuthHeaderProps) =>
 };
 
 const styles = StyleSheet.create({
-  Authheader: {
+  authHeader: {
     height: 60,
-    backgroundColor: "white",
+    backgroundColor: "transparent",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    // paddingStart:30,
-    // paddingVertical:20,s
     paddingHorizontal: 15,
-    position: "absolute", // Keeps it fixed at the top
-    top: 0,
     width: "100%",
-    zIndex: 10, // Ensures it stays on top of other elements
+    marginTop: 40,
   },
   iconContainer: {
-    marginTop:5,
     width: 30,
     alignItems: "center",
   },
-  centerContainer: {
+  progressContainer: {
     flex: 1,
-    marginTop:10,
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: 10,
   },
-  image: {
-    
-    width: 150, // Adjust the width as needed
-    height: 50, // Adjust the height as needed
-    resizeMode: "contain", // Ensures the image fits within the dimensions
-  },
-  progressContainer: {
+  stepsContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
     width: "100%",
-    height: 5,
-    backgroundColor: "#e0e0e0", // Light gray background for the progress bar
-    marginTop: 10,
-    borderRadius: 3,
+    gap: 8,
   },
-  progressBar: {
-    height: "100%",
-    backgroundColor: "green", // Green progress bar
-    borderRadius: 3,
+  stepIndicator: {
+    width: 40,
+    height: 4,
+    backgroundColor: "#e0e0e0",
+    borderRadius: 2,
+  },
+  activeStep: {
+    backgroundColor: "#32CD32",
   },
 });
 

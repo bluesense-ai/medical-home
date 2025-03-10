@@ -9,11 +9,11 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons"; // Assuming Expo, adjust if needed
-import AuthHeader from "../../components/Header/AuthHeader";
+import AuthHeader from "../../../components/Header/AuthHeader";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../navigation/types";
-import GreenProfile from "../../components/Svg/GreenProfile";
+import { RootStackParamList } from "../../../navigation/types";
+import GreenProfile from "../../../components/Svg/GreenProfile";
 
 const { height, width } = Dimensions.get("window");
 
@@ -43,7 +43,7 @@ const WantToRegister = () => {
         {/* Top Image with rounded corners */}
         <View style={styles.topImageWrapper}>
           <ImageBackground
-            source={require("../../../assets/bgimgrg2.jpg")}
+            source={require("../../../../assets/images/bgimgrg2.jpg")}
             style={styles.topImage}
           />
         </View>
@@ -51,7 +51,7 @@ const WantToRegister = () => {
         {/* Bottom Image slightly overlaying Top Image */}
         <View style={styles.bottomImageWrapper}>
           <ImageBackground
-            source={require("./image.jpg")}
+            source={require("../../../../assets/images/bgimgrg2.jpg")}
             style={styles.bottomImage}
           >
             <View style={styles.overlay}>
