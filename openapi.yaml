@@ -437,6 +437,27 @@ paths:
                       id:
                         type: string
                         example: 047aede2-ecb3-4cd8-8286-39e9a1ee288a
+                      first_name:
+                        type: string
+                        example: ilker
+                      last_name:
+                        type: string
+                        example: g
+                      sex:
+                        type: string
+                        example: Male
+                      pronouns:
+                        type: string
+                        example: null
+                      picture:
+                        type: string
+                        example: null
+                      date_of_birth:
+                        type: string
+                        example: null
+                      health_card_number:
+                        type: string
+                        example: null
                       email_address:
                         type: string
                         example: khalid@example.com
@@ -446,9 +467,9 @@ paths:
                       username:
                         type: string
                         example: khalid
-                      clinic:
+                      preferred_clinic_id:
                         type: string
-                        example: Walmart Clinic
+                        example: '047aede2-edb3-4ab8-8286-39e9f2ee299a'
                       access_token:
                         type: string
                         example: string

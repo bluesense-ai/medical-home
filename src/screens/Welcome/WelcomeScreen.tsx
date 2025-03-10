@@ -81,7 +81,8 @@ const WelcomeScreen: React.FC = () => {
 
   const handleLogin = () => {
     if (user) {
-      navigation.navigate("HomeScreen");
+      navigation.navigate("MainTabs");
+      return;
     }
     if (provider == "patient") {
       navigation.navigate("ProvideInformation");
@@ -93,7 +94,8 @@ const WelcomeScreen: React.FC = () => {
 
   const handleRegister = () => {
     if (user) {
-      navigation.navigate("HomeScreen");
+      navigation.navigate("MainTabs");
+      return;
     }
     navigation.navigate("RegisterPage");
   };

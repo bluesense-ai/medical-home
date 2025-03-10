@@ -1,18 +1,30 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import API from "../api/types";
+
+type UserResponse = NonNullable<
+  API.paths["/auth/access_code_verification_patient/{uid}"]["post"]["responses"]["200"]["content"]["application/json"]["data"]
+>;
 
 export type UserState = {
-  user: {
-    id: string;
-    email_address: string;
-    phone_number: string;
-    username: string;
-    clinic: string;
-    access_token: string;
-    //   createdAt: string;
-    //   updatedAt: string;
-  } | null;
+  user:
+    | ({
+        id: string;
+        email_address: string;
+        phone_number: string;
+        username: string;
+        first_name: string;
+        last_name: string;
+        health_card_number: string;
+        date_of_birth: string;
+        sex: string;
+        clinic: string;
+        access_token: string;
+        //   createdAt: string;
+        //   updatedAt: string;
+      } & UserResponse)
+    | null;
   setUser: (user: Partial<UserState["user"]>) => void;
 };
 

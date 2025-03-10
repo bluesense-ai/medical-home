@@ -51,7 +51,7 @@ const VerificationCode = (props: Props) => {
 
     verify.mutate({
       params: { path: { uid: params.patientId } },
-      body: { accessCode },
+      body: { accessCode, otpChannel: params.otpChannel },
     });
   };
 

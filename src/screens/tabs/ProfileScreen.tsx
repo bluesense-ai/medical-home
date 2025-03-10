@@ -12,29 +12,15 @@ import { colors } from "../../theme/colors";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
-
-interface PersonalInfo {
-  name: string;
-  healthCardNumber: string;
-  dateOfBirth: string;
-  sex: string;
-  pronouns: string;
-  phone: string;
-  email: string;
-}
-
-const PERSONAL_INFO: PersonalInfo = {
-  name: "Santiago Silva",
-  healthCardNumber: "123456789",
-  dateOfBirth: "2001/01/18",
-  sex: "Male",
-  pronouns: "He/Him",
-  phone: "306 (123) 4567",
-  email: "santiago@pgrminc.com",
-};
+import { useUserStore } from "../../store/useUserStore";
 
 const ProfileScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const profile = useUserStore((state) => state.user);
+
+  if (!profile) {
+    return null;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -47,20 +33,25 @@ const ProfileScreen = () => {
             source={require("../../../assets/images/profile-placeholder.png")}
             style={styles.profileImage}
           />
-          <Text style={styles.name}>{PERSONAL_INFO.name}</Text>
+          <Text style={styles.name}>
+            {profile.first_name + " " + profile.last_name}
+          </Text>
         </View>
 
         {/* Info Card */}
         <View style={styles.infoCard}>
           <InfoItem
             label="Health card number"
-            value={PERSONAL_INFO.healthCardNumber}
+            value={profile.health_card_number}
           />
-          <InfoItem label="Date of birth" value={PERSONAL_INFO.dateOfBirth} />
-          <InfoItem label="Sex" value={PERSONAL_INFO.sex} />
-          <InfoItem label="Pronouns" value={PERSONAL_INFO.pronouns} />
-          <InfoItem label="Phone" value={PERSONAL_INFO.phone} />
-          <InfoItem label="Email" value={PERSONAL_INFO.email} />
+          <InfoItem label="Date of birth" value={profile.date_of_birth} />
+          <InfoItem label="Sex" value={profile.sex} />
+          <InfoItem
+            label="Pronouns"
+            value={profile.pronouns ?? "no pronouns"}
+          />
+          <InfoItem label="Phone" value={profile.phone_number} />
+          <InfoItem label="Email" value={profile.email_address} />
         </View>
 
         {/* Edit Button */}

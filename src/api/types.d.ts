@@ -472,14 +472,28 @@ export interface paths {
                             data?: {
                                 /** @example 047aede2-ecb3-4cd8-8286-39e9a1ee288a */
                                 id?: string;
+                                /** @example ilker */
+                                first_name?: string;
+                                /** @example g */
+                                last_name?: string;
+                                /** @example Male */
+                                sex?: string;
+                                /** @example null */
+                                pronouns?: string;
+                                /** @example null */
+                                picture?: string;
+                                /** @example null */
+                                date_of_birth?: string;
+                                /** @example null */
+                                health_card_number?: string;
                                 /** @example khalid@example.com */
                                 email_address?: string;
                                 /** @example +447367595421 */
                                 phone_number?: string;
                                 /** @example khalid */
                                 username?: string;
-                                /** @example Walmart Clinic */
-                                clinic?: string;
+                                /** @example 047aede2-edb3-4ab8-8286-39e9f2ee299a */
+                                preferred_clinic_id?: string;
                                 /** @example string */
                                 access_token?: string;
                                 /**
