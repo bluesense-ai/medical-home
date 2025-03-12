@@ -20,6 +20,8 @@ export type RootStackParamList = {
     lastName: string;
     dateOfBirth: string;
     patientId: string;
+    sex: string;
+    pronouns: string;
   };
   VerificationCode: { patientId: string, otpChannel: string }
   WantToRegister: undefined;
@@ -38,6 +40,7 @@ export type RootStackParamList = {
   EventDetail: { event: SerializableEvent };
   YearlyCalendar: undefined;
   EventForm: { selectedDate?: string };
+  TestRegisterLogin: undefined;
 };
 
 export type BottomTabParamList = {

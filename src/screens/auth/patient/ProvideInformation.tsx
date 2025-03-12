@@ -48,7 +48,7 @@ const ProvideInformation = () => {
   const inputFadeAnim = useRef(new Animated.Value(0)).current;
 
   const [healthCardNumber, setHealthCardNumber] = useState("");
-  const [otpChannel] = useState("sms");
+  const [otpChannel] = useState("email");
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
   const { mutate, isPending, error } = api.useMutation(
@@ -76,41 +76,21 @@ const ProvideInformation = () => {
         ]).start(() => {
           navigation.navigate("WeFoundYou", {
             healthCardNumber,
-            otpChannel,
+            otpChannel: "email",
             patientId: response.patientId
           });
         });
       },
       onError: (error: any) => {
         console.error("API Error:", error);
-        Alert.alert(
-          "Error",
-          error?.error || "Invalid health card number or not found in the system."
-        );
-        
-        // Shake animation for error
-        Animated.sequence([
-          Animated.timing(slideAnim, {
-            toValue: -10,
-            duration: 50,
-            useNativeDriver: true,
-          }),
-          Animated.timing(slideAnim, {
-            toValue: 10,
-            duration: 50,
-            useNativeDriver: true,
-          }),
-          Animated.timing(slideAnim, {
-            toValue: -10,
-            duration: 50,
-            useNativeDriver: true,
-          }),
-          Animated.timing(slideAnim, {
-            toValue: 0,
-            duration: 50,
-            useNativeDriver: true,
-          }),
-        ]).start();
+        if (error?.status === 403 || error?.message?.includes("Invalid Credentials")) {
+          navigation.navigate("WantToRegister");
+        } else {
+          Alert.alert(
+            "Error",
+            error?.error || "Failed to verify health card"
+          );
+        }
       },
     }
   );
@@ -209,7 +189,7 @@ const ProvideInformation = () => {
     mutate({
       body: {
         healthCardNumber: healthCardNumber.trim(),
-        otpChannel: "sms"
+        otpChannel: "email"
       }
     });
   };

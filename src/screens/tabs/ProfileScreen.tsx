@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   View,
   Text,
@@ -15,29 +15,27 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
 import { useUserStore } from "../../store/useUserStore";
 
-interface PersonalInfo {
-  name: string;
-  healthCardNumber: string;
-  dateOfBirth: string;
-  sex: string;
-  pronouns: string;
-  phone: string;
-  email: string;
-}
-
-const PERSONAL_INFO: PersonalInfo = {
-  name: "Santiago Silva",
-  healthCardNumber: "123456789",
-  dateOfBirth: "2001/01/18",
-  sex: "Male",
-  pronouns: "He/Him",
-  phone: "306 (123) 4567",
-  email: "santiago@pgrminc.com",
-};
-
 const ProfileScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
+
+  React.useEffect(() => {
+    if (user) {
+      console.log("ProfileScreen - Current User Data:", user);
+    }
+  }, [user]);
+
+  // Format date to display in a readable format
+  const formatDate = useMemo(() => (dateString: string | null) => {
+    if (!dateString) return "Not provided";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+  }, []);
 
   const handleLogout = () => {
     Alert.alert(
@@ -51,9 +49,7 @@ const ProfileScreen = () => {
         {
           text: "Logout",
           onPress: () => {
-            // Clear user data from store
             setUser(null);
-            // Navigate to Welcome screen
             navigation.reset({
               index: 0,
               routes: [{ name: "Welcome" }],
@@ -66,31 +62,52 @@ const ProfileScreen = () => {
     );
   };
 
+  if (!user) {
+    return null;
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <Text style={styles.title}>Personal Information</Text>
 
         {/* Profile Image */}
-        <View style={styles.profileImageContainer}>
+        <View style={styles.TopContainer}>
+          <View style={styles.profileContainer}>
           <Image
-            source={require("../../../assets/images/profile-placeholder.png")}
-            style={styles.profileImage}
-          />
-          <Text style={styles.name}>{PERSONAL_INFO.name}</Text>
+              source={user?.picture ? { uri: user.picture } : require("../../../assets/icons/avatar.png")}
+              style={user?.picture ? styles.profileImage : styles.profileIcon}
+              />
+          </View>
+          <Text style={styles.name}>{`${user.first_name} ${user.last_name}`}</Text>
         </View>
 
         {/* Info Card */}
         <View style={styles.infoCard}>
           <InfoItem
             label="Health card number"
-            value={PERSONAL_INFO.healthCardNumber}
+            value={user.health_card_number || "Not provided"}
           />
-          <InfoItem label="Date of birth" value={PERSONAL_INFO.dateOfBirth} />
-          <InfoItem label="Sex" value={PERSONAL_INFO.sex} />
-          <InfoItem label="Pronouns" value={PERSONAL_INFO.pronouns} />
-          <InfoItem label="Phone" value={PERSONAL_INFO.phone} />
-          <InfoItem label="Email" value={PERSONAL_INFO.email} />
+          <InfoItem 
+            label="Date of birth" 
+            value={formatDate(user.date_of_birth) || "Not provided"} 
+          />
+          <InfoItem 
+            label="Sex" 
+            value={user.sex || "Not provided"} 
+          />
+          <InfoItem 
+            label="Pronouns" 
+            value={user.pronouns || "Not provided"} 
+          />
+          <InfoItem 
+            label="Phone" 
+            value={user.phone_number || "Not provided"} 
+          />
+          <InfoItem 
+            label="Email" 
+            value={user.email_address || "Not provided"} 
+          />
         </View>
 
         {/* Edit Button */}
@@ -142,15 +159,28 @@ const styles = StyleSheet.create({
     textAlign: "center",
     alignSelf: "center",
   },
-  profileImageContainer: {
+  TopContainer: {
     alignItems: "center",
     marginBottom: 32,
   },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+  profileContainer: {
+    width: 90,
+    height: 90,
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 28,
+    backgroundColor: colors.main.secondary,
+    borderRadius: 50,
+  },
+  profileImage: {
+    width: 85,
+    height: 85,
+    borderRadius: 50,
+  },
+  profileIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 50,
   },
   name: {
     fontSize: 16,
@@ -177,7 +207,6 @@ const styles = StyleSheet.create({
   infoValue: {
     fontSize: 14,
     color: colors.base.white,
-    fontWeight: "regular",
   },
   editButton: {
     backgroundColor: colors.main.secondary,
@@ -191,7 +220,7 @@ const styles = StyleSheet.create({
   editButtonText: {
     color: colors.base.white,
     fontSize: 14,
-    fontWeight: "semibold",
+    fontWeight: "600",
   },
   logoutButton: {
     backgroundColor: "#FF3B30",
@@ -204,8 +233,8 @@ const styles = StyleSheet.create({
   },
   logoutButtonText: {
     color: colors.base.white,
-    fontSize: 14,
-    fontWeight: "semibold",
+    fontSize: 12,
+    fontWeight: "600",
   },
 });
 

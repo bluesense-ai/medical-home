@@ -37,7 +37,9 @@ const RegisterVerification = (props: Props) => {
     clinicId, 
     firstName, 
     lastName, 
-    dateOfBirth 
+    dateOfBirth,
+    sex,
+    pronouns
   } = props.route.params;
 
   // Animation values
@@ -165,7 +167,9 @@ const RegisterVerification = (props: Props) => {
         preferredClinicId: clinicId,
         mobileNumber: phoneNumber,
         emailAddress: email,
-        otpChannel: verificationMethod
+        otpChannel: verificationMethod,
+        sex,
+        pronouns
       }
     });
   };

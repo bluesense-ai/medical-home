@@ -68,16 +68,65 @@ export const useVerifyAdminAccessCode = () => {
   });
 };
 
+// Types for patient registration
+interface PatientRegisterData {
+  firstName: string;
+  lastName: string;
+  sex: string;
+  dateOfBirth: string;
+  healthCardNumber: string;
+  mobileNumber: string;
+  emailAddress: string;
+  otpChannel: string;
+  preferredClinicId: string;
+}
+
+// Types for patient login
+interface PatientLoginData {
+  healthCardNumber: string;
+  otpChannel: string;
+}
+
 /**
- * Hook for patient login
- * @returns Login mutation object
+ * Custom hook for patient registration
+ * Uses mutation pattern for optimized API calls
+ */
+export const usePatientRegister = () => {
+  return api.useMutation(
+    'post',
+    '/auth/patient-register',
+    {
+      onSuccess: (response: any) => {
+        console.log('Registration Success:', response);
+        // You can handle success actions here
+      },
+      onError: (error: any) => {
+        console.error('Registration Error:', error);
+        // You can handle error actions here
+      }
+    }
+  );
+};
+
+/**
+ * Custom hook for patient login
+ * Uses mutation pattern for optimized API calls
  */
 export const usePatientLogin = () => {
-  return api.useMutation("post", "/auth/patient-login", {
-    onError: (error) => {
-      console.error("Patient login error:", error);
-    },
-  });
+  return api.useMutation(
+    'post',
+    '/auth/patient-login',
+    {
+      onSuccess: (response: any) => {
+        console.log('Login Success:', response);
+        // You can handle success actions here
+      },
+      onError: (error: any) => {
+        console.error('Login Error:', error);
+        // You can handle error actions here
+      }
+    }
+  );
 };
 
 /**
@@ -147,6 +196,7 @@ export default {
   useAdminRegistration,
   useAdminLogin,
   useVerifyAdminAccessCode,
+  usePatientRegister,
   usePatientLogin,
   useVerifyPatientAccessCode,
   useProviderLogin,

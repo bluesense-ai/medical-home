@@ -48,6 +48,7 @@ const RegisterPage2 = (props: Props) => {
   const [lastName, setLastName] = useState("");
   const [dateOfBirth, setDateOfBirth] = useState("");
   const [sex, setSex] = useState("Male");
+  const [pronouns, setPronouns] = useState("He/Him");
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showGenderPicker, setShowGenderPicker] = useState(false);
 
@@ -136,6 +137,8 @@ const RegisterPage2 = (props: Props) => {
       firstName,
       lastName,
       dateOfBirth,
+      sex,
+      pronouns,
       patientId: ""
     });
   };
@@ -284,6 +287,7 @@ const RegisterPage2 = (props: Props) => {
                   style={styles.modalOption}
                   onPress={() => {
                     setSex("Male");
+                    setPronouns("He/Him");
                     setShowGenderPicker(false);
                   }}
                 >
@@ -293,6 +297,7 @@ const RegisterPage2 = (props: Props) => {
                   style={styles.modalOption}
                   onPress={() => {
                     setSex("Female");
+                    setPronouns("She/Her");
                     setShowGenderPicker(false);
                   }}
                 >
@@ -302,6 +307,7 @@ const RegisterPage2 = (props: Props) => {
                   style={styles.modalOption}
                   onPress={() => {
                     setSex("Other");
+                    setPronouns("They/Them");
                     setShowGenderPicker(false);
                   }}
                 >

@@ -55,6 +55,7 @@ const LoginSwitchVerification = (props: Props) => {
   const [accessCode, setAccessCode] = useState("");
   const provider = useProvider((state) => state.provider);
   const setUser = useUserStore((state) => state.setUser);
+  const [isPending, setIsPending] = useState(false);
 
   // Initialize animations when component mounts
   useEffect(() => {
@@ -62,7 +63,7 @@ const LoginSwitchVerification = (props: Props) => {
     transitionInAnimation(fadeAnim, slideAnim, inputFadeAnim);
   }, []);
 
-  const { mutate, isPending } = api.useMutation(
+  const { mutate, isPending: apiPending } = api.useMutation(
     "post",
     "/auth/verify-verification-code-provider",
     {
@@ -72,12 +73,44 @@ const LoginSwitchVerification = (props: Props) => {
           Alert.alert("Success", "Access code verified!");
 
           if (!data) throw new Error("No data returned from the server");
-          setUser(data);
+          console.log("API Response Data:", JSON.stringify(data, null, 2));
+
+          // API yanıtını User tipine dönüştür
+          const userData = {
+            id: data.id || "",
+            first_name: data.username?.split(" ")[0] || "",
+            middle_name: null,
+            last_name: data.username?.split(" ")[1] || "",
+            pronouns: null,
+            sex: null,
+            picture: null,
+            date_of_birth: "",
+            email_address: data.email_address || "",
+            health_card_number: "",
+            phone_number: data.phone_number || "",
+            registered: true,
+            preferred_clinic_id: data.clinic || "",
+            marital_status: null,
+            address: null,
+            city_id: null,
+            country_id: null,
+            postal_code: null,
+            preferred_provider_type: null,
+            access_token: data.access_token || ""
+          };
+
+          setUser(userData);
 
           if (provider === "doctor") {
-            navigation.navigate("DashboardScreen");
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "DashboardScreen" }],
+            });
           } else {
-            navigation.navigate("MainTabs");
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "MainTabs" }],
+            });
           }
         });
       },
@@ -91,27 +124,35 @@ const LoginSwitchVerification = (props: Props) => {
 
   const handleVerification = async () => {
     if (!accessCode) {
+      Alert.alert("Error", "Please enter the access code");
       // Shake animation for empty input
       shakeAnimation(slideAnim).start();
-      Alert.alert("Error", "Please enter the access code");
       return;
     }
 
-    if (isPending) return;
+    setIsPending(true);
 
-    mutate({
-      body: {
-        accessCode,
-        otpChannel: params.otpChannel,
-        username: params.userName,
-      },
-    });
+    try {
+      mutate({
+        body: {
+          accessCode,
+          otpChannel: params.otpChannel,
+          username: params.userName,
+        },
+      });
+    } catch (error) {
+      console.error("API Error:", error);
+      Alert.alert("Error", "Verification failed");
+      shakeAnimation(slideAnim);
+    } finally {
+      setIsPending(false);
+    }
   };
 
   // Only apply theme to the container background
   const containerStyle = {
     ...styles.container,
-    backgroundColor: isDarkTheme ? colors.alternativeDark.primary : colors.base.white,
+    backgroundColor: isDarkTheme ? colors.base.darkGray : colors.base.white,
   };
 
   return (

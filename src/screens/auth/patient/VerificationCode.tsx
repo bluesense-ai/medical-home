@@ -20,6 +20,7 @@ import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../navigation/types";
 import { colors } from "../../../theme/colors";
 import { api } from "../../../api/fetch";
+import { useUserStore } from "../../../store/useUserStore";
 
 const { height, width } = Dimensions.get("window");
 
@@ -28,6 +29,7 @@ type Props = StackScreenProps<RootStackParamList, "VerificationCode">;
 const VerificationCode = (props: Props) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const { patientId, otpChannel } = props.route.params;
+  const setUser = useUserStore((state) => state.setUser);
 
   // Animation values
   const fadeAnim = useState(new Animated.Value(0))[0];
@@ -104,16 +106,6 @@ const VerificationCode = (props: Props) => {
     setIsVerifying(true);
 
     try {
-      // For testing in sandbox environment
-      if (accessCode === "123456") {
-        // Simulate successful verification
-        setTimeout(() => {
-          setIsVerifying(false);
-          navigation.navigate("MainTabs");
-        }, 1500);
-        return;
-      }
-
       const response = await fetch(
         `https://sandbox-backend.medicalhome.cloud/api/auth/access_code_verification_patient/${patientId}`,
         {
@@ -132,7 +124,34 @@ const VerificationCode = (props: Props) => {
       console.log("API Response:", data);
 
       if (data.success) {
-        navigation.navigate("MainTabs");
+        const userData = {
+          id: data.data.id,
+          first_name: data.data.first_name || "",
+          middle_name: data.data.middle_name,
+          last_name: data.data.last_name || "",
+          pronouns: data.data.pronouns,
+          sex: data.data.sex,
+          picture: data.data.picture,
+          date_of_birth: data.data.date_of_birth || "",
+          email_address: data.data.email_address || "",
+          health_card_number: data.data.health_card_number || "",
+          phone_number: data.data.phone_number || "",
+          registered: data.data.registered || false,
+          preferred_clinic_id: data.data.preferred_clinic_id || "",
+          marital_status: data.data.marital_status,
+          address: data.data.address,
+          city_id: data.data.city_id,
+          country_id: data.data.country_id,
+          postal_code: data.data.postal_code,
+          preferred_provider_type: data.data.preferred_provider_type,
+          access_token: data.data.access_token || ""
+        };
+        
+        setUser(userData);
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "MainTabs" }],
+        });
       } else {
         Alert.alert("Error", data.message || "Verification failed");
         shakeAnimation();

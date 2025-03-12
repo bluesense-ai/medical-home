@@ -149,7 +149,7 @@ const RegisterPage = () => {
               onPress: () => {
                 navigation.navigate("WeFoundYou", {
                   healthCardNumber,
-                  otpChannel: "sms",
+                  otpChannel: "email",
                   patientId: response.patientId
                 });
               }
@@ -266,7 +266,7 @@ const RegisterPage = () => {
     mutate({
       body: {
         healthCardNumber: healthCardNumber.trim(),
-        otpChannel: "sms"
+        otpChannel: "email"
       }
     });
   };
@@ -359,7 +359,7 @@ const RegisterPage = () => {
             <TextInput
               style={styles.input}
               placeholder="Health Card Number"
-              placeholderTextColor="rgba(255, 255, 255, 0.7)"
+              placeholderTextColor={colors.base.lightGray}
               value={healthCardNumber}
               onChangeText={setHealthCardNumber}
               keyboardType="numeric"
@@ -423,7 +423,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: "100%",
     height: height * 0.55,
-    backgroundColor: "#006699", // Deep blue color from the Figma design
+    backgroundColor: colors.main.primary,
     padding: 20,
     justifyContent: "center",
     alignItems: "center",
@@ -512,7 +512,7 @@ const styles = StyleSheet.create({
   nextButton: {
     width: "90%",
     height: 50,
-    backgroundColor: "#32CD32", // Green color for the next button
+    backgroundColor: colors.main.secondary,
     justifyContent: "center",
     borderRadius: 25,
     alignItems: "center",
@@ -549,7 +549,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "#006699",
+    color: colors.main.primary,
   },
   clinicItem: {
     width: "100%",
@@ -573,7 +573,7 @@ const styles = StyleSheet.create({
   closeButton: {
     marginTop: 20,
     padding: 10,
-    backgroundColor: "#006699",
+    backgroundColor: colors.main.primary,
     borderRadius: 10,
   },
   closeButtonText: {
