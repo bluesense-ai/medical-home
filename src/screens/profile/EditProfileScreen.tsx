@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -8,21 +8,124 @@ import {
   ScrollView,
   SafeAreaView,
   TextInput,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { colors } from "../../theme/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../navigation/types";
+import { useUserStore } from "../../store/useUserStore";
+import { useMutation } from "@tanstack/react-query";
+import { api } from "../../api/fetch";
+import type { RootStackParamList } from "../../navigation/types";
 import * as ImagePicker from "expo-image-picker";
 
-interface EditProfileScreenProps {
-  navigation: StackNavigationProp<RootStackParamList>;
-}
-
-const EditProfileScreen: React.FC<EditProfileScreenProps> = () => {
+const EditProfileScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const user = useUserStore((state) => state.user);
+  const setUser = useUserStore((state) => state.setUser);
+  const [formData, setFormData] = useState({
+    first_name: user?.first_name || "",
+    middle_name: user?.middle_name || "",
+    last_name: user?.last_name || "",
+    sex: user?.sex || "",
+    pronouns: user?.pronouns || "",
+    date_of_birth: user?.date_of_birth || "",
+    email_address: user?.email_address || "",
+    phone_number: user?.phone_number || "",
+    picture: user?.picture || null
+  });
   const [image, setImage] = React.useState<string | null>(null);
+
+  const updateProfileMutation = useMutation({
+    mutationFn: async (formData: any) => {
+      if (!user?.health_card_number) {
+        throw new Error('Health card number is missing');
+      }
+      console.log("Sending Profile Update:", formData);
+      const response = await fetch(`https://sandbox-backend.medicalhome.cloud/api/patients/patient-update/${user.health_card_number}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.access_token}`,
+        },
+        body: JSON.stringify({
+          first_name: formData.first_name,
+          last_name: formData.last_name,
+          middle_name: formData.middle_name,
+          sex: formData.sex,
+          pronouns: formData.pronouns,
+          date_of_birth: formData.date_of_birth,
+          email_address: formData.email_address,
+          phone_number: formData.phone_number,
+          picture: formData.picture
+        }),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to update profile');
+      }
+      
+      const data = await response.json();
+      console.log("Raw API Response:", data);
+      
+      if (data.success && data.patient) {
+        return {
+          ...user,
+          first_name: data.patient.first_name || user.first_name,
+          last_name: data.patient.last_name || user.last_name,
+          middle_name: data.patient.middle_name || user.middle_name,
+          sex: data.patient.sex || user.sex,
+          pronouns: data.patient.pronouns || user.pronouns,
+          date_of_birth: data.patient.date_of_birth || user.date_of_birth,
+          email_address: data.patient.email_address || user.email_address,
+          phone_number: data.patient.phone_number || user.phone_number,
+          picture: data.patient.picture || user.picture,
+          access_token: user.access_token
+        };
+      }
+      
+      throw new Error('Invalid response format from server');
+    },
+    onSuccess: (response) => {
+      console.log("Profile Update Response:", response);
+      setUser(response);
+      
+      Alert.alert(
+        "Success",
+        "Profile updated successfully",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              navigation.navigate("MainTabs");
+            },
+          },
+        ]
+      );
+    },
+    onError: (error: any) => {
+      console.error("Update Error Details:", {
+        error: error.message,
+        healthCardNumber: user?.health_card_number,
+      });
+      Alert.alert(
+        "Error",
+        "Failed to update profile. Please try again."
+      );
+    },
+  });
+
+  const handleUpdateProfile = (formData: any) => {
+    console.log("Handling profile update with data:", formData);
+    updateProfileMutation.mutate(formData);
+  };
+
+  const handleInputChange = (field: string, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+  };
 
   const pickImage = async () => {
     const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -39,7 +142,7 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = () => {
       quality: 1,
     });
 
-    if (!result.canceled) {
+    if (!result.canceled && result.assets?.[0]?.uri) {
       setImage(result.assets[0].uri);
     }
   };
@@ -66,7 +169,9 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = () => {
               source={
                 image
                   ? { uri: image }
-                  : require("../../../assets/images/profile-placeholder.png")
+                  : user?.picture
+                  ? { uri: user.picture }
+                  : require("../../../assets/icons/avatar.png")
               }
               style={styles.profileImage}
             />
@@ -78,24 +183,60 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = () => {
 
         {/* Form Fields */}
         <View style={styles.form}>
-          <InputField label="First name" />
-          <InputField label="Middle name (Optional)" />
-          <InputField label="Last name" />
-          <InputField label="Sex" />
-          <InputField label="Pronouns" />
-          <InputField label="Date of birth" />
-          <InputField label="Health card number" />
+          <InputField 
+            label="First name" 
+            value={formData.first_name}
+            onChangeText={(value) => handleInputChange("first_name", value)}
+          />
+          <InputField 
+            label="Middle name (Optional)" 
+            value={formData.middle_name || ""}
+            onChangeText={(value) => handleInputChange("middle_name", value)}
+          />
+          <InputField 
+            label="Last name" 
+            value={formData.last_name}
+            onChangeText={(value) => handleInputChange("last_name", value)}
+          />
+          <InputField 
+            label="Sex" 
+            value={formData.sex || ""}
+            onChangeText={(value) => handleInputChange("sex", value)}
+          />
+          <InputField 
+            label="Pronouns" 
+            value={formData.pronouns || ""}
+            onChangeText={(value) => handleInputChange("pronouns", value)}
+          />
+          <InputField 
+            label="Date of birth" 
+            value={formData.date_of_birth}
+            onChangeText={(value) => handleInputChange("date_of_birth", value)}
+          />
           <Text style={styles.sectionTitle}>Contact information</Text>
-          <InputField label="Email" />
-          <InputField label="Phone" />
+          <InputField 
+            label="Email" 
+            value={formData.email_address}
+            onChangeText={(value) => handleInputChange("email_address", value)}
+          />
+          <InputField 
+            label="Phone" 
+            value={formData.phone_number}
+            onChangeText={(value) => handleInputChange("phone_number", value)}
+          />
         </View>
 
         {/* Done Button */}
         <TouchableOpacity
           style={styles.doneButton}
-          onPress={() => navigation.goBack()}
+          onPress={() => handleUpdateProfile(formData)}
+          disabled={updateProfileMutation.isPending}
         >
-          <Text style={styles.doneButtonText}>Done</Text>
+          {updateProfileMutation.isPending ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.doneButtonText}>Done</Text>
+          )}
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -105,12 +246,18 @@ const EditProfileScreen: React.FC<EditProfileScreenProps> = () => {
 interface InputFieldProps {
   label: string;
   value?: string;
+  onChangeText?: (text: string) => void;
 }
 
-const InputField: React.FC<InputFieldProps> = ({ label, value }) => (
+const InputField: React.FC<InputFieldProps> = ({ label, value, onChangeText }) => (
   <View style={styles.inputContainer}>
     <Text style={styles.inputLabel}>{label}</Text>
-    <TextInput style={styles.input} value={value} placeholder="" />
+    <TextInput 
+      style={styles.input} 
+      value={value} 
+      onChangeText={onChangeText}
+      placeholder="" 
+    />
   </View>
 );
 

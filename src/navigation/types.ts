@@ -13,7 +13,16 @@ export type RootStackParamList = {
   EditProfile: undefined;
   RegisterPage: undefined;
   RegisterPage2: { healthCardNumber: string; clinicId: string };
-  RegisterVerification: RootStackParamList["RegisterPage2"] & { firstName: string, lastName: string, dateOfBirth: string };
+  RegisterVerification: {
+    healthCardNumber: string;
+    clinicId: string;
+    firstName: string;
+    lastName: string;
+    dateOfBirth: string;
+    patientId: string;
+    sex: string;
+    pronouns: string;
+  };
   VerificationCode: { patientId: string, otpChannel: string }
   WantToRegister: undefined;
   ProvideInformation: undefined;
@@ -31,6 +40,7 @@ export type RootStackParamList = {
   EventDetail: { event: SerializableEvent };
   YearlyCalendar: undefined;
   EventForm: { selectedDate?: string };
+  TestRegisterLogin: undefined;
 };
 
 export type BottomTabParamList = {

@@ -5,6 +5,7 @@ import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { BottomTabParamList } from '../../navigation/BottomTabs';
 import { colors } from '../../theme/colors';
 import { useAuthStore } from '../../store/useAuthStore';
+import { useUserStore } from '../../store/useUserStore';
 import BackgroundShape from '../../components/BackgroundShape';
 import ActionButton from '../../components/Buttons/ActionButton';
 import DoctorCard from '../../components/DoctorCard';
@@ -20,6 +21,7 @@ const HomeScreen = () => {
   const navigation = useNavigation<BottomTabNavigationProp<BottomTabParamList>>();
   const scrollY = useRef(new Animated.Value(0)).current;
   const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
+  const user = useUserStore((state) => state.user);
 
   const handlePhysicianPress = () => {
     // Navigate to physicians list
@@ -45,10 +47,10 @@ const HomeScreen = () => {
         <AnimatedSection isInitial delay={100} style={styles.header}>
           <View style={styles.profileContainer}>
             <TouchableOpacity style={styles.profileButton} onPress={() => navigation.navigate('Profile')}>
-              <Image 
-                source={require('../../../assets/images/profile-placeholder.png')} 
-                style={styles.profileImage}
-              />
+            <Image
+              source={user?.picture ? { uri: user.picture } : require("../../../assets/icons/avatar.png")}
+              style={user?.picture ? styles.profileImage : styles.profileIcon}
+            />
             </TouchableOpacity>
           </View>
         </AnimatedSection>
@@ -188,12 +190,21 @@ const styles = StyleSheet.create({
   },
   profileButton: {
     width: 58,
+    justifyContent: 'center',
+    backgroundColor: colors.main.secondary,
+    borderRadius: 50,
+    alignItems: 'center',
     height: 58,
     overflow: 'hidden',
   },
   profileImage: {
     width: "100%",
     height: "100%",
+  },
+  profileIcon: {
+    width: 28,
+    height: 28,
+    overflow: 'hidden',
   },
   content: {
     flex: 1,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   SafeAreaView,
+  Alert,
 } from "react-native";
 import { colors } from "../../theme/colors";
 import { useNavigation } from "@react-navigation/native";
@@ -16,9 +17,52 @@ import { useUserStore } from "../../store/useUserStore";
 
 const ProfileScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const profile = useUserStore((state) => state.user);
+  const user = useUserStore((state) => state.user);
+  const setUser = useUserStore((state) => state.setUser);
 
-  if (!profile) {
+  React.useEffect(() => {
+    if (user) {
+      console.log("ProfileScreen - Current User Data:", user);
+    }
+  }, [user]);
+
+  // Format date to display in a readable format
+  const formatDate = useMemo(() => (dateString: string | null) => {
+    if (!dateString) return "Not provided";
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+  }, []);
+
+  const handleLogout = () => {
+    Alert.alert(
+      "Logout",
+      "Are you sure you want to logout?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Logout",
+          onPress: () => {
+            setUser(null);
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "Welcome" }],
+            });
+          },
+          style: "destructive",
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
+  if (!user) {
     return null;
   }
 
@@ -28,30 +72,42 @@ const ProfileScreen = () => {
         <Text style={styles.title}>Personal Information</Text>
 
         {/* Profile Image */}
-        <View style={styles.profileImageContainer}>
+        <View style={styles.TopContainer}>
+          <View style={styles.profileContainer}>
           <Image
-            source={require("../../../assets/images/profile-placeholder.png")}
-            style={styles.profileImage}
-          />
-          <Text style={styles.name}>
-            {profile.first_name + " " + profile.last_name}
-          </Text>
+              source={user?.picture ? { uri: user.picture } : require("../../../assets/icons/avatar.png")}
+              style={user?.picture ? styles.profileImage : styles.profileIcon}
+              />
+          </View>
+          <Text style={styles.name}>{`${user.first_name} ${user.last_name}`}</Text>
         </View>
 
         {/* Info Card */}
         <View style={styles.infoCard}>
           <InfoItem
             label="Health card number"
-            value={profile.health_card_number}
+            value={user.health_card_number || "Not provided"}
           />
-          <InfoItem label="Date of birth" value={profile.date_of_birth} />
-          <InfoItem label="Sex" value={profile.sex} />
-          <InfoItem
-            label="Pronouns"
-            value={profile.pronouns ?? "no pronouns"}
+          <InfoItem 
+            label="Date of birth" 
+            value={formatDate(user.date_of_birth) || "Not provided"} 
           />
-          <InfoItem label="Phone" value={profile.phone_number} />
-          <InfoItem label="Email" value={profile.email_address} />
+          <InfoItem 
+            label="Sex" 
+            value={user.sex || "Not provided"} 
+          />
+          <InfoItem 
+            label="Pronouns" 
+            value={user.pronouns || "Not provided"} 
+          />
+          <InfoItem 
+            label="Phone" 
+            value={user.phone_number || "Not provided"} 
+          />
+          <InfoItem 
+            label="Email" 
+            value={user.email_address || "Not provided"} 
+          />
         </View>
 
         {/* Edit Button */}
@@ -60,6 +116,14 @@ const ProfileScreen = () => {
           onPress={() => navigation.navigate("EditProfile")}
         >
           <Text style={styles.editButtonText}>Edit</Text>
+        </TouchableOpacity>
+
+        {/* Logout Button */}
+        <TouchableOpacity
+          style={styles.logoutButton}
+          onPress={handleLogout}
+        >
+          <Text style={styles.logoutButtonText}>Logout</Text>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -95,15 +159,28 @@ const styles = StyleSheet.create({
     textAlign: "center",
     alignSelf: "center",
   },
-  profileImageContainer: {
+  TopContainer: {
     alignItems: "center",
     marginBottom: 32,
   },
-  profileImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
+  profileContainer: {
+    width: 90,
+    height: 90,
+    justifyContent: "center",
+    alignItems: "center",
     marginBottom: 28,
+    backgroundColor: colors.main.secondary,
+    borderRadius: 50,
+  },
+  profileImage: {
+    width: 85,
+    height: 85,
+    borderRadius: 50,
+  },
+  profileIcon: {
+    width: 32,
+    height: 32,
+    borderRadius: 50,
   },
   name: {
     fontSize: 16,
@@ -130,7 +207,6 @@ const styles = StyleSheet.create({
   infoValue: {
     fontSize: 14,
     color: colors.base.white,
-    fontWeight: "regular",
   },
   editButton: {
     backgroundColor: colors.main.secondary,
@@ -139,12 +215,26 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: 114,
     alignItems: "center",
-    marginBottom: 80,
+    marginBottom: 20,
   },
   editButtonText: {
     color: colors.base.white,
     fontSize: 14,
-    fontWeight: "semibold",
+    fontWeight: "600",
+  },
+  logoutButton: {
+    backgroundColor: "#FF3B30",
+    paddingVertical: 10,
+    paddingHorizontal: 36,
+    borderRadius: 12,
+    width: 114,
+    alignItems: "center",
+    marginBottom: 80,
+  },
+  logoutButtonText: {
+    color: colors.base.white,
+    fontSize: 12,
+    fontWeight: "600",
   },
 });
 
