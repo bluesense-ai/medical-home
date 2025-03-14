@@ -46,13 +46,13 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     // Set initial values for the selected tab
     state.routes.forEach((_, i) => {
       if (i === state.index) {
-        fadeAnim[i].setValue(1);
-        scaleAnim[i].setValue(1);
-        slideAnim[i].setValue(0);
+        fadeAnim[i]!.setValue(1);
+        scaleAnim[i]!.setValue(1);
+        slideAnim[i]!.setValue(0);
       } else {
-        fadeAnim[i].setValue(0);
-        scaleAnim[i].setValue(0.85);
-        slideAnim[i].setValue(i < state.index ? -15 : 15);
+        fadeAnim[i]!.setValue(0);
+        scaleAnim[i]!.setValue(0.85);
+        slideAnim[i]!.setValue(i < state.index ? -15 : 15);
       }
     });
     setIsFirstRender(false);
@@ -71,20 +71,20 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         // Animations for the selected tab
         Animated.parallel([
           // Scale up the selected tab
-          Animated.spring(scaleAnim[i], {
+          Animated.spring(scaleAnim[i]!, {
             toValue: 1,
             tension: 50,
             friction: 7,
             useNativeDriver: true,
           }),
           // Fade in the label
-          Animated.timing(fadeAnim[i], {
+          Animated.timing(fadeAnim[i]!, {
             toValue: 1,
             duration: 100,
             useNativeDriver: true,
           }),
           // Reset position
-          Animated.spring(slideAnim[i], {
+          Animated.spring(slideAnim[i]!, {
             toValue: 0,
             tension: 50,
             friction: 7,
@@ -95,20 +95,20 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         // Animations for unselected tabs
         Animated.parallel([
           // Scale down unselected tabs
-          Animated.spring(scaleAnim[i], {
+          Animated.spring(scaleAnim[i]!, {
             toValue: 0.85,
             tension: 50,
             friction: 7,
             useNativeDriver: true,
           }),
           // Fade out labels
-          Animated.timing(fadeAnim[i], {
+          Animated.timing(fadeAnim[i]!, {
             toValue: 0,
             duration: 100,
             useNativeDriver: true,
           }),
           // Slide tabs away from the selected one
-          Animated.spring(slideAnim[i], {
+          Animated.spring(slideAnim[i]!, {
             toValue: i < index ? -15 : 15,
             tension: 50,
             friction: 7,

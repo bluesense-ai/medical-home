@@ -27,7 +27,6 @@ const EditProfileScreen = () => {
   const setUser = useUserStore((state) => state.setUser);
   const [formData, setFormData] = useState({
     first_name: user?.first_name || "",
-    middle_name: user?.middle_name || "",
     last_name: user?.last_name || "",
     sex: user?.sex || "",
     pronouns: user?.pronouns || "",
@@ -76,7 +75,6 @@ const EditProfileScreen = () => {
           ...user,
           first_name: data.patient.first_name || user.first_name,
           last_name: data.patient.last_name || user.last_name,
-          middle_name: data.patient.middle_name || user.middle_name,
           sex: data.patient.sex || user.sex,
           pronouns: data.patient.pronouns || user.pronouns,
           date_of_birth: data.patient.date_of_birth || user.date_of_birth,
@@ -188,11 +186,11 @@ const EditProfileScreen = () => {
             value={formData.first_name}
             onChangeText={(value) => handleInputChange("first_name", value)}
           />
-          <InputField 
+          {/* <InputField 
             label="Middle name (Optional)" 
             value={formData.middle_name || ""}
             onChangeText={(value) => handleInputChange("middle_name", value)}
-          />
+          /> */}
           <InputField 
             label="Last name" 
             value={formData.last_name}
