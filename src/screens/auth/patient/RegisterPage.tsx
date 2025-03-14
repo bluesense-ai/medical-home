@@ -250,7 +250,7 @@ const RegisterPage = () => {
   };
 
   const handleNext = () => {
-    if (!healthCardNumber || healthCardNumber.length < 5) {
+    if (!healthCardNumber || healthCardNumber.length < 3) {
       Alert.alert("Error", "Please enter a valid health card number");
       shakeAnimation();
       return;

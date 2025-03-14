@@ -28,11 +28,14 @@ export type UserState = {
   setUser: (user: Partial<UserState["user"]>) => void;
 };
 
-export const useUserStore = create<UserStore>()(
+export const useUserStore = create<UserState>()(
   persist(
     (set) => ({
       user: null,
-      setUser: (user) => set({ user }),
+      setUser: (user) =>
+        set({
+          user: (user === null ? null : { ...user }) as UserState["user"],
+        }),
     }),
     {
       name: "user-storage",

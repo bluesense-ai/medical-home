@@ -23,21 +23,6 @@ import { colors } from "../../../theme/colors";
 
 const { height, width } = Dimensions.get("window");
 
-interface LoginResponse {
-  success: boolean;
-  patientId: string;
-}
-
-interface LoginRequest {
-  healthCardNumber: string;
-  otpChannel: "sms" | "email";
-}
-
-interface ApiError {
-  error: string;
-  success: false;
-}
-
 const ProvideInformation = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
@@ -76,7 +61,7 @@ const ProvideInformation = () => {
         ]).start(() => {
           navigation.navigate("WeFoundYou", {
             healthCardNumber,
-            otpChannel: "email",
+            otpChannel,
             patientId: response.patientId
           });
         });
@@ -156,7 +141,7 @@ const ProvideInformation = () => {
   }, []);
 
   const handleSubmit = async () => {
-    if (!healthCardNumber || healthCardNumber.length < 5) {
+    if (!healthCardNumber || healthCardNumber.length < 3) {
       Alert.alert("Error", "Please enter a valid health card number");
       
       // Shake animation for empty input
@@ -189,7 +174,7 @@ const ProvideInformation = () => {
     mutate({
       body: {
         healthCardNumber: healthCardNumber.trim(),
-        otpChannel: "email"
+        otpChannel,
       }
     });
   };
