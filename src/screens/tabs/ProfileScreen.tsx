@@ -14,6 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
 import { useUserStore } from "../../store/useUserStore";
+import moment from "moment";
 
 const ProfileScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -27,15 +28,15 @@ const ProfileScreen = () => {
   }, [user]);
 
   // Format date to display in a readable format
-  const formatDate = useMemo(() => (dateString: string | null) => {
-    if (!dateString) return "Not provided";
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
-    });
-  }, []);
+  const formatDate = useMemo(
+    () => (dateString: string | null) => {
+      if (!dateString) return "Not provided";
+      const date = new Date(dateString);
+      // Format date to YYYY/MM/DD
+      return moment(date).format("YYYY/MM/DD");
+    },
+    []
+  );
 
   const handleLogout = () => {
     Alert.alert(
@@ -69,44 +70,41 @@ const ProfileScreen = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.title}>Personal Information</Text>
-
-        {/* Profile Image */}
-        <View style={styles.TopContainer}>
-          <View style={styles.profileContainer}>
-          <Image
-              source={user?.picture ? { uri: user.picture } : require("../../../assets/icons/avatar.png")}
-              style={user?.picture ? styles.profileImage : styles.profileIcon}
-              />
-          </View>
-          <Text style={styles.name}>{`${user.first_name} ${user.last_name}`}</Text>
-        </View>
-
-        {/* Info Card */}
         <View style={styles.infoCard}>
+          <Text style={styles.title}>Personal Information</Text>
+
+          {/* Profile Image */}
+          <View style={styles.TopContainer}>
+            <View style={styles.profileContainer}>
+              <Image
+                source={
+                  user?.picture
+                    ? { uri: user.picture }
+                    : require("../../../assets/icons/avatar.png")
+                }
+                style={user?.picture ? styles.profileImage : styles.profileIcon}
+              />
+            </View>
+            <Text
+              style={styles.name}
+            >{`${user.first_name} ${user.last_name}`}</Text>
+          </View>
+
+          {/* Info Card */}
           <InfoItem
             label="Health card number"
             value={user.health_card_number || "Not provided"}
           />
-          <InfoItem 
-            label="Date of birth" 
-            value={formatDate(user.date_of_birth) || "Not provided"} 
+          <InfoItem
+            label="Date of birth"
+            value={formatDate(user.date_of_birth) || "Not provided"}
           />
-          <InfoItem 
-            label="Sex" 
-            value={user.sex || "Not provided"} 
-          />
-          <InfoItem 
-            label="Pronouns" 
-            value={user.pronouns || "Not provided"} 
-          />
-          <InfoItem 
-            label="Phone" 
-            value={user.phone_number || "Not provided"} 
-          />
-          <InfoItem 
-            label="Email" 
-            value={user.email_address || "Not provided"} 
+          <InfoItem label="Sex" value={user.sex || "Not provided"} />
+          <InfoItem label="Pronouns" value={user.pronouns || "Not provided"} />
+          <InfoItem label="Phone" value={user.phone_number || "Not provided"} />
+          <InfoItem
+            label="Email"
+            value={user.email_address || "Not provided"}
           />
         </View>
 
@@ -118,13 +116,10 @@ const ProfileScreen = () => {
           <Text style={styles.editButtonText}>Edit</Text>
         </TouchableOpacity>
 
-        {/* Logout Button */}
-        <TouchableOpacity
-          style={styles.logoutButton}
-          onPress={handleLogout}
-        >
+        {/* Logout Button, not in figma :( */}
+        {/* <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
           <Text style={styles.logoutButtonText}>Logout</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
       </ScrollView>
     </SafeAreaView>
   );
@@ -146,22 +141,19 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 24,
     paddingTop: 20,
-    paddingBottom: 40,
+    paddingBottom: 200,
     alignItems: "center",
   },
   title: {
     fontSize: 20,
     fontWeight: "bold",
     lineHeight: 61,
-    color: colors.base.black,
-    marginBottom: 28,
-    marginTop: 28,
+    color: colors.base.white,
     textAlign: "center",
     alignSelf: "center",
   },
   TopContainer: {
     alignItems: "center",
-    marginBottom: 32,
   },
   profileContainer: {
     width: 90,
@@ -185,12 +177,12 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 16,
     fontWeight: "bold",
-    color: colors.base.black,
+    color: colors.base.white,
   },
   infoCard: {
     width: "100%",
-    backgroundColor: colors.main.info,
-    borderRadius: 2,
+    backgroundColor: colors.main.primary,
+    borderRadius: 12,
     paddingVertical: 20,
     paddingHorizontal: 24,
     marginBottom: 24,

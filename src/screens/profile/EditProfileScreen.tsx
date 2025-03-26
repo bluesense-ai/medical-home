@@ -186,11 +186,9 @@ const EditProfileScreen = () => {
             value={formData.first_name}
             onChangeText={(value) => handleInputChange("first_name", value)}
           />
-          {/* <InputField 
+          <InputField 
             label="Middle name (Optional)" 
-            value={formData.middle_name || ""}
-            onChangeText={(value) => handleInputChange("middle_name", value)}
-          /> */}
+          />
           <InputField 
             label="Last name" 
             value={formData.last_name}
@@ -211,7 +209,11 @@ const EditProfileScreen = () => {
             value={formData.date_of_birth}
             onChangeText={(value) => handleInputChange("date_of_birth", value)}
           />
-          <Text style={styles.sectionTitle}>Contact information</Text>
+          <InputField 
+            label="Health card number"
+            value={user?.health_card_number || "Not provided"}
+            onChangeText={(value) => handleInputChange("health_card_number", value)} 
+          />
           <InputField 
             label="Email" 
             value={formData.email_address}
@@ -331,7 +333,9 @@ const styles = StyleSheet.create({
   input: {
     width: "100%",
     height: 48,
-    backgroundColor: colors.base.lightGray,
+    borderWidth: 1,
+    borderColor: colors.base.lightGray,
+    backgroundColor: colors.base.white,
     borderRadius: 8,
     paddingHorizontal: 16,
     fontSize: 16,

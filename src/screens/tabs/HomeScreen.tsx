@@ -99,46 +99,6 @@ const HomeScreen = () => {
               ))}
             </View>
           </AnimatedSection>
-
-          {/* Contact Section */}
-          <AnimatedSection scrollY={scrollY} index={8} style={styles.contactSection}>
-            <Text style={{...styles.sectionTitle, color: colors.main.primary}}>Contact</Text>
-            <View style={styles.contactInfo}>
-              <Text style={styles.contactText}>Email: <Text style={styles.contactLink} onPress={() => Linking.openURL('mailto:reception@pacmc.com')}>reception@pacmc.com</Text></Text>
-              <Text style={styles.contactText}>Mobile: 306-922-2002</Text>
-            </View>
-
-          {/* Locations Section */}
-            <Text style={{...styles.sectionTitle, color: colors.main.primary}}>Locations</Text>
-            <View style={styles.locationInfo}>
-              <Text style={styles.locationTitle}>Hope Health Centre</Text>
-              <Text style={styles.locationLink} onPress={() => Linking.openURL('https://maps.google.com/?q=1135 Central Avenue Prince Albert, SK S6V 4V7')}>
-                1135 Central Avenue{'\n'}Prince Albert, SK S6V 4V7
-              </Text>
-
-              <Text style={[styles.locationTitle, styles.secondLocation]}>Walmart Clinic</Text>
-              <Text style={styles.locationLink} onPress={() => Linking.openURL('https://maps.google.com/?q=100 – 800 15th Street East Prince Albert, SK S6V 8E3')}>
-                100 – 800 15th Street East{'\n'}Prince Albert, SK S6V 8E3
-              </Text>
-            </View>
-
-          {/* Socials Section */}
-            <Text style={{...styles.sectionTitle, color: colors.main.primary}}>Socials</Text>
-            <View style={styles.socialIcons}>
-              <TouchableOpacity style={styles.socialButton} onPress={() => Linking.openURL('https://linkedin.com')}>
-                <Image source={require('../../../assets/icons/linkedin.png')} style={styles.socialIcon} />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.socialButton} onPress={() => Linking.openURL('https://twitter.com')}>
-                <Image source={require('../../../assets/icons/x.png')} style={styles.socialIcon} />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.socialButton} onPress={() => Linking.openURL('https://instagram.com')}>
-                <Image source={require('../../../assets/icons/instagram.png')} style={styles.socialIcon} />
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.socialButton} onPress={() => Linking.openURL('https://facebook.com')}>
-                <Image source={require('../../../assets/icons/facebook.png')} style={styles.socialIcon} />
-              </TouchableOpacity>
-            </View>
-          </AnimatedSection>
         </View>
       </Animated.ScrollView>
   );
@@ -210,6 +170,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     paddingTop: 20,
+    paddingBottom: 200,
   },
   heroContainer: {
     width: HERO_IMAGE_WIDTH,

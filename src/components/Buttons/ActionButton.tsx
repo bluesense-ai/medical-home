@@ -20,7 +20,7 @@ const ActionButton: React.FC<ActionButtonProps> = ({ title, onPress }) => {
 const styles = StyleSheet.create({
   button: {
     width: BUTTON_WIDTH,
-    backgroundColor: colors.main.primary,
+    backgroundColor: colors.main.secondary,
     paddingVertical: 16,
     borderRadius: 8,
     elevation: 4,

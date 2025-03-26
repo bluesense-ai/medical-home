@@ -6,7 +6,7 @@
 
 export const colors = {
   main: {
-    primary: "#016C9D",
+    primary: "#004F62",
     secondary: "#33C213",
     tertiary: "#FFFFFF",
     info: "#2727E3",
@@ -60,4 +60,3 @@ export const colors = {
 } as const;
 
 export default colors;
-  
