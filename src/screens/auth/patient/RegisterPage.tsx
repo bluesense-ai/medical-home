@@ -36,11 +36,11 @@ interface Clinic {
 // Status component for clinic availability
 const ClinicStatus = ({ status }: { status: string }) => {
   const isAccepting = status !== "Not accepting patients";
-  
+
   return (
     <View style={styles.statusContainer}>
       <View style={[
-        styles.statusDot, 
+        styles.statusDot,
         { backgroundColor: isAccepting ? "#32CD32" : "#FF3B30" }
       ]} />
       <Text style={styles.statusText}>
@@ -58,11 +58,11 @@ const StatusNote = () => (
 );
 
 // Clinic selector component
-const ClinicSelector = ({ 
-  selectedName, 
-  onPress 
-}: { 
-  selectedName: string; 
+const ClinicSelector = ({
+  selectedName,
+  onPress
+}: {
+  selectedName: string;
   onPress: () => void;
 }) => (
   <TouchableOpacity
@@ -79,24 +79,24 @@ const ClinicSelector = ({
 );
 
 // Clinic item component for modal
-const ClinicItem = ({ 
-  clinic, 
-  onSelect 
-}: { 
-  clinic: Clinic; 
+const ClinicItem = ({
+  clinic,
+  onSelect
+}: {
+  clinic: Clinic;
   onSelect: (id: string, name: string, status: string) => void;
 }) => (
   <TouchableOpacity
     style={styles.clinicItem}
     onPress={() => onSelect(
-      clinic.id, 
-      clinic.name, 
+      clinic.id,
+      clinic.name,
       clinic.status || "Available"
     )}
   >
     <Text style={styles.clinicItemText}>{clinic.name}</Text>
     <View style={[
-      styles.clinicStatusDot, 
+      styles.clinicStatusDot,
       { backgroundColor: clinic.status === "Not accepting patients" ? "#FF3B30" : "#32CD32" }
     ]} />
   </TouchableOpacity>
@@ -125,12 +125,12 @@ const RegisterPage = () => {
   // Fetch clinics from API
   const { data: clinicsResponse, isLoading: isLoadingClinics } = useClinics();
   // Safely extract clinic data and ensure it's an array
-  const clinics: Clinic[] = Array.isArray(clinicsResponse) 
+  const clinics: Clinic[] = Array.isArray(clinicsResponse)
     ? clinicsResponse.map(clinic => ({
-        id: clinic.id || "",
-        name: clinic.name || "",
-        status: clinic.status
-      }))
+      id: clinic.id || "",
+      name: clinic.name || "",
+      status: clinic.status
+    }))
     : [];
 
   // API mutation for checking health card
@@ -289,7 +289,7 @@ const RegisterPage = () => {
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <Text style={styles.modalTitle}>Select a Clinic</Text>
-          
+
           {isLoadingClinics ? (
             <ActivityIndicator size="large" color={colors.main.primary} />
           ) : (
@@ -297,14 +297,14 @@ const RegisterPage = () => {
               data={clinics}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
-                <ClinicItem 
-                  clinic={item} 
-                  onSelect={selectClinic} 
+                <ClinicItem
+                  clinic={item}
+                  onSelect={selectClinic}
                 />
               )}
             />
           )}
-          
+
           <TouchableOpacity
             style={styles.closeButton}
             onPress={() => setModalVisible(false)}
@@ -322,28 +322,28 @@ const RegisterPage = () => {
         <AuthHeader
           navigation={navigation}
           currentStep={1}
-          totalSteps={5}
+          totalSteps={4}
         />
-        
+
         {/* Image Section - Animated */}
-        <Animated.View 
+        <Animated.View
           style={[
             styles.imageContainer,
-            { 
+            {
               opacity: fadeAnim,
-              transform: [{ translateY: imageSlideAnim }] 
+              transform: [{ translateY: imageSlideAnim }]
             }
           ]}
         >
-          <Image 
-            source={require("../../../../assets/images/bgimgrg2.jpg")} 
+          <Image
+            source={require("../../../../assets/images/bgimgrg2.jpg")}
             style={styles.image}
             resizeMode="cover"
           />
         </Animated.View>
-        
+
         {/* Card at the bottom of the screen */}
-        <Animated.View 
+        <Animated.View
           style={[
             styles.card,
             {
@@ -354,7 +354,7 @@ const RegisterPage = () => {
         >
           <Text style={styles.cardTitle}>Register</Text>
           <Text style={styles.cardSubTitle}>Provide your health card number</Text>
-          
+
           <Animated.View style={{ opacity: inputFadeAnim, width: "100%", alignItems: "center" }}>
             <TextInput
               style={styles.input}
@@ -366,20 +366,20 @@ const RegisterPage = () => {
             />
 
             <Text style={styles.clinicLabel}>Choose your clinic</Text>
-            
-            <ClinicSelector 
-              selectedName={selectedClinicName} 
-              onPress={() => setModalVisible(true)} 
+
+            <ClinicSelector
+              selectedName={selectedClinicName}
+              onPress={() => setModalVisible(true)}
             />
-            
+
             {selectedClinicId && (
               <ClinicStatus status={clinicStatus} />
             )}
-            
+
             {selectedClinicId && clinicStatus === "Not accepting patients" && (
               <StatusNote />
             )}
-            
+
             <TouchableOpacity
               style={styles.nextButton}
               onPress={handleNext}

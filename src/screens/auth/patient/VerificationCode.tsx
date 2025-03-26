@@ -146,7 +146,7 @@ const VerificationCode = (props: Props) => {
           preferred_provider_type: data.data.preferred_provider_type,
           access_token: data.data.access_token || ""
         };
-        
+
         setUser(userData);
         navigation.reset({
           index: 0,
@@ -175,28 +175,28 @@ const VerificationCode = (props: Props) => {
         <AuthHeader
           navigation={navigation}
           currentStep={4}
-          totalSteps={5}
+          totalSteps={4}
         />
-        
+
         {/* Image Section - Animated */}
-        <Animated.View 
+        <Animated.View
           style={[
             styles.imageContainer,
-            { 
+            {
               opacity: fadeAnim,
-              transform: [{ translateY: imageSlideAnim }] 
+              transform: [{ translateY: imageSlideAnim }]
             }
           ]}
         >
-          <Image 
-            source={require("../../../../assets/images/bgimgrg2.jpg")} 
+          <Image
+            source={require("../../../../assets/images/bgimgrg2.jpg")}
             style={styles.image}
             resizeMode="cover"
           />
         </Animated.View>
-        
+
         {/* Card at the bottom of the screen */}
-        <Animated.View 
+        <Animated.View
           style={[
             styles.card,
             {
@@ -207,7 +207,7 @@ const VerificationCode = (props: Props) => {
         >
           <Text style={styles.cardTitle}>Verification</Text>
           <Text style={styles.cardSubTitle}>Enter the access code provided</Text>
-          
+
           <Animated.View style={{ opacity: inputFadeAnim, width: "100%", alignItems: "center" }}>
             <TextInput
               style={styles.input}

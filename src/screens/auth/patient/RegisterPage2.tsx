@@ -149,28 +149,28 @@ const RegisterPage2 = (props: Props) => {
         <AuthHeader
           navigation={navigation}
           currentStep={2}
-          totalSteps={5}
+          totalSteps={4}
         />
-        
+
         {/* Image Section - Animated */}
-        <Animated.View 
+        <Animated.View
           style={[
             styles.imageContainer,
-            { 
+            {
               opacity: fadeAnim,
-              transform: [{ translateY: imageSlideAnim }] 
+              transform: [{ translateY: imageSlideAnim }]
             }
           ]}
         >
-          <Image 
-            source={require("../../../../assets/images/bgimgrg2.jpg")} 
+          <Image
+            source={require("../../../../assets/images/bgimgrg2.jpg")}
             style={styles.image}
             resizeMode="cover"
           />
         </Animated.View>
-        
+
         {/* Card at the bottom of the screen */}
-        <Animated.View 
+        <Animated.View
           style={[
             styles.card,
             {
@@ -180,7 +180,7 @@ const RegisterPage2 = (props: Props) => {
           ]}
         >
           <Text style={styles.cardTitle}>Register</Text>
-          
+
           <Animated.View style={{ opacity: inputFadeAnim, width: "100%", alignItems: "center" }}>
             <Text style={styles.inputLabel}>First Name</Text>
             <TextInput
@@ -190,7 +190,7 @@ const RegisterPage2 = (props: Props) => {
               value={firstName}
               onChangeText={setFirstName}
             />
-            
+
             <Text style={styles.inputLabel}>Last Name</Text>
             <TextInput
               style={styles.input}
@@ -199,9 +199,9 @@ const RegisterPage2 = (props: Props) => {
               value={lastName}
               onChangeText={setLastName}
             />
-            
+
             <Text style={styles.inputLabel}>Date of Birth</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.dateInput}
               onPress={() => setShowDatePicker(true)}
             >
@@ -212,7 +212,7 @@ const RegisterPage2 = (props: Props) => {
             </TouchableOpacity>
 
             <Text style={styles.inputLabel}>Gender</Text>
-            <TouchableOpacity 
+            <TouchableOpacity
               style={styles.genderInput}
               onPress={() => setShowGenderPicker(true)}
             >
@@ -241,7 +241,7 @@ const RegisterPage2 = (props: Props) => {
               <View style={[styles.modalContent, { padding: 0 }]}>
                 <View style={styles.modalHeader}>
                   <Text style={styles.modalTitle}>Select Date of Birth</Text>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.modalCloseButton}
                     onPress={() => setShowDatePicker(false)}
                   >
@@ -276,14 +276,14 @@ const RegisterPage2 = (props: Props) => {
               <View style={styles.modalContent}>
                 <View style={styles.modalHeader}>
                   <Text style={styles.modalTitle}>Select Gender</Text>
-                  <TouchableOpacity 
+                  <TouchableOpacity
                     style={styles.modalCloseButton}
                     onPress={() => setShowGenderPicker(false)}
                   >
                     <Text style={styles.modalCloseText}>Done</Text>
                   </TouchableOpacity>
                 </View>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.modalOption}
                   onPress={() => {
                     setSex("Male");
@@ -293,7 +293,7 @@ const RegisterPage2 = (props: Props) => {
                 >
                   <Text style={styles.modalOptionText}>Male</Text>
                 </TouchableOpacity>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.modalOption}
                   onPress={() => {
                     setSex("Female");
@@ -303,7 +303,7 @@ const RegisterPage2 = (props: Props) => {
                 >
                   <Text style={styles.modalOptionText}>Female</Text>
                 </TouchableOpacity>
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.modalOption}
                   onPress={() => {
                     setSex("Other");

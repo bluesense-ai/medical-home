@@ -20,16 +20,16 @@ const HoursScreen = () => {
             <Text style={styles.title}>Hours of Service</Text>
             <View style={styles.cardContainer}>
 
-            <View style={styles.locationCard}>
-              <Text style={styles.locationTitle}>Hope Health Centre</Text>
-              <Text style={styles.locationHours}>Monday to Friday 9 a.m. to 5 p.m.</Text>
-            </View>
+              <View style={styles.locationCard}>
+                <Text style={styles.locationTitle}>Hope Health Centre</Text>
+                <Text style={styles.locationHours}>Monday to Friday 9 a.m. to 5 p.m.</Text>
+              </View>
 
-            <View style={styles.locationCard}>
-              <Text style={styles.locationTitle}>Clinic in Walmart</Text>
-              <Text style={styles.locationHours}>Monday to Friday 9 a.m. to 9 p.m.</Text>
-              <Text style={styles.locationHours}>Sat from 10 a.m. to 6 p.m.</Text>
-            </View>
+              <View style={styles.locationCard}>
+                <Text style={styles.locationTitle}>Clinic in Walmart</Text>
+                <Text style={styles.locationHours}>Monday to Friday 9 a.m. to 9 p.m.</Text>
+                <Text style={styles.locationHours}>Sat from 10 a.m. to 6 p.m.</Text>
+              </View>
             </View>
           </View>
         </SafeAreaView>
@@ -62,20 +62,20 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 36,
-    top:55,
+    top: 55,
     fontWeight: 'bold',
     color: colors.base.white,
     paddingBottom: 149,
     marginTop: 20,
   },
-  cardContainer:{
-    gap:95,
-    alignItems:'center',
+  cardContainer: {
+    gap: 95,
+    alignItems: 'center',
   },
   locationCard: {
     marginBottom: 30,
-    gap:22,
-    alignItems:'center',
+    gap: 22,
+    alignItems: 'center',
   },
   locationTitle: {
     fontSize: 31.2,
