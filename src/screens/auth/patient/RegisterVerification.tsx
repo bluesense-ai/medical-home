@@ -32,11 +32,11 @@ type Props = StackScreenProps<RootStackParamList, "RegisterVerification">;
  */
 const RegisterVerification = (props: Props) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const { 
-    healthCardNumber, 
-    clinicId, 
-    firstName, 
-    lastName, 
+  const {
+    healthCardNumber,
+    clinicId,
+    firstName,
+    lastName,
     dateOfBirth,
     sex,
     pronouns
@@ -180,28 +180,28 @@ const RegisterVerification = (props: Props) => {
         <AuthHeader
           navigation={navigation}
           currentStep={3}
-          totalSteps={5}
+          totalSteps={4}
         />
-        
+
         {/* Image Section - Animated */}
-        <Animated.View 
+        <Animated.View
           style={[
             styles.imageContainer,
-            { 
+            {
               opacity: fadeAnim,
-              transform: [{ translateY: imageSlideAnim }] 
+              transform: [{ translateY: imageSlideAnim }]
             }
           ]}
         >
-          <Image 
-            source={require("../../../../assets/images/bgimgrg2.jpg")} 
+          <Image
+            source={require("../../../../assets/images/bgimgrg2.jpg")}
             style={styles.image}
             resizeMode="cover"
           />
         </Animated.View>
-        
+
         {/* Card at the bottom of the screen */}
-        <Animated.View 
+        <Animated.View
           style={[
             styles.card,
             {
@@ -211,7 +211,7 @@ const RegisterVerification = (props: Props) => {
           ]}
         >
           <Text style={styles.cardTitle}>Register</Text>
-          
+
           <Animated.View style={{ opacity: inputFadeAnim, width: "100%", alignItems: "center" }}>
             <Text style={styles.inputLabel}>Email</Text>
             <TextInput
@@ -223,7 +223,7 @@ const RegisterVerification = (props: Props) => {
               keyboardType="email-address"
               autoCapitalize="none"
             />
-            
+
             <Text style={styles.inputLabel}>Phone number</Text>
             <TextInput
               style={styles.input}
@@ -233,11 +233,11 @@ const RegisterVerification = (props: Props) => {
               onChangeText={setPhoneNumber}
               keyboardType="phone-pad"
             />
-            
+
             <Text style={styles.inputLabel}>How would you like to verify your account?</Text>
-            
+
             <View style={styles.radioContainer}>
-              <TouchableOpacity 
+              <TouchableOpacity
                 style={styles.radioOption}
                 onPress={() => setVerificationMethod("sms")}
               >
@@ -246,8 +246,8 @@ const RegisterVerification = (props: Props) => {
                 </View>
                 <Text style={styles.radioText}>Phone number</Text>
               </TouchableOpacity>
-              
-              <TouchableOpacity 
+
+              <TouchableOpacity
                 style={styles.radioOption}
                 onPress={() => setVerificationMethod("email")}
               >
@@ -297,8 +297,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     width: "100%",
-    height: height * 0.65,
-    backgroundColor: colors.main.primary,
+    height: height * 0.55,
+    backgroundColor: '#004F62',
     padding: 20,
     justifyContent: "flex-start",
     alignItems: "center",

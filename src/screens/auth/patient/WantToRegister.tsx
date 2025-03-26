@@ -60,27 +60,27 @@ const WantToRegister = () => {
     <SafeAreaView style={styles.container}>
       <AuthHeader
         navigation={navigation}
-        currentStep={currentStep}
+        currentStep={2}
         totalSteps={4}
       />
-      
+
       {/* Image Section - Animated */}
-      <Animated.View 
+      <Animated.View
         style={[
           styles.imageContainer,
-          { 
+          {
             opacity: fadeAnim,
-            transform: [{ translateY: imageSlideAnim }] 
+            transform: [{ translateY: imageSlideAnim }]
           }
         ]}
       >
-        <Image 
-          source={require("../../../../assets/images/bgimgrg2.jpg")} 
+        <Image
+          source={require("../../../../assets/images/bgimgrg2.jpg")}
           style={styles.image}
           resizeMode="contain"
         />
       </Animated.View>
-      
+
       {/* Card at the bottom of the screen */}
       <View style={styles.card}>
         <View style={styles.overlay}>
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: "100%",
     height: height * 0.5,
-    backgroundColor: colors.main.primary,
+    backgroundColor: '#004F62',
     padding: 20,
     justifyContent: "center",
     alignItems: "center",

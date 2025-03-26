@@ -93,10 +93,10 @@ const WelcomeScreen: React.FC = () => {
   };
 
   const handleRegister = () => {
-    if (user) {
-      navigation.navigate("MainTabs");
-      return;
-    }
+    // if (user) {
+    //   navigation.navigate("MainTabs");
+    //   return;
+    // }
     navigation.navigate("RegisterPage");
   };
 
@@ -158,7 +158,7 @@ const WelcomeScreen: React.FC = () => {
             left: 15,
           }}
         >
-          <TouchableOpacity
+          {/* <TouchableOpacity
             style={{
               backgroundColor: theme === "light" ? "black" : "white",
               padding: 10,
@@ -171,7 +171,7 @@ const WelcomeScreen: React.FC = () => {
             <Text style={{ color: theme === "light" ? "white" : "black" }}>
               {theme === "light" ? "Set theme to Dark" : "Set theme to Light"}
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
         <View style={styles.topBar}>
           <View style={styles.toggleContainer}>
@@ -226,7 +226,7 @@ const WelcomeScreen: React.FC = () => {
             />
 
             {provider === "patient" && (
-              <AuthButton title="Register" onPress={handleRegister} />
+              <AuthButton title="Register" style={styles.registerButton} onPress={handleRegister} />
             )}
           </View>
         </Animated.View>
@@ -247,6 +247,7 @@ const styles = StyleSheet.create({
   },
   toggleContainer: {
     alignItems: "flex-end",
+    paddingTop: 20,
   },
   imageContainer: {
     flex: 1,
@@ -263,7 +264,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 24,
     justifyContent: "center",
     flex: 1,
-    paddingBottom: 40,
     gap: 16,
   },
   doctorButton: {
@@ -287,6 +287,9 @@ const styles = StyleSheet.create({
     fontWeight: "semibold",
     color: colors.base.black,
   },
+  registerButton: {
+    backgroundColor: "#004F62",
+  }
 });
 
 export default WelcomeScreen;
