@@ -44,7 +44,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
   const navigation = useNavigation();
   const theme = useTheme(state => state.theme);
   const styles = theme === 'dark' ? stylesDark : stylesLight;
-  const iconColor = theme === 'dark' ? colors.base.white : colors.base.black;
+  const iconColor = colors.base.white ;
 
   const renderIcon = (iconName: string, iconFamily: string, onPress: () => void) => {
     if (iconFamily === 'Ionicons') {
@@ -128,7 +128,7 @@ const stylesDark = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: colors.base.darkGray,
+    backgroundColor: "transparent",
   },
   leftSection: {
     flexDirection: 'row',
@@ -141,7 +141,7 @@ const stylesDark = StyleSheet.create({
     gap: 16,
   },
   title: {
-    fontSize: 24,
+    fontSize: 14,
     fontWeight: 'bold',
     color: colors.base.white,
   },
@@ -157,7 +157,7 @@ const stylesLight = StyleSheet.create({
     justifyContent: 'space-between',
     paddingHorizontal: 16,
     paddingVertical: 12,
-    backgroundColor: colors.base.white,
+    backgroundColor: "transparent",
   },
   leftSection: {
     flexDirection: 'row',
@@ -170,9 +170,9 @@ const stylesLight = StyleSheet.create({
     gap: 16,
   },
   title: {
-    fontSize: 24,
+    fontSize: 14,
     fontWeight: 'bold',
-    color: colors.base.black,
+    color: colors.base.white  ,
   },
   iconButton: {
     padding: 8,

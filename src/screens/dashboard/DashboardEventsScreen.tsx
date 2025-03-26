@@ -13,14 +13,13 @@ import ThemedStatusBar from '../../components/ThemedStatusBar';
 import DashboardHeader from '../../components/DashboardHeader';
 import EventItem from '../../components/EventItem';
 import { colors } from '../../theme/colors';
-import { Ionicons } from '@expo/vector-icons';
 
 type MarkedDates = {
   [date: string]: {
     selected?: boolean;
     selectedColor?: string;
     selectedTextColor?: string;
-    dots?: Array<{color: string}>;
+    dots?: Array<{color: string; key?: string}>;
   };
 };
 
@@ -65,50 +64,57 @@ const DashboardEventsScreen: React.FC = () => {
     );
   }, [events, formattedSelectedDate]);
   
+  const getEventColor = (event: Event) => {
+    switch (event.type) {
+      case 'urgent': return colors.main.error;
+      case 'regular': return colors.base.white;
+      case 'check-up': return colors.main.warning;
+      case 'consultation': return colors.main.error;
+      default: return colors.main.primary;
+    }
+  };
+  
   const getMarkedDates = useCallback((): MarkedDates => {
     const markedDates: MarkedDates = {};
     
-    // Mark the selected date
-    markedDates[formattedSelectedDate] = {
-      selected: true,
-      selectedColor: theme === 'dark' ? colors.base.white : colors.base.lightGray,
-      selectedTextColor: colors.base.black
-    };
-    
-    // Mark dates with events
+    // Mark dates with events 
     events.forEach(event => {
       const eventDate = moment(event.startDate).format('YYYY-MM-DD');
       
+      // Skip dots for selected date
+      if (eventDate === formattedSelectedDate) {
+        return;
+      }
+      
+      const eventDot = {
+        color: getEventColor(event),
+        key: event.id
+      };
+      
       if (markedDates[eventDate]) {
-        // If the date is already marked (could be the selected date)
+        // If the date is already marked
         if (!markedDates[eventDate].dots) {
           markedDates[eventDate].dots = [];
         }
-        markedDates[eventDate].dots?.push({
-          color: getEventColor(event),
-        });
+        markedDates[eventDate].dots?.push(eventDot);
       } else {
         // If the date is not yet marked
         markedDates[eventDate] = {
-          dots: [{
-            color: getEventColor(event),
-          }],
+          dots: [eventDot],
         };
       }
     });
     
+    // Now mark the selected date without dots
+    markedDates[formattedSelectedDate] = {
+      selected: true,
+      selectedColor: "#32CD32",
+      selectedTextColor: colors.base.black,
+      dots: [] // Empty array for no dots
+    };
+    
     return markedDates;
-  }, [events, formattedSelectedDate, theme]);
-  
-  const getEventColor = (event: Event) => {
-    switch (event.type) {
-      case 'urgent': return colors.main.error;
-      case 'regular': return colors.legacy.gray;
-      case 'check-up': return colors.main.warning;
-      case 'consultation': return colors.alternativeLight.error;
-      default: return colors.main.primary;
-    }
-  };
+  }, [events, formattedSelectedDate]);
   
   const handleAddEvent = () => {
     // Navigate to EventForm screen with the selected date
@@ -131,12 +137,12 @@ const DashboardEventsScreen: React.FC = () => {
   };
 
   return (
-    <ThemedView style={{ flex: 1 }} useSafeArea>
+    <ThemedView style={{ flex: 1, backgroundColor: theme === 'dark' ? colors.base.darkGray : colors.main.primary }} useSafeArea>
       <ThemedStatusBar />
       
       <View style={{ paddingBottom: 16 }}>
         <DashboardHeader
-          title={moment(selectedDate).format('MMMM')}
+          title={moment(selectedDate).format('YYYY')}
           showBackButton
           onBackPress={() => navigation.goBack()}
           showSearch
@@ -152,46 +158,117 @@ const DashboardEventsScreen: React.FC = () => {
           ]}
         />
       </View>
-      
-      <Calendar
-        current={formattedSelectedDate}
-        onDayPress={handleDayPress}
-        markedDates={getMarkedDates()}
-        markingType="multi-dot"
-        theme={{
-          backgroundColor: 'transparent',
-          calendarBackground: 'transparent',
-          textSectionTitleColor: theme === 'dark' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.5)',
-          selectedDayBackgroundColor: theme === 'dark' ? colors.base.white : colors.base.lightGray,
-          selectedDayTextColor: theme === 'dark' ? colors.base.black : colors.base.white,
-          todayTextColor: colors.main.secondary,
-          dayTextColor: theme === 'dark' ? colors.base.white : colors.base.black,
-          textDisabledColor: theme === 'dark' ? 'rgba(255,255,255,0.2)' : 'rgba(0,0,0,0.2)',
-          dotColor: colors.main.primary,
-          selectedDotColor: colors.main.primary,
-          arrowColor: theme === 'dark' ? colors.base.white : colors.base.black,
-          monthTextColor: theme === 'dark' ? colors.base.white : colors.base.black,
-          textMonthFontWeight: 'bold',
-          textDayFontSize: 14,
-          textMonthFontSize: 16,
+
+      <ThemedText 
+        style={{ 
+          fontSize: 24, 
+          color: colors.base.white,
+          fontWeight: '600', 
+          marginBottom: 20,
+          paddingHorizontal: 16 
         }}
-      />
+      >
+        {moment(selectedDate).format('MMMM')}
+      </ThemedText>
+
+      <View style={{ 
+        marginBottom: 0, 
+        paddingBottom: 0, 
+        borderBottomWidth: 0
+      }}>
+        <Calendar
+          current={formattedSelectedDate}
+          onDayPress={handleDayPress}
+          markedDates={getMarkedDates()}
+          markingType="multi-dot"
+          hideArrows={true}
+          hideDayNames={false}
+          hideMonthYearHeaders={true}
+          renderHeader={() => null}
+          style={{
+            marginBottom: 0,
+            paddingBottom: 0
+          }}
+          theme={{
+            backgroundColor: 'transparent',
+            calendarBackground: "transparent",
+            textSectionTitleColor: colors.base.white,
+            selectedDayBackgroundColor: "#32CD32",
+            selectedDayTextColor: colors.base.black,
+            todayTextColor: colors.main.secondary,
+            dayTextColor: colors.base.white,
+            textDisabledColor: 'rgba(255,255,255,0.4)',
+            dotColor: colors.main.error,
+            selectedDotColor: colors.main.error,
+            arrowColor: colors.base.white,
+            monthTextColor: colors.base.white,
+            textMonthFontWeight: 'bold',
+            textDayFontSize: 12,
+            textDayFontWeight: '600',
+            textMonthFontSize: 16,
+            'stylesheet.calendar.main': {
+              week: {
+                marginTop: 0,
+                marginBottom: 0,
+                flexDirection: 'row',
+                justifyContent: 'space-around',
+                borderBottomWidth: 1,
+                borderBottomColor: 'rgba(255,255,255,0.2)',
+                paddingBottom: 4,
+                paddingTop: 4
+              },
+              day: {
+                width: 32,
+                height: 32,
+                alignItems: 'center',
+                justifyContent: 'center',
+                paddingVertical: 7
+              }
+            },
+            'stylesheet.day.basic': {
+              selected: {
+                backgroundColor: "#32CD32",
+                borderRadius: 8,
+                width: 25,
+                height: 25
+              },
+              today: {
+                backgroundColor: 'transparent',
+                borderRadius: 4,
+              },
+              dot: {
+                width: 4,
+                height: 4,
+                marginTop: 1
+              },
+              base: {
+                width: 32,
+                height: 32,
+                alignItems: 'center'
+              },
+              dots: {
+                flexDirection: 'row',
+                justifyContent: 'center'
+              },
+              selectedDot: {
+                backgroundColor: colors.main.error
+              }
+            }
+          }}
+          dayNamesShort={['S', 'M', 'T', 'W', 'T', 'F', 'S']}
+        />
+      </View>
       
-      <View style={{ flex: 1, padding: 16 }}>
-        <ThemedText variant="subtitle" style={{ marginBottom: 16 }}>
-          {filteredEvents().length > 0 
-            ? `Events for ${moment(selectedDate).format('MMMM D, YYYY')}` 
-            : `No events for ${moment(selectedDate).format('MMMM D, YYYY')}`}
-        </ThemedText>
-        
+      <View style={{ flex: 1, backgroundColor: 'transparent' }}>
         <FlatList
+          style={{ flex: 1 }}
           data={filteredEvents()}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
             <EventItem event={item} onPress={handleEventPress} />
           )}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingBottom: 20 }}
+          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 20, paddingTop: 16 }}
         />
       </View>
     </ThemedView>

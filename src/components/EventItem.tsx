@@ -18,62 +18,76 @@ const EventItem: React.FC<EventItemProps> = ({ event, onPress }) => {
   const getEventColor = () => {
     switch (event.type) {
       case 'urgent': return colors.main.error;
-      case 'regular': return colors.legacy.gray;
+      case 'regular': return colors.base.white;
       case 'check-up': return colors.main.warning;
-      case 'consultation': return colors.alternativeLight.error;
+      case 'consultation': return colors.main.error;
       default: return colors.main.primary;
     }
   };
 
   return (
-    <TouchableOpacity onPress={() => onPress(event)}>
-      <ThemedCard
-        variant="blank"
-        style={styles.container}
-      >
+    <TouchableOpacity onPress={() => onPress(event)} style={styles.touchable}>
+      <View style={styles.container}>
         <View style={[styles.colorIndicator, { backgroundColor: getEventColor() }]} />
         
         <View style={styles.contentContainer}>
           <View style={styles.infoContainer}>
-            <ThemedText variant="subtitle">{event.title}</ThemedText>
+            <ThemedText 
+              variant="subtitle" 
+              style={{ color: theme === 'dark' ? colors.base.white : colors.base.white }}
+            >
+              {event.title}
+            </ThemedText>
             {event.meetingDetails && (
-              <ThemedText variant="caption" color="gray" numberOfLines={1} ellipsizeMode="tail">
-                {event.meetingDetails}
+              <ThemedText 
+                variant="caption" 
+                style={{ color: 'rgba(255,255,255,0.6)' }} 
+                numberOfLines={1} 
+                ellipsizeMode="tail"
+              >
+                Meeting details
               </ThemedText>
             )}
           </View>
           
           <View style={styles.timeContainer}>
-            <ThemedText variant="caption" color="primary">
+            <ThemedText 
+              variant="caption" 
+              style={{ color: colors.base.white }}
+            >
               {moment(event.startDate).format('h:mm A')}
             </ThemedText>
-            <ThemedText variant="caption" color="gray">
+            <ThemedText 
+              variant="caption" 
+              style={{ color: 'rgba(255,255,255,0.6)' }}
+            >
               {moment(event.endDate).format('h:mm A')}
             </ThemedText>
           </View>
         </View>
-      </ThemedCard>
+      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
+  touchable: {
+    marginVertical: 8,
+  },
   container: {
     flexDirection: 'row',
-    padding: 0,
     overflow: 'hidden',
-    marginVertical: 8,
+    backgroundColor: 'transparent',
   },
   colorIndicator: {
     width: 4,
-    height: '80%',
-    alignSelf: 'center',
-    borderRadius: 24,
+    height: '100%',
+    borderRadius: 2,
   },
   contentContainer: {
     flex: 1,
     flexDirection: 'row',
-    padding: 16,
+    padding: 12,
   },
   infoContainer: {
     flex: 1,

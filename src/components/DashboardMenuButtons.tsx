@@ -71,8 +71,8 @@ const stylesLight = StyleSheet.create({
   button: {
     width: "100%",
     height: 50,
-    backgroundColor: colors.main.secondary,
-    borderRadius: 12,
+    backgroundColor: colors.base.white,
+    borderRadius: 42,
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: '#000',
@@ -85,9 +85,10 @@ const stylesLight = StyleSheet.create({
     elevation: 5,
   },
   buttonText: {
+    paddingHorizontal:19,
     fontSize: 20,
     fontWeight: 'semibold',
-    color: colors.base.white,
+    color: colors.main.primary,
   },
 });
 

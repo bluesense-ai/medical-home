@@ -7,7 +7,7 @@ import {
   Image,
   Animated,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
 import { colors } from "../../theme/colors";
@@ -16,11 +16,16 @@ import AnimatedSection from "../../components/AnimatedSection";
 import DashboardMenuButtons from "../../components/DashboardMenuButtons";
 import { useTheme } from "../../store/useTheme";
 
+type DashboardScreenRouteProp = RouteProp<RootStackParamList, 'DashboardScreen'>;
+
 const DashboardScreen: React.FC = () => {
   const theme = useTheme((state) => state.theme);
   const styles = theme === "dark" ? stylesDark : stylesLight;
 
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+  const route = useRoute<DashboardScreenRouteProp>();
+  const { provider } = route.params || {};
+  
   const scrollY = useRef(new Animated.Value(0)).current;
 
   return (
@@ -38,12 +43,8 @@ const DashboardScreen: React.FC = () => {
         {/* Background Shape */}
         <View style={styles.backgroundContainer}>
           <DashboardBackground
-            fill={
-              theme === "dark"
-                ? colors.alternativeDark.secondary
-                : colors.main.primary
-            }
-          />
+            fill={colors.main.secondary
+            }/>
         </View>
 
         {/* Profile Image */}
@@ -53,7 +54,11 @@ const DashboardScreen: React.FC = () => {
             onPress={() => navigation.navigate("EditProfile")}
           >
             <Image
-              source={require("../../../assets/images/profile-placeholder.png")}
+              source={
+                provider && provider.picture
+                  ? { uri: provider.picture }
+                  : require("../../../assets/icons/avatar.png")
+              }
               style={styles.profileImage}
             />
           </TouchableOpacity>
@@ -82,12 +87,15 @@ const stylesDark = StyleSheet.create({
   },
   backgroundContainer: {
     position: "absolute",
-    top: -100,
-    left: -20,
-    right: -20,
-    height: "100%",
+    width: 390,
+    height: 774,
+    left: 0,
+    bottom: 0,
+    transform: [
+      { scale: 1 }
+    ],
+    transformOrigin: "bottom left",
     zIndex: -1,
-    transform: [{ scale: 1.2 }],
   },
   header: {
     paddingHorizontal: 24,
@@ -119,14 +127,14 @@ const stylesDark = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: 70,
-  },
+    paddingHorizontal: 75,
+  }
 });
 
 const stylesLight = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.base.white,
+    backgroundColor: colors.main.primary,
   },
   scrollView: {
     flex: 1,
@@ -137,12 +145,15 @@ const stylesLight = StyleSheet.create({
   },
   backgroundContainer: {
     position: "absolute",
-    top: -100,
-    left: -20,
-    right: -20,
-    height: "100%",
+    width: 390,
+    height: 774,
+    left: 0,
+    bottom: 0,
+    transform: [
+      { scale: 1 }
+    ],
+    transformOrigin: "bottom left",
     zIndex: -1,
-    transform: [{ scale: 1.2 }],
   },
   header: {
     paddingHorizontal: 24,
@@ -175,7 +186,7 @@ const stylesLight = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 70,
-  },
+  }
 });
 
 export default DashboardScreen;
