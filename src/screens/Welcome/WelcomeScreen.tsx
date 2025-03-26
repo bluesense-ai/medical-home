@@ -151,28 +151,6 @@ const WelcomeScreen: React.FC = () => {
       ]}
     >
       <SafeAreaView style={{ flex: 1 }}>
-        <View
-          style={{
-            position: "absolute",
-            top: 35,
-            left: 15,
-          }}
-        >
-          <TouchableOpacity
-            style={{
-              backgroundColor: theme === "light" ? "black" : "white",
-              padding: 10,
-              borderRadius: 5,
-            }}
-            onPress={() => {
-              toggleTheme();
-            }}
-          >
-            <Text style={{ color: theme === "light" ? "white" : "black" }}>
-              {theme === "light" ? "Set theme to Dark" : "Set theme to Light"}
-            </Text>
-          </TouchableOpacity>
-        </View>
         <View style={styles.topBar}>
           <View style={styles.toggleContainer}>
             <Toggle isEnabled={provider === "doctor"} onToggle={toggleSwitch} />
