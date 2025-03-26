@@ -19,10 +19,10 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../navigation/types";
 import { useProviderLogin } from "../../../api/auth";
-import { 
-  shakeAnimation, 
-  transitionInAnimation, 
-  transitionOutAnimation 
+import {
+  shakeAnimation,
+  transitionInAnimation,
+  transitionOutAnimation
 } from "../../../utils/animations";
 import { colors } from "../../../theme/colors";
 import AuthHeader from "../../../components/Header/AuthHeader";
@@ -38,12 +38,12 @@ const Login = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const { theme } = useTheme();
   const isDarkTheme = theme === "dark";
-  
+
   // Animation values
   const fadeAnim = useState(new Animated.Value(0))[0];
   const slideAnim = useState(new Animated.Value(height * 0.1))[0];
   const inputFadeAnim = useState(new Animated.Value(0))[0];
-  
+
   // Form state
   const [userName, setLocalUsername] = useState("");
   const [otpChannel, setOtpChannel] = useState("email");
@@ -99,26 +99,26 @@ const Login = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={containerStyle}>
-        <AuthHeader 
+        <AuthHeader
           navigation={navigation}
           currentStep={1}
-          totalSteps={5}
+          totalSteps={4}
         />
-        <Animated.View 
+        <Animated.View
           style={[
             styles.imageContainer,
             { opacity: fadeAnim }
           ]}
         >
-          <Image 
-            source={require("../../../../assets/images/ProviderLogin1.png")} 
+          <Image
+            source={require("../../../../assets/images/ProviderLogin1.png")}
             style={styles.image}
             resizeMode="cover"
           />
         </Animated.View>
-        
+
         {/* Card at the bottom of the screen */}
-        <Animated.View 
+        <Animated.View
           style={[
             styles.card,
             {
@@ -129,7 +129,7 @@ const Login = () => {
         >
           <Text style={styles.cardTitle}>Log In</Text>
           <Text style={styles.creditSubTitle}>Enter your username</Text>
-          
+
           <Animated.View style={{ opacity: inputFadeAnim, width: "100%", alignItems: "center" }}>
             <TextInput
               style={styles.input}
@@ -139,9 +139,9 @@ const Login = () => {
               onChangeText={setLocalUsername}
               autoCapitalize="none"
             />
-            
-            <Pressable 
-              style={styles.submitButton} 
+
+            <Pressable
+              style={styles.submitButton}
               onPress={handleLogin}
               disabled={isPending}
             >
