@@ -15,11 +15,14 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
 import { useUserStore } from "../../store/useUserStore";
 import moment from "moment";
+import { useProvider } from "../../store/useProvider";
 
 const ProfileScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const user = useUserStore((state) => state.user);
   const setUser = useUserStore((state) => state.setUser);
+
+  const resetProvider = useProvider((state) => state.resetProvider);
 
   React.useEffect(() => {
     if (user) {
@@ -51,6 +54,7 @@ const ProfileScreen = () => {
           text: "Logout",
           onPress: () => {
             setUser(null);
+            resetProvider();
             navigation.reset({
               index: 0,
               routes: [{ name: "Welcome" }],
