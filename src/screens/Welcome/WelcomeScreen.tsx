@@ -80,11 +80,11 @@ const WelcomeScreen: React.FC = () => {
   };
 
   const handleLogin = () => {
-    if (user) {
-      navigation.navigate("MainTabs");
-      return;
-    }
     if (provider == "patient") {
+      // if (user && user.preferred_clinic_id) {
+      //   navigation.navigate("MainTabs");
+      //   return;
+      // }
       navigation.navigate("ProvideInformation");
     }
     if (provider == "doctor") {
@@ -93,10 +93,6 @@ const WelcomeScreen: React.FC = () => {
   };
 
   const handleRegister = () => {
-    if (user) {
-      navigation.navigate("MainTabs");
-      return;
-    }
     navigation.navigate("RegisterPage");
   };
 
