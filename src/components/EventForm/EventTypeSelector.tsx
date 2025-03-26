@@ -65,8 +65,8 @@ const EventTypeSelector: React.FC<EventTypeSelectorProps> = ({
 // Light theme styles
 const stylesLight = StyleSheet.create({
   label: {
-    fontSize: 14,
-    color: 'rgba(0,0,0,0.7)',
+    fontSize: 12,
+    color: colors.base.black,
     marginBottom: 8,
   },
   colorContainer: {

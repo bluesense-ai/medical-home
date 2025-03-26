@@ -14,7 +14,7 @@ export interface FormHeaderProps {
 // Form header component
 const FormHeader: React.FC<FormHeaderProps> = ({ onCancel, onSubmit, isLoading, theme }) => {
   const styles = theme === 'dark' ? stylesDark : stylesLight;
-  const iconColor = theme === 'dark' ? colors.base.white : colors.base.black;
+  const iconColor = colors.base.white;
   
   return (
     <View style={styles.header}>
@@ -25,6 +25,11 @@ const FormHeader: React.FC<FormHeaderProps> = ({ onCancel, onSubmit, isLoading, 
         <Text style={styles.monthText}>January</Text>
       </View>
       <View style={styles.headerRight}>
+        <Ionicons name="search" size={24} color={iconColor} />
+        <Ionicons name="add" size={24} color={iconColor} />
+      </View>
+      <View style={styles.titleContainer}>
+        <Text style={styles.titleText}>Add Event Name</Text>
       </View>
     </View>
   );
@@ -33,12 +38,10 @@ const FormHeader: React.FC<FormHeaderProps> = ({ onCancel, onSubmit, isLoading, 
 // Light theme styles
 const stylesLight = StyleSheet.create({
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    backgroundColor: 'transparent',
     paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 20,
+    paddingTop: 40,
+    paddingBottom: 10,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -46,29 +49,40 @@ const stylesLight = StyleSheet.create({
     gap: 12,
   },
   monthText: {
-    fontSize: 20,
+    fontSize: 14,
     fontWeight: '600',
-    color: colors.base.black,
+    color: colors.base.white,
   },
   headerRight: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 20,
+    position: 'absolute',
+    right: 20,
+    top: 40,
   },
   headerIcon: {
     padding: 8,
   },
+  titleContainer: {
+    marginTop: 30,
+    marginBottom: 10,
+    alignItems: 'flex-start',
+  },
+  titleText: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: colors.base.white,
+  }
 });
 
 // Dark theme styles
 const stylesDark = StyleSheet.create({
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    backgroundColor: 'transparent',
     paddingHorizontal: 20,
-    paddingTop: 60,
-    paddingBottom: 20,
+    paddingTop: 40,
+    paddingBottom: 10,
   },
   headerLeft: {
     flexDirection: 'row',
@@ -84,10 +98,23 @@ const stylesDark = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 20,
+    position: 'absolute',
+    right: 20,
+    top: 40,
   },
   headerIcon: {
     padding: 8,
   },
+  titleContainer: {
+    marginTop: 30,
+    marginBottom: 10,
+    alignItems: 'flex-start',
+  },
+  titleText: {
+    fontSize: 24,
+    fontWeight: '700',
+    color: colors.base.white,
+  }
 });
 
 export default FormHeader; 

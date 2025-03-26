@@ -15,7 +15,7 @@ export interface TimeSelectorProps {
 // Time selector component
 const TimeSelector: React.FC<TimeSelectorProps> = ({ label, value, onPress, theme }) => {
   const styles = theme === 'dark' ? stylesDark : stylesLight;
-  const iconColor = theme === 'dark' ? "white" : "black";
+  const iconColor = theme === 'dark' ? "black" : "black";
   
   return (
     <View>
@@ -36,21 +36,23 @@ const TimeSelector: React.FC<TimeSelectorProps> = ({ label, value, onPress, them
 // Light theme styles
 const stylesLight = StyleSheet.create({
   label: {
-    fontSize: 14,
-    color: 'rgba(0,0,0,0.7)',
+    fontSize: 12,
+    color: colors.base.black,
     marginBottom: 8,
   },
   timeButton: {
-    backgroundColor: colors.base.lightGray,
     borderRadius: 8,
     padding: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.legacy.lightGray,
+    marginBottom: 12,
   },
   timeText: {
     color: colors.base.black,
-    fontSize: 16,
+    fontSize: 12,
   },
 });
 
@@ -58,19 +60,22 @@ const stylesLight = StyleSheet.create({
 const stylesDark = StyleSheet.create({
   label: {
     fontSize: 14,
-    color: 'rgba(255,255,255,0.7)',
+    color: 'rgba(0,0,0,0.7)',
     marginBottom: 8,
   },
   timeButton: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 8,
     padding: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.legacy.lightGray,
+    marginBottom: 12,
   },
   timeText: {
-    color: colors.base.white,
+    color: colors.base.black,
     fontSize: 16,
   },
 });

@@ -15,6 +15,7 @@ import DashboardBackground from "../../components/DashboardBackground";
 import AnimatedSection from "../../components/AnimatedSection";
 import DashboardMenuButtons from "../../components/DashboardMenuButtons";
 import { useTheme } from "../../store/useTheme";
+import { Ionicons } from "@expo/vector-icons";
 
 type DashboardScreenRouteProp = RouteProp<RootStackParamList, 'DashboardScreen'>;
 
@@ -53,14 +54,16 @@ const DashboardScreen: React.FC = () => {
             style={styles.profileButton}
             onPress={() => navigation.navigate("EditProfile")}
           >
-            <Image
-              source={
-                provider && provider.picture
-                  ? { uri: provider.picture }
-                  : require("../../../assets/icons/avatar.png")
-              }
-              style={styles.profileImage}
-            />
+            {provider && provider.picture ? (
+              <Image
+                source={{ uri: provider.picture }}
+                style={styles.profileImage}
+              />
+            ) : (
+              <View style={styles.defaultAvatarContainer}>
+                <Ionicons name="person" size={24} color={colors.main.primary} />
+              </View>
+            )}
           </TouchableOpacity>
         </AnimatedSection>
 
@@ -128,7 +131,15 @@ const stylesDark = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 75,
-  }
+  },
+  defaultAvatarContainer: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 29,
+    backgroundColor: colors.base.white,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
 const stylesLight = StyleSheet.create({
@@ -186,7 +197,15 @@ const stylesLight = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 70,
-  }
+  },
+  defaultAvatarContainer: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 29,
+    backgroundColor: colors.base.white,
+    justifyContent: "center",
+    alignItems: "center",
+  },
 });
 
 export default DashboardScreen;

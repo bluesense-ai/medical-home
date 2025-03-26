@@ -29,8 +29,8 @@ const StaffSelector: React.FC<StaffSelectorProps> = ({ staffName, theme }) => {
 // Light theme styles
 const stylesLight = StyleSheet.create({
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: "medium",
     color: colors.base.black,
     marginBottom: 16,
   },
@@ -40,15 +40,17 @@ const stylesLight = StyleSheet.create({
   staffContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: colors.base.lightGray,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 8,
     padding: 12,
+    borderWidth: 1,
+    borderColor: colors.legacy.lightGray,
   },
   avatar: {
-    width: 36,
-    height: 36,
+    width: 23,
+    height: 23,
     borderRadius: 18,
-    backgroundColor: colors.base.darkGray,
+    backgroundColor: colors.main.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -60,7 +62,7 @@ const stylesLight = StyleSheet.create({
   },
   staffName: {
     color: colors.base.black,
-    fontSize: 16,
+    fontSize: 12,
   },
 });
 
@@ -69,7 +71,7 @@ const stylesDark = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: colors.base.white,
+    color: colors.base.black,
     marginBottom: 16,
   },
   marginTop: {
@@ -78,15 +80,17 @@ const stylesDark = StyleSheet.create({
   staffContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#2C2C2E',
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 8,
     padding: 12,
+    borderWidth: 1,
+    borderColor: colors.legacy.lightGray,
   },
   avatar: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: '#444',
+    backgroundColor: colors.main.primary,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 12,
@@ -97,7 +101,7 @@ const stylesDark = StyleSheet.create({
     fontWeight: '500',
   },
   staffName: {
-    color: colors.base.white,
+    color: colors.base.black,
     fontSize: 16,
   },
 });

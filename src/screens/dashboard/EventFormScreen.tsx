@@ -1,10 +1,12 @@
 import React from 'react';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { View, StyleSheet, StatusBar } from 'react-native';
 import { RootStackParamList } from '../../navigation/types';
 import EventForm from '../../components/EventForm';
 import { EventFormData } from '../../components/EventForm/index';
 import useCalendarStore from '../../store/useCalendarStore';
+import { colors } from '../../theme/colors';
 
 type EventFormScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'EventForm'>;
 type EventFormScreenRouteProp = RouteProp<RootStackParamList, 'EventForm'>;
@@ -48,12 +50,32 @@ const EventFormScreen: React.FC = () => {
   };
   
   return (
-    <EventForm
-      onSubmit={handleSubmit}
-      onCancel={handleCancel}
-      initialDate={selectedDate}
-    />
+    <View style={styles.container}>
+      <StatusBar 
+        barStyle="light-content" 
+        backgroundColor={colors.main.primary} 
+      />
+      <View style={styles.separator} />
+      <EventForm
+        onSubmit={handleSubmit}
+        onCancel={handleCancel}
+        initialDate={selectedDate}
+      />
+    </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: colors.main.primary,
+  },
+  separator: {
+    width: '100%',
+    height: 1,
+    backgroundColor: colors.legacy.lightGray,
+    marginTop: 5,
+  }
+});
 
 export default EventFormScreen; 

@@ -294,8 +294,8 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialDate =
   return (
     <View style={styles.container}>
       <StatusBar 
-        barStyle={theme === 'dark' ? 'light-content' : 'dark-content'} 
-        backgroundColor={theme === 'dark' ? colors.base.black : colors.base.white} 
+        barStyle="light-content" 
+        backgroundColor={colors.main.primary} 
       />
       
       <FormHeader 
@@ -306,8 +306,6 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialDate =
       />
       
       <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
-        <Text style={styles.title}>Add Event Name</Text>
-
         <View style={styles.card}>
           <FormInput 
             sectionTitle="Event Details"
@@ -332,21 +330,26 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialDate =
             theme={theme}
           />
           
-          <FormInput 
-            placeholder="Email"
-            value={formData.email}
-            onChangeText={(text) => setFormData({ ...formData, email: text })}
-            keyboardType="email-address"
-            theme={theme}
-          />
-          
-          <FormInput 
-            placeholder="Phone"
-            value={formData.phone}
-            onChangeText={(text) => setFormData({ ...formData, phone: text })}
-            keyboardType="phone-pad"
-            theme={theme}
-          />
+          <View style={styles.rowContainer}>
+            <View style={styles.halfWidth}>
+              <FormInput 
+                placeholder="Email"
+                value={formData.email}
+                onChangeText={(text) => setFormData({ ...formData, email: text })}
+                keyboardType="email-address"
+                theme={theme}
+              />
+            </View>
+            <View style={styles.halfWidth}>
+              <FormInput 
+                placeholder="Phone"
+                value={formData.phone}
+                onChangeText={(text) => setFormData({ ...formData, phone: text })}
+                keyboardType="phone-pad"
+                theme={theme}
+              />
+            </View>
+          </View>
 
           <Text style={[styles.sectionTitle, styles.marginTop]}>Event Time</Text>
           
@@ -414,21 +417,16 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialDate =
 const stylesLight = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.base.white,
+    backgroundColor: 'transparent',
   },
   content: {
     flex: 1,
     paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 34,
-    fontWeight: 'bold',
-    color: colors.base.black,
-    marginBottom: 32,
+    marginTop: 20,
   },
   card: {
-    backgroundColor: colors.alternativeLight.secondary,
-    borderRadius: 16,
+    backgroundColor: colors.base.white,
+    borderRadius: 8,
     padding: 20,
     marginBottom: 20,
     shadowColor: colors.base.black,
@@ -440,9 +438,17 @@ const stylesLight = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  halfWidth: {
+    width: '48%',
+  },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: 'medium',
     color: colors.base.black,
     marginBottom: 16,
   },
@@ -509,28 +515,32 @@ const stylesLight = StyleSheet.create({
 const stylesDark = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: colors.base.darkGray,
+    backgroundColor: 'transparent',
   },
   content: {
     flex: 1,
     paddingHorizontal: 20,
-  },
-  title: {
-    fontSize: 34,
-    fontWeight: 'bold',
-    color: colors.base.white,
-    marginBottom: 32,
+    marginTop: 20,
   },
   card: {
-    backgroundColor: colors.base.black,
-    borderRadius: 16,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
+    borderRadius: 8,
     padding: 20,
     marginBottom: 20,
+    borderWidth: 0,
+  },
+  rowContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 12,
+  },
+  halfWidth: {
+    width: '48%',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
-    color: colors.base.white,
+    color: colors.base.black,
     marginBottom: 16,
   },
   marginTop: {

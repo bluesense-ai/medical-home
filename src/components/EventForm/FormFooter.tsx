@@ -54,18 +54,20 @@ const stylesLight = StyleSheet.create({
   cancelButton: {
     backgroundColor: colors.main.error,
     borderRadius: 8,
-    padding: 16,
+    height: 32,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   cancelButtonText: {
     color: colors.base.white,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
   },
   addButton: {
     backgroundColor: colors.main.secondary,
     borderRadius: 8,
-    padding: 16,
+    height: 32,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   addButtonDisabled: {
@@ -73,7 +75,7 @@ const stylesLight = StyleSheet.create({
   },
   addButtonText: {
     color: colors.base.white,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
   },
 });
@@ -87,18 +89,20 @@ const stylesDark = StyleSheet.create({
   cancelButton: {
     backgroundColor: colors.main.error,
     borderRadius: 8,
-    padding: 16,
+    height: 32,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   cancelButtonText: {
     color: colors.base.white,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
   },
   addButton: {
-    backgroundColor: colors.legacy.gray,
+    backgroundColor: colors.main.primary,
     borderRadius: 8,
-    padding: 16,
+    height: 32,
+    justifyContent: 'center',
     alignItems: 'center',
   },
   addButtonDisabled: {
@@ -106,7 +110,7 @@ const stylesDark = StyleSheet.create({
   },
   addButtonText: {
     color: colors.base.white,
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '600',
   },
 });

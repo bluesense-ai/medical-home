@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, FlatList, TouchableOpacity } from 'react-native';
+import { View, FlatList, TouchableOpacity, StatusBar } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, SerializableEvent } from '../../navigation/types';
@@ -9,7 +9,6 @@ import useCalendarStore, { Event } from '../../store/useCalendarStore';
 import { useTheme } from '../../store/useTheme';
 import ThemedView from '../../components/ThemedView';
 import ThemedText from '../../components/ThemedText';
-import ThemedStatusBar from '../../components/ThemedStatusBar';
 import DashboardHeader from '../../components/DashboardHeader';
 import EventItem from '../../components/EventItem';
 import { colors } from '../../theme/colors';
@@ -138,7 +137,10 @@ const DashboardEventsScreen: React.FC = () => {
 
   return (
     <ThemedView style={{ flex: 1, backgroundColor: theme === 'dark' ? colors.base.darkGray : colors.main.primary }} useSafeArea>
-      <ThemedStatusBar />
+      <StatusBar 
+        barStyle="light-content" 
+        backgroundColor={colors.main.primary} 
+      />
       
       <View style={{ paddingBottom: 16 }}>
         <DashboardHeader

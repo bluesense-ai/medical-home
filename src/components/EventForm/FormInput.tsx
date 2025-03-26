@@ -56,8 +56,8 @@ const FormInput: React.FC<FormInputProps> = ({
 // Light theme styles
 const stylesLight = StyleSheet.create({
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: 'medium',
     color: colors.base.black,
     marginBottom: 16,
   },
@@ -65,17 +65,21 @@ const stylesLight = StyleSheet.create({
     marginTop: 24,
   },
   label: {
-    fontSize: 14,
+    fontSize: 12,
+    fontWeight: 'medium',
     color: 'rgba(0,0,0,0.7)',
     marginBottom: 8,
   },
   input: {
-    backgroundColor: colors.base.lightGray,
+    backgroundColor: 'rgba(255, 255, 255, 0.9)',
     borderRadius: 8,
-    padding: 16,
+    padding: 12,
     marginBottom: 12,
     color: colors.base.black,
-    fontSize: 16,
+    fontSize: 12,
+    fontWeight: 'medium',
+    borderWidth: 1,
+    borderColor: colors.legacy.lightGray,
   },
   textArea: {
     height: 100,
@@ -86,8 +90,8 @@ const stylesLight = StyleSheet.create({
 // Dark theme styles
 const stylesDark = StyleSheet.create({
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: 'medium',
     color: colors.base.white,
     marginBottom: 16,
   },
@@ -95,17 +99,20 @@ const stylesDark = StyleSheet.create({
     marginTop: 24,
   },
   label: {
-    fontSize: 14,
-    color: 'rgba(255,255,255,0.7)',
+    fontSize: 12,
+    color: colors.base.black,
     marginBottom: 8,
   },
   input: {
-    backgroundColor: '#2C2C2E',
+    backgroundColor: 'rgba(44, 44, 46, 0.9)',
     borderRadius: 8,
-    padding: 16,
+    padding: 12,
     marginBottom: 12,
     color: colors.base.white,
-    fontSize: 16,
+    fontSize: 12,
+    fontWeight: 'medium',
+    borderWidth: 1,
+    borderColor: '#3E3E3E',
   },
   textArea: {
     height: 100,
