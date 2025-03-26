@@ -1,39 +1,61 @@
-import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import { colors } from '../../theme/colors';
+import React from "react";
+import { View, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { colors } from "../../theme/colors";
 
 interface ToggleProps {
+  text: string;
   isEnabled: boolean;
   onToggle: () => void;
 }
 
-const Toggle: React.FC<ToggleProps> = ({ isEnabled, onToggle }) => {
+const Toggle: React.FC<ToggleProps> = ({ isEnabled, onToggle, text }) => {
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       onPress={onToggle}
       style={[
         styles.container,
-        { backgroundColor: isEnabled ? colors.main.secondary : '#E0E0E0' }
+        {
+          backgroundColor: isEnabled
+            ? colors.main.secondary
+            : colors.main.primary,
+        },
       ]}
     >
-      <View style={[
-        styles.dot,
-        { 
-          transform: [{ translateX: isEnabled ? 30 : 0 }],
-          backgroundColor: isEnabled ? colors.main.primary : colors.base.white
-        }
-      ]} />
+      <View
+        style={[
+          styles.dot,
+          {
+            transform: [{ translateX: isEnabled ? 46 : 0 }],
+            backgroundColor: !isEnabled
+              ? colors.main.secondary
+              : colors.main.primary,
+          },
+        ]}
+      />
+      <View style={{ position: "absolute", left: isEnabled ? 7 : 30 }}>
+        <Text
+          style={{
+            fontSize: 10,
+            lineHeight: 22,
+            letterSpacing: 0.46,
+            color: colors.base.white,
+            fontWeight: "bold",
+          }}
+        >
+          {text}
+        </Text>
+      </View>
     </TouchableOpacity>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: 62,
+    width: 78,
     height: 30,
     borderRadius: 20,
-    padding: 4.74,
-    justifyContent: 'center',
+    padding: 6,
+    justifyContent: "center",
   },
   dot: {
     width: 20,
@@ -50,4 +72,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Toggle; 
+export default Toggle;

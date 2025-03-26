@@ -153,7 +153,11 @@ const WelcomeScreen: React.FC = () => {
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.topBar}>
           <View style={styles.toggleContainer}>
-            <Toggle isEnabled={provider === "doctor"} onToggle={toggleSwitch} />
+            <Toggle
+              isEnabled={provider === "doctor"}
+              text={provider === "doctor" ? "Provider" : "Patient"}
+              onToggle={toggleSwitch}
+            />
           </View>
         </View>
 
