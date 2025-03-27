@@ -1,30 +1,13 @@
 import React, { useRef } from "react";
-import {
-  View,
-  StyleSheet,
-  SafeAreaView,
-  TouchableOpacity,
-  Image,
-  Animated,
-} from "react-native";
-import { useNavigation, useRoute, RouteProp } from "@react-navigation/native";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { RootStackParamList } from "../../navigation/types";
+import { View, StyleSheet, SafeAreaView, Animated } from "react-native";
 import { colors } from "../../theme/colors";
 import DashboardBackground from "../../components/DashboardBackground";
-import AnimatedSection from "../../components/AnimatedSection";
-import DashboardMenuButtons from "../../components/DashboardMenuButtons";
 import { useTheme } from "../../store/useTheme";
-import { Ionicons } from "@expo/vector-icons";
-import { useUserStore } from "../../store/useUserStore";
 
-const DashboardScreen: React.FC = () => {
+const PatientDBScreen: React.FC = () => {
   const theme = useTheme((state) => state.theme);
   const styles = theme === "dark" ? stylesDark : stylesLight;
 
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const provider = useUserStore(state => state.user)
-  
   const scrollY = useRef(new Animated.Value(0)).current;
 
   return (
@@ -39,36 +22,12 @@ const DashboardScreen: React.FC = () => {
         scrollEventThrottle={16}
         contentContainerStyle={styles.scrollViewContent}
       >
-        {/* Background Shape */}
         <View style={styles.backgroundContainer}>
-          <DashboardBackground
-            fill={colors.main.secondary
-            }/>
+          <DashboardBackground fill={colors.main.secondary} />
         </View>
-
-        {/* Profile Image */}
-        <AnimatedSection isInitial delay={100} style={styles.header}>
-          <TouchableOpacity
-            style={styles.profileButton}
-            onPress={() => navigation.navigate("EditProfile")}
-          >
-            {provider && provider.picture ? (
-              <Image
-                source={{ uri: provider.picture }}
-                style={styles.profileImage}
-              />
-            ) : (
-              <View style={styles.defaultAvatarContainer}>
-                <Ionicons name="person" size={24} color={colors.main.primary} />
-              </View>
-            )}
-          </TouchableOpacity>
-        </AnimatedSection>
 
         {/* Menu Buttons */}
-        <View style={styles.content}>
-          <DashboardMenuButtons />
-        </View>
+        <View style={styles.content}></View>
       </Animated.ScrollView>
     </SafeAreaView>
   );
@@ -92,9 +51,7 @@ const stylesDark = StyleSheet.create({
     height: 774,
     left: 0,
     bottom: 0,
-    transform: [
-      { scale: 1 }
-    ],
+    transform: [{ scale: 1 }],
     transformOrigin: "bottom left",
     zIndex: -1,
   },
@@ -158,9 +115,7 @@ const stylesLight = StyleSheet.create({
     height: 774,
     left: 0,
     bottom: 0,
-    transform: [
-      { scale: 1 }
-    ],
+    transform: [{ scale: 1 }],
     transformOrigin: "bottom left",
     zIndex: -1,
   },
@@ -206,4 +161,4 @@ const stylesLight = StyleSheet.create({
   },
 });
 
-export default DashboardScreen;
+export default PatientDBScreen;

@@ -467,45 +467,45 @@ export interface paths {
                     };
                     content: {
                         "application/json": {
-                            success?: boolean;
-                            /** @description Provider details. */
-                            data?: {
+                            success: boolean;
+                            /** @description Patient details. */
+                            data: {
                                 /** @example 047aede2-ecb3-4cd8-8286-39e9a1ee288a */
-                                id?: string;
+                                id: string;
                                 /** @example ilker */
-                                first_name?: string;
+                                first_name: string;
                                 /** @example g */
-                                last_name?: string;
+                                last_name: string;
                                 /** @example Male */
-                                sex?: string;
+                                sex: string;
                                 /** @example null */
-                                pronouns?: string;
+                                pronouns: string;
                                 /** @example null */
-                                picture?: string;
+                                picture: string;
                                 /** @example null */
-                                date_of_birth?: string;
+                                date_of_birth: string;
                                 /** @example null */
-                                health_card_number?: string;
+                                health_card_number: string;
                                 /** @example khalid@example.com */
-                                email_address?: string;
+                                email_address: string;
                                 /** @example +447367595421 */
-                                phone_number?: string;
+                                phone_number: string;
                                 /** @example khalid */
-                                username?: string;
+                                username: string;
                                 /** @example 047aede2-edb3-4ab8-8286-39e9f2ee299a */
-                                preferred_clinic_id?: string;
+                                preferred_clinic_id: string;
                                 /** @example string */
-                                access_token?: string;
+                                access_token: string;
                                 /**
                                  * Format: date-time
                                  * @example 2024-08-23T11:01:40.532Z
                                  */
-                                createdAt?: string;
+                                createdAt: string;
                                 /**
                                  * Format: date-time
                                  * @example 2024-08-23T11:01:40.532Z
                                  */
-                                updatedAt?: string;
+                                updatedAt: string;
                             };
                         };
                     };
@@ -660,31 +660,58 @@ export interface paths {
                     content: {
                         "application/json": {
                             /** @example true */
-                            success?: boolean;
+                            success: boolean;
                             /** @description Provider details. */
-                            data?: {
-                                /** @example 047aede2-ecb3-4cd8-8286-39e9a1ee288a */
-                                id?: string;
-                                /** @example khalid@example.com */
-                                email_address?: string;
-                                /** @example +447367595421 */
-                                phone_number?: string;
-                                /** @example khalid */
-                                username?: string;
-                                /** @example Walmart Clinic */
-                                clinic?: string;
+                            data: {
+                                user: {
+                                    /** @example 047aede2-ecb3-4cd8-8286-39e9a1ee288a */
+                                    id: string;
+                                    /**
+                                     * @description The first name of the patient
+                                     * @example John
+                                     */
+                                    first_name: string;
+                                    /**
+                                     * @description The first name of the patient
+                                     * @example null
+                                     */
+                                    middle_name: string | null;
+                                    /**
+                                     * @description The last name of the patient
+                                     * @example Doe
+                                     */
+                                    last_name: string;
+                                    /** @example khalid@example.com */
+                                    email_address: string;
+                                    /** @example null */
+                                    picture: string | null;
+                                    /** @example null */
+                                    ms_calendar_id?: string | null;
+                                    /** @example null */
+                                    sex: string | null;
+                                    /** @example +447367595000 */
+                                    phone_number: string;
+                                    /** @example khalid */
+                                    username: string;
+                                    /** @example true */
+                                    accepting_patients: boolean;
+                                    /** @example available */
+                                    provider_status: string;
+                                    /** @example 300558121 */
+                                    mnc_number: string;
+                                    /**
+                                     * Format: date-time
+                                     * @example 2024-08-23T11:01:40.532Z
+                                     */
+                                    createdAt: string;
+                                    /**
+                                     * Format: date-time
+                                     * @example 2024-08-23T11:01:40.532Z
+                                     */
+                                    updatedAt: string;
+                                };
                                 /** @example string */
-                                access_token?: string;
-                                /**
-                                 * Format: date-time
-                                 * @example 2024-08-23T11:01:40.532Z
-                                 */
-                                createdAt?: string;
-                                /**
-                                 * Format: date-time
-                                 * @example 2024-08-23T11:01:40.532Z
-                                 */
-                                updatedAt?: string;
+                                access_token: string;
                             };
                         };
                     };

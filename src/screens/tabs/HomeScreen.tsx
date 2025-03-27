@@ -4,7 +4,6 @@ import { useNavigation } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { BottomTabParamList } from '../../navigation/BottomTabs';
 import { colors } from '../../theme/colors';
-import { useAuthStore } from '../../store/useAuthStore';
 import { useUserStore } from '../../store/useUserStore';
 import BackgroundShape from '../../components/BackgroundShape';
 import ActionButton from '../../components/Buttons/ActionButton';
@@ -20,7 +19,6 @@ const HERO_IMAGE_HEIGHT = 447;
 const HomeScreen = () => {
   const navigation = useNavigation<BottomTabNavigationProp<BottomTabParamList>>();
   const scrollY = useRef(new Animated.Value(0)).current;
-  const setIsAuthenticated = useAuthStore((state) => state.setIsAuthenticated);
   const user = useUserStore((state) => state.user);
 
   const handlePhysicianPress = () => {

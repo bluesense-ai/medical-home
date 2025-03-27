@@ -30,6 +30,7 @@ import YearlyCalendarScreen from '../screens/dashboard/YearlyCalendarScreen';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import EventFormScreen from '../screens/dashboard/EventFormScreen';
+import PatientDBScreen from '../screens/patient-db/PatientDBScreen';
 
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -57,6 +58,7 @@ const Router = () => {
         <Stack.Screen name="AIVisitsDashboard" component={AIVisitsDashboard} />
         <Stack.Screen name="AIVisitsPage" component={AIVisitsPage} />
         <Stack.Screen name="AIVisitPatient" component={AIVisitPatient} />
+        <Stack.Screen name="PatientDBScreen" component={PatientDBScreen} />
         <Stack.Screen name="MainTabs" component={BottomTabs} />
         <Stack.Screen name="ProviderBottomTabs" component={ProviderBottomTabs} />
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />

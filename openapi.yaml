@@ -9,10 +9,6 @@ servers:
   - url: https://sandbox-backend.medicalhome.cloud/api
 components:
   securitySchemes:
-    bearerAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
     BearerAuth:
       type: http
       scheme: bearer
@@ -427,12 +423,14 @@ paths:
             application/json:
               schema:
                 type: object
+                required: [success, data]
                 properties:
                   success:
                     type: boolean
                   data:
                     type: object
-                    description: Provider details.
+                    description: Patient details.
+                    required: [id, first_name, last_name, sex, pronouns, picture, date_of_birth, health_card_number, email_address, phone_number, username, preferred_clinic_id, access_token, createdAt, updatedAt]
                     properties:
                       id:
                         type: string
@@ -598,6 +596,7 @@ paths:
             application/json:
               schema:
                 type: object
+                required: [success, data]
                 properties:
                   success:
                     type: boolean
@@ -605,33 +604,70 @@ paths:
                   data:
                     type: object
                     description: Provider details.
+                    required: [user, access_token]
                     properties:
-                      id:
-                        type: string
-                        example: 047aede2-ecb3-4cd8-8286-39e9a1ee288a
-                      email_address:
-                        type: string
-                        example: khalid@example.com
-                      phone_number:
-                        type: string
-                        example: '+447367595421'
-                      username:
-                        type: string
-                        example: khalid
-                      clinic:
-                        type: string
-                        example: Walmart Clinic
+                      user:
+                        type: object
+                        required: [id, first_name, middle_name, last_name, sex, picture, email_address, phone_number, username, createdAt, updatedAt, accepting_patients, provider_status, mnc_number]
+                        properties:
+                          id:
+                            type: string
+                            example: 047aede2-ecb3-4cd8-8286-39e9a1ee288a
+                          first_name:
+                            type: string
+                            description: The first name of the patient
+                            example: John
+                          middle_name:
+                            type: string
+                            nullable: true
+                            description: The first name of the patient
+                            example: null
+                          last_name:
+                            type: string
+                            description: The last name of the patient
+                            example: Doe
+                          email_address:
+                            type: string
+                            example: khalid@example.com
+                          picture:
+                            type: string
+                            nullable: true
+                            example: null
+                          ms_calendar_id:
+                            type: string
+                            nullable: true
+                            example: null
+                          sex:
+                            type: string
+                            nullable: true
+                            example: null
+                          phone_number:
+                            type: string
+                            example: '+447367595000'
+                          username:
+                            type: string
+                            example: khalid
+                          accepting_patients:
+                            type: boolean
+                            example: true
+                          provider_status:
+                            type: string
+                            example: available
+                          mnc_number:
+                            type: string
+                            example: "300558121"
+                          createdAt:
+                            type: string
+                            format: date-time
+                            example: '2024-08-23T11:01:40.532Z'
+                          updatedAt:
+                            type: string
+                            format: date-time
+                            example: '2024-08-23T11:01:40.532Z'
                       access_token:
                         type: string
                         example: string
-                      createdAt:
-                        type: string
-                        format: date-time
-                        example: '2024-08-23T11:01:40.532Z'
-                      updatedAt:
-                        type: string
-                        format: date-time
-                        example: '2024-08-23T11:01:40.532Z'
+
         '400':
           description: Bad request or server error.
           content:
