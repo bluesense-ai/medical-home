@@ -17,9 +17,9 @@ interface AIVisitsPageScreenProps {
 
 const AIVisitsPage: React.FC<AIVisitsPageScreenProps> = () => {
   const theme = useTheme((state) => state.theme);
-  const styles = theme === "dark" ? stylesDark : stylesLight;
+  // const styles = theme === "dark" ? stylesDark : stylesLight;
 
-  function action() {}
+  function action() { }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -32,10 +32,10 @@ const AIVisitsPage: React.FC<AIVisitsPageScreenProps> = () => {
   );
 };
 
-const stylesDark = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#272727",
+    backgroundColor: "#004F62",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
 
@@ -46,18 +46,32 @@ const stylesDark = StyleSheet.create({
   },
 });
 
-const stylesLight = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-  },
+// const stylesDark = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: "#272727",
+//     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+//   },
 
-  content: {
-    flex: 1,
-    paddingHorizontal: 20,
-    justifyContent: "flex-start",
-  },
-});
+//   content: {
+//     flex: 1,
+//     paddingHorizontal: 20,
+//     justifyContent: "flex-start",
+//   },
+// });
+
+// const stylesLight = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: "white",
+//     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+//   },
+
+//   content: {
+//     flex: 1,
+//     paddingHorizontal: 20,
+//     justifyContent: "flex-start",
+//   },
+// });
 
 export default AIVisitsPage;

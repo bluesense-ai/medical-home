@@ -14,7 +14,7 @@ import { useTheme } from "../../../store/useTheme";
 
 const VisitsWorkflow = () => {
   const theme = useTheme((state) => state.theme);
-  const styles = theme === "dark" ? stylesDark : stylesLight;
+  // const styles = theme === "dark" ? stylesDark : stylesLight;
 
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
 
@@ -48,94 +48,141 @@ const VisitsWorkflow = () => {
   );
 };
 
-const stylesDark = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#0f0f0f",
-    borderRadius: 15,
-  },
-  header: {
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "white",
-    textAlign: "center",
-  },
-  patientsContainer: {},
-  patientsTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "white",
-    marginBottom: 10,
-  },
-  patientItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 15,
-    paddingBottom: 10,
-    paddingTop: 10,
-    backgroundColor: "#333",
-    borderRadius: 8,
-    marginBottom: 10,
-  },
-  patientName: {
-    fontSize: 16,
-    color: "white",
-  },
-  patientDate: {
-    fontSize: 16,
-    color: "white",
-  },
-});
-
-const stylesLight = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#33C213",
-    borderRadius: 15,
-  },
-  header: {
-    marginBottom: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "white",
-    textAlign: "center",
-  },
-  patientsContainer: {},
-  patientsTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "white",
-    marginBottom: 10,
-  },
-  patientItem: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 15,
-    paddingBottom: 10,
-    paddingTop: 10,
+    // backgroundColor: "#33C213",
     backgroundColor: "white",
-    borderRadius: 8,
+    borderRadius: 15,
+  },
+  header: {
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    marginBottom: 20,
+    color: "black",
+    textAlign: "center",
+  },
+  patientsContainer: {
+  },
+  patientsTitle: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "black",
     marginBottom: 10,
+  },
+  patientItem: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: 15,
+    paddingBottom: 10,
+    paddingTop: 10,
+    backgroundColor: "#004F62",
+    borderRadius: 12,
+    marginBottom: 20,
   },
   patientName: {
     fontSize: 16,
-    color: "black",
+    color: "white",
   },
   patientDate: {
     fontSize: 16,
     color: "gray",
   },
 });
+
+// const stylesDark = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 20,
+//     backgroundColor: "#0f0f0f",
+//     borderRadius: 15,
+//   },
+//   header: {
+//     marginBottom: 20,
+//   },
+//   title: {
+//     fontSize: 24,
+//     fontWeight: "bold",
+//     marginBottom: 20,
+//     color: "white",
+//     textAlign: "center",
+//   },
+//   patientsContainer: {},
+//   patientsTitle: {
+//     fontSize: 18,
+//     fontWeight: "bold",
+//     color: "white",
+//     marginBottom: 10,
+//   },
+//   patientItem: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//     padding: 15,
+//     paddingBottom: 10,
+//     paddingTop: 10,
+//     backgroundColor: "#333",
+//     borderRadius: 8,
+//     marginBottom: 10,
+//   },
+//   patientName: {
+//     fontSize: 16,
+//     color: "white",
+//   },
+//   patientDate: {
+//     fontSize: 16,
+//     color: "white",
+//   },
+// });
+
+// const stylesLight = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 20,
+//     backgroundColor: "#33C213",
+//     borderRadius: 15,
+//   },
+//   header: {
+//     marginBottom: 20,
+//   },
+//   title: {
+//     fontSize: 24,
+//     fontWeight: "bold",
+//     marginBottom: 20,
+//     color: "white",
+//     textAlign: "center",
+//   },
+//   patientsContainer: {},
+//   patientsTitle: {
+//     fontSize: 18,
+//     fontWeight: "bold",
+//     color: "white",
+//     marginBottom: 10,
+//   },
+//   patientItem: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//     padding: 15,
+//     paddingBottom: 10,
+//     paddingTop: 10,
+//     backgroundColor: "white",
+//     borderRadius: 8,
+//     marginBottom: 10,
+//   },
+//   patientName: {
+//     fontSize: 16,
+//     color: "black",
+//   },
+//   patientDate: {
+//     fontSize: 16,
+//     color: "gray",
+//   },
+// });
 
 export default VisitsWorkflow;

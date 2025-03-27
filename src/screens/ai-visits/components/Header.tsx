@@ -10,7 +10,7 @@ type HeaderProps = {
 
 export function Header(props: HeaderProps) {
   const theme = useTheme((state) => state.theme);
-  const styles = theme === "dark" ? stylesDark : stylesLight;
+  // const styles = theme === "dark" ? stylesDark : stylesLight;
 
   const { title, action } = props;
 
@@ -29,16 +29,18 @@ export function Header(props: HeaderProps) {
   );
 }
 
-const stylesDark = StyleSheet.create({
+const styles = StyleSheet.create({
   title: {
-    color: colors.base.white,
+    color: 'white',
     fontSize: 20,
     fontWeight: "bold",
   },
   actionButtonGroup: {
+
     flexWrap: "wrap",
     flexDirection: "row",
-    backgroundColor: "#fff",
+    // backgroundColor: "#3499D6",
+    backgroundColor: "white",
     padding: 12,
     paddingTop: 1,
     paddingBottom: 1,
@@ -56,29 +58,56 @@ const stylesDark = StyleSheet.create({
   },
 });
 
-const stylesLight = StyleSheet.create({
-  title: {
-    color: colors.base.black,
-    fontSize: 20,
-    fontWeight: "bold",
-  },
-  actionButtonGroup: {
-    flexWrap: "wrap",
-    flexDirection: "row",
-    backgroundColor: "#3499D6",
-    padding: 12,
-    paddingTop: 1,
-    paddingBottom: 1,
-    borderRadius: 8,
-    alignItems: "center",
-    gap: 10,
-  },
-  actionButtonText: {
-    color: "black",
-    fontWeight: "500",
-  },
-  actionContainer: {
-    marginTop: 20,
-    marginBottom: 20,
-  },
-});
+// const stylesDark = StyleSheet.create({
+//   title: {
+//     color: colors.base.white,
+//     fontSize: 20,
+//     fontWeight: "bold",
+//   },
+//   actionButtonGroup: {
+//     flexWrap: "wrap",
+//     flexDirection: "row",
+//     backgroundColor: "#fff",
+//     padding: 12,
+//     paddingTop: 1,
+//     paddingBottom: 1,
+//     borderRadius: 8,
+//     alignItems: "center",
+//     gap: 10,
+//   },
+//   actionButtonText: {
+//     color: "black",
+//     fontWeight: "500",
+//   },
+//   actionContainer: {
+//     marginTop: 20,
+//     marginBottom: 20,
+//   },
+// });
+
+// const stylesLight = StyleSheet.create({
+//   title: {
+//     color: colors.base.black,
+//     fontSize: 20,
+//     fontWeight: "bold",
+//   },
+//   actionButtonGroup: {
+//     flexWrap: "wrap",
+//     flexDirection: "row",
+//     backgroundColor: "#3499D6",
+//     padding: 12,
+//     paddingTop: 1,
+//     paddingBottom: 1,
+//     borderRadius: 8,
+//     alignItems: "center",
+//     gap: 10,
+//   },
+//   actionButtonText: {
+//     color: "black",
+//     fontWeight: "500",
+//   },
+//   actionContainer: {
+//     marginTop: 20,
+//     marginBottom: 20,
+//   },
+// });

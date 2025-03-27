@@ -4,7 +4,7 @@ import { useTheme } from "../../../store/useTheme";
 
 const DashboardPatientInfoForm = () => {
   const theme = useTheme((state) => state.theme);
-  const styles = theme === "dark" ? stylesDark : stylesLight;
+  // const styles = theme === "dark" ? stylesDark : stylesLight;
 
   const [patientName, setPatientName] = useState("");
   const [dateTime, setDateTime] = useState("");
@@ -91,78 +91,119 @@ const DashboardPatientInfoForm = () => {
   );
 };
 
-const stylesDark = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#0f0f0f",
+    backgroundColor: "white",
     borderRadius: 15,
   },
   title: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "white",
+    color: "black",
     textAlign: "center",
   },
   inputGroup: {
     marginBottom: 15,
   },
   label: {
-    color: "white",
+    color: "black",
     marginBottom: 5,
   },
   input: {
-    backgroundColor: "#333",
+    backgroundColor: "white",
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 8,
     color: "white",
+    borderWidth: 2,
+    borderColor: 'black'
   },
   inputArea: {
-    backgroundColor: "#333",
+    backgroundColor: "white",
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 8,
     color: "white",
+    borderWidth: 2,
+    borderColor: 'black',
     height: 80,
     textAlignVertical: "top",
   },
 });
 
-const stylesLight = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#33C213",
-    borderRadius: 15,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "white",
-    textAlign: "center",
-  },
-  inputGroup: {
-    marginBottom: 15,
-  },
-  label: {
-    color: "white",
-    marginBottom: 5,
-  },
-  input: {
-    backgroundColor: "white",
-    padding: 10,
-    borderRadius: 5,
-    color: "white",
-  },
-  inputArea: {
-    backgroundColor: "white",
-    padding: 10,
-    borderRadius: 5,
-    color: "white",
-    height: 80,
-    textAlignVertical: "top",
-  },
-});
+// const stylesDark = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 20,
+//     backgroundColor: "#0f0f0f",
+//     borderRadius: 15,
+//   },
+//   title: {
+//     fontSize: 24,
+//     fontWeight: "bold",
+//     marginBottom: 20,
+//     color: "white",
+//     textAlign: "center",
+//   },
+//   inputGroup: {
+//     marginBottom: 15,
+//   },
+//   label: {
+//     color: "white",
+//     marginBottom: 5,
+//   },
+//   input: {
+//     backgroundColor: "#333",
+//     padding: 10,
+//     borderRadius: 5,
+//     color: "white",
+//   },
+//   inputArea: {
+//     backgroundColor: "#333",
+//     padding: 10,
+//     borderRadius: 5,
+//     color: "white",
+//     height: 80,
+//     textAlignVertical: "top",
+//   },
+// });
+
+// const stylesLight = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 20,
+//     backgroundColor: "#33C213",
+//     borderRadius: 15,
+//   },
+//   title: {
+//     fontSize: 24,
+//     fontWeight: "bold",
+//     marginBottom: 20,
+//     color: "white",
+//     textAlign: "center",
+//   },
+//   inputGroup: {
+//     marginBottom: 15,
+//   },
+//   label: {
+//     color: "white",
+//     marginBottom: 5,
+//   },
+//   input: {
+//     backgroundColor: "white",
+//     padding: 10,
+//     borderRadius: 5,
+//     color: "white",
+//   },
+//   inputArea: {
+//     backgroundColor: "white",
+//     padding: 10,
+//     borderRadius: 5,
+//     color: "white",
+//     height: 80,
+//     textAlignVertical: "top",
+//   },
+// });
 
 export default DashboardPatientInfoForm;

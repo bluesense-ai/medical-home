@@ -17,7 +17,7 @@ type Props = StackScreenProps<RootStackParamList, "AIVisitPatient">;
 
 const AIVisitPatient: React.FC<Props> = (props) => {
   const theme = useTheme((state) => state.theme);
-  const styles = theme === "dark" ? stylesDark : stylesLight;
+  // const styles = theme === "dark" ? stylesDark : stylesLight;
 
   const patientId = props.route.params.id;
   const patient = patients.find((p) => p.id === patientId);
@@ -26,7 +26,7 @@ const AIVisitPatient: React.FC<Props> = (props) => {
     <SafeAreaView style={styles.container}>
       <StatusBar barStyle="light-content" />
       <View style={styles.content}>
-        <Header title="Visits" action={() => {}} />
+        <Header title="Visits" action={() => { }} />
         {!patient ? (
           <Text>Patient not found</Text>
         ) : (
@@ -37,10 +37,11 @@ const AIVisitPatient: React.FC<Props> = (props) => {
   );
 };
 
-const stylesDark = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#272727",
+    // backgroundColor: "white",
+    backgroundColor: "#004F62",
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
 
@@ -51,18 +52,32 @@ const stylesDark = StyleSheet.create({
   },
 });
 
-const stylesLight = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "white",
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
-  },
+// const stylesDark = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: "#272727",
+//     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+//   },
 
-  content: {
-    flex: 1,
-    paddingHorizontal: 20,
-    justifyContent: "flex-start",
-  },
-});
+//   content: {
+//     flex: 1,
+//     paddingHorizontal: 20,
+//     justifyContent: "flex-start",
+//   },
+// });
+
+// const stylesLight = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     backgroundColor: "white",
+//     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+//   },
+
+//   content: {
+//     flex: 1,
+//     paddingHorizontal: 20,
+//     justifyContent: "flex-start",
+//   },
+// });
 
 export default AIVisitPatient;

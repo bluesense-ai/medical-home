@@ -19,7 +19,7 @@ type Props = {
 
 const VisitsPatientInfoForm: React.FC<Props> = ({ patient }) => {
   const theme = useTheme((state) => state.theme);
-  const styles = theme === "dark" ? stylesDark : stylesLight;
+  // const styles = theme === "dark" ? stylesDark : stylesLight;
 
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
   const [patientName, setPatientName] = useState(patient.name);
@@ -41,10 +41,20 @@ const VisitsPatientInfoForm: React.FC<Props> = ({ patient }) => {
   return (
     <View style={styles.container}>
       <View style={styles.editContainer}>
+        {editable ? (
+          <View style={styles.buttonGroup}>
+            <TouchableOpacity style={styles.cancelButton} onPress={onCancel}>
+              <Text style={styles.editibleCancelButtonText}>Cancel</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.doneButton}>
+              <Text style={styles.editibleDoneButtonText}>Done</Text>
+            </TouchableOpacity>
+          </View>
+        ) : null}
         <TouchableOpacity style={styles.backButton}>
           {editable ? (
             <Text style={styles.backButtonText} onPress={onCancel}>
-              Cancel
+
             </Text>
           ) : (
             <Ionicons
@@ -55,16 +65,18 @@ const VisitsPatientInfoForm: React.FC<Props> = ({ patient }) => {
             />
           )}
         </TouchableOpacity>
-        <TouchableOpacity style={styles.editButton}>
-          <Text
-            style={editable ? styles.doneButtonText : styles.editButtonText}
-            onPress={() => {
-              setEditable(!editable);
-            }}
-          >
-            {editable ? "Done" : "Edit"}
-          </Text>
-        </TouchableOpacity>
+        {!editable && (
+          <TouchableOpacity style={styles.editButton}>
+            <Text
+              style={editable ? styles.doneButtonText : styles.editButtonText}
+              onPress={() => {
+                setEditable(!editable);
+              }}
+            >
+              {editable ? "Done" : "Edit"}
+            </Text>
+          </TouchableOpacity>
+        )}
       </View>
 
       {!editable && <Text style={styles.title}>Patient Information</Text>}
@@ -129,11 +141,11 @@ const VisitsPatientInfoForm: React.FC<Props> = ({ patient }) => {
           style={{
             backgroundColor: "#DA4133",
             padding: 10,
-            borderRadius: 5,
+            borderRadius: 8,
             alignItems: "center",
           }}
         >
-          <Text style={{ color: "white", fontWeight: "bold", fontSize: 16 }}>
+          <Text style={{ color: "black", fontWeight: "bold", fontSize: 16 }}>
             Delete
           </Text>
         </TouchableOpacity>
@@ -142,11 +154,12 @@ const VisitsPatientInfoForm: React.FC<Props> = ({ patient }) => {
   );
 };
 
-const stylesDark = StyleSheet.create({
+const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#0f0f0f",
+    // backgroundColor: "#33C213",
+    backgroundColor: "white",
     borderRadius: 10,
   },
 
@@ -165,11 +178,11 @@ const stylesDark = StyleSheet.create({
   },
   editButton: {},
   editButtonText: {
-    color: "white",
+    color: "black",
     fontSize: 16,
   },
   doneButtonText: {
-    color: "gray",
+    color: "white",
     fontSize: 16,
   },
 
@@ -178,92 +191,183 @@ const stylesDark = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 20,
     marginBottom: 40,
-    color: "white",
+    color: "black",
     textAlign: "center",
   },
   inputGroup: {
     marginBottom: 15,
   },
   label: {
-    color: "white",
+    color: "black",
+    fontSize: 18,
     marginBottom: 5,
   },
   input: {
-    backgroundColor: "#333",
+    backgroundColor: "white",
+    borderWidth: 2,
+    borderColor: 'black',
     padding: 10,
     borderRadius: 5,
-    color: "white",
+    color: "black",
   },
   inputArea: {
-    backgroundColor: "#333",
+    backgroundColor: "white",
+    borderWidth: 2,
+    borderColor: 'black',
     padding: 10,
     borderRadius: 5,
-    color: "white",
+    color: "black",
     height: 80,
     textAlignVertical: "top",
   },
-});
-
-const stylesLight = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#33C213",
-    borderRadius: 10,
-  },
-
-  editContainer: {
+  buttonGroup: {
+    width: '100%',
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
+    marginBottom: 20,
   },
-  backButton: {
-    flexDirection: "row",
+  cancelButton: {
+    padding: 10,
+    borderRadius: 5,
   },
-  backButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  editButton: {},
-  editButtonText: {
-    color: "white",
-    fontSize: 16,
-  },
-  doneButtonText: {
-    color: "white",
-    fontSize: 16,
-  },
-
-  title: {
+  editibleCancelButtonText: {
     fontSize: 18,
-    fontWeight: "bold",
-    marginTop: 20,
-    marginBottom: 40,
-    color: "white",
-    textAlign: "center",
+    fontWeight: 'bold',
   },
-  inputGroup: {
-    marginBottom: 15,
-  },
-  label: {
-    color: "white",
-    marginBottom: 5,
-  },
-  input: {
-    backgroundColor: "white",
+  doneButton: {
+    color: '#004F62',
     padding: 10,
     borderRadius: 5,
-    color: "black",
   },
-  inputArea: {
-    backgroundColor: "white",
-    padding: 10,
-    borderRadius: 5,
-    color: "black",
-    height: 80,
-    textAlignVertical: "top",
+  editibleDoneButtonText: {
+    color: '#004F62',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
+
+// const stylesDark = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 20,
+//     backgroundColor: "#0f0f0f",
+//     borderRadius: 10,
+//   },
+
+//   editContainer: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//   },
+//   backButton: {
+//     flexDirection: "row",
+//   },
+//   backButtonText: {
+//     color: "white",
+//     fontSize: 16,
+//     fontWeight: "bold",
+//   },
+//   editButton: {},
+//   editButtonText: {
+//     color: "white",
+//     fontSize: 16,
+//   },
+//   doneButtonText: {
+//     color: "gray",
+//     fontSize: 16,
+//   },
+
+//   title: {
+//     fontSize: 18,
+//     fontWeight: "bold",
+//     marginTop: 20,
+//     marginBottom: 40,
+//     color: "white",
+//     textAlign: "center",
+//   },
+//   inputGroup: {
+//     marginBottom: 15,
+//   },
+//   label: {
+//     color: "white",
+//     marginBottom: 5,
+//   },
+//   input: {
+//     backgroundColor: "#333",
+//     padding: 10,
+//     borderRadius: 5,
+//     color: "white",
+//   },
+//   inputArea: {
+//     backgroundColor: "#333",
+//     padding: 10,
+//     borderRadius: 5,
+//     color: "white",
+//     height: 80,
+//     textAlignVertical: "top",
+//   },
+// });
+
+// const stylesLight = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     padding: 20,
+//     backgroundColor: "#33C213",
+//     borderRadius: 10,
+//   },
+
+//   editContainer: {
+//     flexDirection: "row",
+//     justifyContent: "space-between",
+//     alignItems: "center",
+//   },
+//   backButton: {
+//     flexDirection: "row",
+//   },
+//   backButtonText: {
+//     color: "white",
+//     fontSize: 16,
+//     fontWeight: "bold",
+//   },
+//   editButton: {},
+//   editButtonText: {
+//     color: "white",
+//     fontSize: 16,
+//   },
+//   doneButtonText: {
+//     color: "white",
+//     fontSize: 16,
+//   },
+
+//   title: {
+//     fontSize: 18,
+//     fontWeight: "bold",
+//     marginTop: 20,
+//     marginBottom: 40,
+//     color: "white",
+//     textAlign: "center",
+//   },
+//   inputGroup: {
+//     marginBottom: 15,
+//   },
+//   label: {
+//     color: "white",
+//     marginBottom: 5,
+//   },
+//   input: {
+//     backgroundColor: "white",
+//     padding: 10,
+//     borderRadius: 5,
+//     color: "black",
+//   },
+//   inputArea: {
+//     backgroundColor: "white",
+//     padding: 10,
+//     borderRadius: 5,
+//     color: "black",
+//     height: 80,
+//     textAlignVertical: "top",
+//   },
+// });
 
 export default VisitsPatientInfoForm;
