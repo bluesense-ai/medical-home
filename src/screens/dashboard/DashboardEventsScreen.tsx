@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, FlatList, TouchableOpacity, StatusBar } from 'react-native';
+import { View, FlatList, TouchableOpacity, StatusBar, Text } from 'react-native';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList, SerializableEvent } from '../../navigation/types';
@@ -135,6 +135,38 @@ const DashboardEventsScreen: React.FC = () => {
     navigation.navigate('YearlyCalendar');
   };
 
+  // Custom header rendering for day names with a consistent separator line
+  const renderCustomHeader = () => {
+    const dayNames = ['S', 'M', 'T', 'W', 'T', 'F', 'S'];
+    
+    return (
+      <View style={{ width: '100%' }}>
+        <View style={{ 
+          flexDirection: 'row', 
+          justifyContent: 'space-between',
+          paddingHorizontal: 16
+        }}>
+          {dayNames.map((day, index) => (
+            <View key={index} style={{ width: 40, alignItems: 'center' }}>
+              <Text style={{
+                fontSize: 12,
+                fontWeight: '600',
+                color: colors.base.white,
+                paddingBottom: 8,
+              }}>
+                {day}
+              </Text>
+            </View>
+          ))}
+        </View>
+        <View style={{
+          height: 1,
+          backgroundColor: colors.legacy.lightGray,
+        }} />
+      </View>
+    );
+  };
+
   return (
     <ThemedView style={{ flex: 1, backgroundColor: theme === 'dark' ? colors.base.darkGray : colors.main.primary }} useSafeArea>
       <StatusBar 
@@ -147,17 +179,12 @@ const DashboardEventsScreen: React.FC = () => {
           title={moment(selectedDate).format('YYYY')}
           showBackButton
           onBackPress={() => navigation.goBack()}
+          showGrid
+          onGridPress={() => {handleYearlyCalendarPress()}}
           showSearch
           showAdd
           onSearchPress={() => {}}
           onAddPress={handleAddEvent}
-          rightIcons={[
-            {
-              icon: 'calendar-outline',
-              iconFamily: 'Ionicons',
-              onPress: handleYearlyCalendarPress
-            }
-          ]}
         />
       </View>
 
@@ -173,23 +200,21 @@ const DashboardEventsScreen: React.FC = () => {
         {moment(selectedDate).format('MMMM')}
       </ThemedText>
 
-      <View style={{ 
-        marginBottom: 0, 
-        paddingBottom: 0, 
-        borderBottomWidth: 0
-      }}>
+      <View>
         <Calendar
           current={formattedSelectedDate}
           onDayPress={handleDayPress}
           markedDates={getMarkedDates()}
           markingType="multi-dot"
           hideArrows={true}
-          hideDayNames={false}
+          hideDayNames={true}
           hideMonthYearHeaders={true}
-          renderHeader={() => null}
+          renderHeader={renderCustomHeader}
           style={{
             marginBottom: 0,
-            paddingBottom: 0
+            paddingBottom: 0,
+            borderBottomWidth: 0,
+            width: '100%'
           }}
           theme={{
             backgroundColor: 'transparent',
@@ -210,29 +235,33 @@ const DashboardEventsScreen: React.FC = () => {
             textMonthFontSize: 16,
             'stylesheet.calendar.main': {
               week: {
-                marginTop: 0,
+                marginTop: 8,
                 marginBottom: 0,
                 flexDirection: 'row',
-                justifyContent: 'space-around',
+                justifyContent: 'space-between',
+                paddingHorizontal: 16,
                 borderBottomWidth: 1,
-                borderBottomColor: 'rgba(255,255,255,0.2)',
+                borderBottomColor: colors.legacy.lightGray,
                 paddingBottom: 4,
                 paddingTop: 4
               },
               day: {
-                width: 32,
+                width: 40,
                 height: 32,
                 alignItems: 'center',
                 justifyContent: 'center',
-                paddingVertical: 7
+              },
+              container: {
+                paddingLeft: 0,
+                paddingRight: 0
               }
             },
             'stylesheet.day.basic': {
               selected: {
                 backgroundColor: "#32CD32",
                 borderRadius: 8,
-                width: 25,
-                height: 25
+                width: 32,
+                height: 32
               },
               today: {
                 backgroundColor: 'transparent',
@@ -244,7 +273,7 @@ const DashboardEventsScreen: React.FC = () => {
                 marginTop: 1
               },
               base: {
-                width: 32,
+                width: 40,
                 height: 32,
                 alignItems: 'center'
               },
@@ -257,11 +286,10 @@ const DashboardEventsScreen: React.FC = () => {
               }
             }
           }}
-          dayNamesShort={['S', 'M', 'T', 'W', 'T', 'F', 'S']}
         />
       </View>
       
-      <View style={{ flex: 1, backgroundColor: 'transparent' }}>
+      <View style={{ flex: 1, backgroundColor: 'transparent', paddingTop: 9 }}>
         <FlatList
           style={{ flex: 1 }}
           data={filteredEvents()}
@@ -270,7 +298,7 @@ const DashboardEventsScreen: React.FC = () => {
             <EventItem event={item} onPress={handleEventPress} />
           )}
           showsVerticalScrollIndicator={false}
-          contentContainerStyle={{ paddingHorizontal: 16, paddingBottom: 20, paddingTop: 16 }}
+          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 16}}
         />
       </View>
     </ThemedView>

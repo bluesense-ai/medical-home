@@ -1,12 +1,13 @@
 import React from 'react';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { View, StyleSheet, StatusBar } from 'react-native';
+import { View, StyleSheet, StatusBar, Platform } from 'react-native';
 import { RootStackParamList } from '../../navigation/types';
 import EventForm from '../../components/EventForm';
 import { EventFormData } from '../../components/EventForm/index';
 import useCalendarStore from '../../store/useCalendarStore';
 import { colors } from '../../theme/colors';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type EventFormScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'EventForm'>;
 type EventFormScreenRouteProp = RouteProp<RootStackParamList, 'EventForm'>;
@@ -15,6 +16,7 @@ const EventFormScreen: React.FC = () => {
   const navigation = useNavigation<EventFormScreenNavigationProp>();
   const route = useRoute<EventFormScreenRouteProp>();
   const { addEvent } = useCalendarStore();
+  const insets = useSafeAreaInsets();
   
   // Get the selected date from route params or use current date
   const selectedDate = route.params?.selectedDate 
@@ -48,9 +50,12 @@ const EventFormScreen: React.FC = () => {
   const handleCancel = () => {
     navigation.goBack();
   };
+
+  // Bottom padding for avoiding the tab bar
+  const bottomPadding = Platform.OS === 'ios' ? 120 + insets.bottom : 100;
   
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { paddingBottom: bottomPadding }]}>
       <StatusBar 
         barStyle="light-content" 
         backgroundColor={colors.main.primary} 

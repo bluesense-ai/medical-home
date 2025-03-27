@@ -1,6 +1,3 @@
-// BottomTabs.tsx
-// A custom bottom tab navigator with modern design and smooth animations
-
 import React, { useRef, useEffect, useState, useMemo, useCallback } from 'react';
 import {
   View,
@@ -13,23 +10,65 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { Ionicons } from '@expo/vector-icons';
 import * as Haptics from 'expo-haptics';
-import colors from '../theme/colors';
+import { colors } from '../theme/colors';
+import { ProviderBottomTabParamList, RootStackParamList } from './types';
+import { createStackNavigator } from '@react-navigation/stack';
 
-// Import screens for tab navigation
-import HomeScreen from '../screens/tabs/HomeScreen';
-import HoursScreen from '../screens/tabs/HoursScreen';
-import BookAppointmentScreen from '../screens/tabs/BookAppointmentScreen';
-import ContactUsScreen from '../screens/tabs/ContactUsScreen';
-import ProfileScreen from '../screens/tabs/ProfileScreen';
+// Dashboard Screens
+import DashboardScreen from '../screens/dashboard/DashboardScreen';
+import DashboardEventsScreen from '../screens/dashboard/DashboardEventsScreen';
+import YearlyCalendarScreen from '../screens/dashboard/YearlyCalendarScreen';
+import EventFormScreen from '../screens/dashboard/EventFormScreen';
+import EventDetailScreen from '../screens/dashboard/EventDetailScreen';
 
-// Type definitions for tab navigation
-export type BottomTabParamList = {
-  Home: undefined;
-  Hours: undefined;
-  BookAppointment: undefined;
-  ContactUs: undefined;
-  Profile: undefined;
+// AI Visits Screens
+import Landing from '../screens/ai-visits/Landing';
+import VisitPatient from '../screens/ai-visits/VisitPatient';
+import VisitsPage from '../screens/ai-visits/VisitsPage';
+import Dashboard from '../screens/ai-visits/Dashboard';
+
+// Placeholder for Patient Database
+const PatientDatabase = () => {
+  return null;
 };
+
+// AIVisitPatient type helper
+type AIVisitPatientProps = {
+  route: { params: { id: string } };
+  navigation: any;
+};
+
+// Create stack navigators for each tab
+const DashboardStack = createStackNavigator();
+const DashboardStackScreen = () => (
+  <DashboardStack.Navigator screenOptions={{ headerShown: false }}>
+    <DashboardStack.Screen name="DashboardMain" component={DashboardEventsScreen} />
+    <DashboardStack.Screen name="EventDetail" component={EventDetailScreen} />
+    <DashboardStack.Screen name="YearlyCalendar" component={YearlyCalendarScreen} />
+    <DashboardStack.Screen name="EventForm" component={EventFormScreen} />
+  </DashboardStack.Navigator>
+);
+
+const AIVisitsStack = createStackNavigator();
+const AIVisitsStackScreen = () => (
+  <AIVisitsStack.Navigator screenOptions={{ headerShown: false }}>
+    <AIVisitsStack.Screen name="AIVisitsMain" component={Landing} />
+    <AIVisitsStack.Screen name="VisitsPage" component={VisitsPage} />
+    <AIVisitsStack.Screen 
+      name="VisitPatient" 
+      component={VisitPatient as React.ComponentType<any>} 
+      initialParams={{ id: '' }} 
+    />
+    <AIVisitsStack.Screen name="Dashboard" component={Dashboard} />
+  </AIVisitsStack.Navigator>
+);
+
+const PatientDatabaseStack = createStackNavigator();
+const PatientDatabaseStackScreen = () => (
+  <PatientDatabaseStack.Navigator screenOptions={{ headerShown: false }}>
+    <PatientDatabaseStack.Screen name="PatientDatabaseMain" component={PatientDatabase} />
+  </PatientDatabaseStack.Navigator>
+);
 
 // Custom Tab Bar Component with animations
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
@@ -130,6 +169,20 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
     }
   }, [isFirstRender, navigation]);
 
+  // Get icon name based on route
+  const getIconName = (routeName: string): keyof typeof Ionicons.glyphMap => {
+    switch (routeName) {
+      case 'Visits':
+        return 'newspaper-outline';
+      case 'Dashboard':
+        return 'home-outline';
+      case 'Database':
+        return 'people-outline';
+      default:
+        return 'help-outline';
+    }
+  };
+
   // Memoize tab rendering for better performance
   const renderTabs = useMemo(() => {
     return state.routes.map((route, index) => {
@@ -170,8 +223,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
             {isFocused && (
               <Animated.Text
                 numberOfLines={1}
-                style={
-                  styles.label}
+                style={styles.label}
               >
                 {label}
               </Animated.Text>
@@ -193,31 +245,9 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   );
 }
 
-// Get icon name based on route
-function getIconName(routeName: string): keyof typeof Ionicons.glyphMap {
-  switch (routeName) {
-    case 'Home':
-      return 'home-outline'; // Home icon from Ionicons
-    case 'Hours':
-      return 'time-outline'; // Time/clock icon from Ionicons
-    case 'BookAppointment':
-      return 'calendar-outline'; // Calendar icon from Ionicons
-    case 'ContactUs': 
-      return 'call-outline'; // Phone/call icon from Ionicons
-    case 'Profile': 
-      return 'person-outline'; // Person/profile icon from Ionicons
-      
-    default:
-      return 'help-outline';
-  }
-}
+const Tab = createBottomTabNavigator<ProviderBottomTabParamList>();
 
-// ---------------------
-// Bottom Tabs Navigator
-// ---------------------
-const Tab = createBottomTabNavigator<BottomTabParamList>();
-
-export default function BottomTabs() {
+const ProviderBottomTabs = () => {
   return (
     <Tab.Navigator
       screenOptions={{
@@ -225,26 +255,25 @@ export default function BottomTabs() {
       }}
       tabBar={(props) => <CustomTabBar {...props} />}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Hours" component={HoursScreen} />
-      <Tab.Screen
-        name="BookAppointment"
-        component={BookAppointmentScreen}
-        options={{ tabBarLabel: 'Book Appointment' }}
+      <Tab.Screen 
+        name="Visits" 
+        component={AIVisitsStackScreen} 
+        options={{ tabBarLabel: 'Visits' }}
       />
-      <Tab.Screen
-        name="ContactUs"
-        component={ContactUsScreen}
-        options={{ tabBarLabel: 'Contact us' }}
+      <Tab.Screen 
+        name="Dashboard" 
+        component={DashboardStackScreen}
+        options={{ tabBarLabel: 'Dashboard' }}
       />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen 
+        name="Database" 
+        component={PatientDatabaseStackScreen}
+        options={{ tabBarLabel: 'Database' }}
+      />
     </Tab.Navigator>
   );
-}
+};
 
-// ---------------------
-// Styles
-// ---------------------
 const styles = StyleSheet.create({
   // Main container for the tab bar
   tabContainer: {
@@ -301,3 +330,5 @@ const styles = StyleSheet.create({
     marginLeft: 8,
   },
 });
+
+export default ProviderBottomTabs; 

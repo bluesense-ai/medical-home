@@ -97,7 +97,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
             style={styles.iconButton}
             onPress={onGridPress}
           >
-            <Ionicons name="grid-outline" size={24} color={iconColor} />
+            <Ionicons name="menu-outline" size={24} color={iconColor} />
           </TouchableOpacity>
         )}
         {showSearch && (

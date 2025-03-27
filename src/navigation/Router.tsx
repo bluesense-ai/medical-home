@@ -7,6 +7,7 @@ import WelcomeScreen from '../screens/Welcome/WelcomeScreen';
 import LoadingScreen from '../screens/Loading/LoadingScreen';
 import EditProfileScreen from '../screens/profile/EditProfileScreen';
 import BottomTabs from './BottomTabs';
+import ProviderBottomTabs from './ProviderBottomTabs';
 import RegisterPage from '../screens/auth/patient/RegisterPage';
 import RegisterPage2 from '../screens/auth/patient/RegisterPage2';
 import VerificationCode from '../screens/auth/patient/VerificationCode';
@@ -57,6 +58,7 @@ const Router = () => {
         <Stack.Screen name="AIVisitsPage" component={AIVisitsPage} />
         <Stack.Screen name="AIVisitPatient" component={AIVisitPatient} />
         <Stack.Screen name="MainTabs" component={BottomTabs} />
+        <Stack.Screen name="ProviderBottomTabs" component={ProviderBottomTabs} />
         <Stack.Screen name="EditProfile" component={EditProfileScreen} />
         <Stack.Screen name='LoginPage' component={LoginPage} />
         <Stack.Screen name="LoginSwitchVerification" component={LoginSwitchVerification} />

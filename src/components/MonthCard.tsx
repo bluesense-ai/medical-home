@@ -1,6 +1,5 @@
 import React from 'react';
-import { View, StyleSheet, TouchableOpacity } from 'react-native';
-import ThemedText from './ThemedText';
+import { View, StyleSheet, TouchableOpacity, Text } from 'react-native';
 import ThemedCard from './ThemedCard';
 import moment from 'moment';
 import { useTheme } from '../store/useTheme';
@@ -35,10 +34,10 @@ const MonthCard: React.FC<MonthCardProps> = ({
     // Add empty days at the start
     for (let i = 0; i < startDay; i++) {
       days.push(
-        <ThemedText 
+        <Text 
           key={`empty-${i}`} 
           style={styles.dayText}
-        > </ThemedText>
+        > </Text>
       );
     }
     
@@ -46,16 +45,15 @@ const MonthCard: React.FC<MonthCardProps> = ({
     for (let i = 1; i <= totalDays; i++) {
       const isToday = isCurrentMonth && i === currentDay;
       days.push(
-        <ThemedText 
+        <Text 
           key={`day-${i}`} 
           style={[
             styles.dayText,
             isToday && styles.todayText
           ]}
-          color={isToday ? 'primary' : 'primary'}
         >
           {i}
-        </ThemedText>
+        </Text>
       );
     }
     
@@ -63,10 +61,10 @@ const MonthCard: React.FC<MonthCardProps> = ({
     const remainingDays = 42 - (startDay + totalDays); // 6 weeks * 7 days = 42
     for (let i = 0; i < remainingDays; i++) {
       days.push(
-        <ThemedText 
+        <Text 
           key={`empty-end-${i}`} 
           style={styles.dayText}
-        > </ThemedText>
+        > </Text>
       );
     }
     
@@ -79,20 +77,21 @@ const MonthCard: React.FC<MonthCardProps> = ({
         variant="blank"
         style={styles.container}
       >
-        <ThemedText variant="subtitle" style={styles.monthName}>
-          {monthName}
-        </ThemedText>
+        <View style={styles.headerContainer}>
+          <Text style={styles.monthName}>
+            {monthName}
+          </Text>
+        </View>
         
         <View style={styles.calendarGrid}>
           <View style={styles.weekDaysRow}>
             {WEEKDAYS.map((day, index) => (
-              <ThemedText 
+              <Text 
                 key={`weekday-${index}`} 
                 style={styles.weekDayText}
-                color="secondary"
               >
                 {day}
-              </ThemedText>
+              </Text>
             ))}
           </View>
           
@@ -110,9 +109,14 @@ const styles = StyleSheet.create({
     padding: 12,
     margin: 6,
   },
-  monthName: {
+  headerContainer: {
+    alignItems: 'flex-start',
     marginBottom: 12,
-    textAlign: 'center',
+  },
+  monthName: {
+    color: colors.base.white,
+    fontSize: 16,
+    fontWeight: '600',
   },
   calendarGrid: {
     width: '100%',
@@ -131,15 +135,18 @@ const styles = StyleSheet.create({
     width: '14%',
     textAlign: 'center',
     fontSize: 12,
+    color: colors.base.white,
   },
   dayText: {
     width: '14%',
     textAlign: 'center',
     marginBottom: 8,
     fontSize: 12,
+    color: colors.base.white,
   },
   todayText: {
     fontWeight: 'bold',
+    color: colors.main.secondary,
   },
 });
 

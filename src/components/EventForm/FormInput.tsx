@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, TextInput, Text, StyleSheet } from 'react-native';
+import { View, TextInput, Text, StyleSheet, StyleProp, TextStyle } from 'react-native';
 import { colors } from '../../theme/colors';
 
 // Form input field props
@@ -7,28 +7,30 @@ export interface FormInputProps {
   label?: string;
   value: string;
   onChangeText: (text: string) => void;
-  placeholder: string;
+  placeholder?: string;
   keyboardType?: 'default' | 'email-address' | 'numeric' | 'phone-pad' | 'number-pad';
   multiline?: boolean;
   numberOfLines?: number;
   theme: string;
   sectionTitle?: string;
+  style?: StyleProp<TextStyle>;
 }
 
 // Form input field component
-const FormInput: React.FC<FormInputProps> = ({ 
-  label, 
-  value, 
-  onChangeText, 
-  placeholder, 
-  keyboardType = 'default', 
+const FormInput: React.FC<FormInputProps> = ({
+  label,
+  value,
+  onChangeText,
+  placeholder,
+  keyboardType = 'default',
   multiline = false, 
   numberOfLines = 1, 
   theme,
-  sectionTitle
+  sectionTitle,
+  style
 }) => {
   const styles = theme === 'dark' ? stylesDark : stylesLight;
-  const inputStyle = multiline ? [styles.input, styles.textArea] : styles.input;
+  const inputStyle = multiline ? [styles.input, styles.textArea, style] : [styles.input, style];
   
   return (
     <View>

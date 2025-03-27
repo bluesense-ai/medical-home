@@ -2,7 +2,14 @@ import React from 'react';
 import { View, Text, TouchableOpacity, ActivityIndicator, StyleSheet } from 'react-native';
 import { colors } from '../../theme/colors';
 
-// Form footer props
+/**
+ * Form footer component props interface
+ * @property {Function} onCancel - Function to call when cancel button is pressed
+ * @property {Function} onSubmit - Function to call when submit button is pressed
+ * @property {boolean} isLoading - Whether the form is in loading state
+ * @property {boolean} isDisabled - Whether the submit button should be disabled
+ * @property {string} theme - Current theme ('dark' or 'light')
+ */
 export interface FormFooterProps {
   onCancel: () => void;
   onSubmit: () => void;
@@ -11,7 +18,10 @@ export interface FormFooterProps {
   theme: string;
 }
 
-// Form footer component
+/**
+ * Form footer component with cancel and submit buttons
+ * This component renders at the bottom of the form with two action buttons
+ */
 const FormFooter: React.FC<FormFooterProps> = ({ 
   onCancel, 
   onSubmit, 
@@ -48,7 +58,8 @@ const FormFooter: React.FC<FormFooterProps> = ({
 // Light theme styles
 const stylesLight = StyleSheet.create({
   footer: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 14,
     gap: 12,
   },
   cancelButton: {
@@ -83,7 +94,9 @@ const stylesLight = StyleSheet.create({
 // Dark theme styles
 const stylesDark = StyleSheet.create({
   footer: {
-    padding: 20,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 0,
     gap: 12,
   },
   cancelButton: {

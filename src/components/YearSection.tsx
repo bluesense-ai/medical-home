@@ -1,8 +1,8 @@
 import React from 'react';
-import { View, StyleSheet } from 'react-native';
-import ThemedText from './ThemedText';
+import { View, StyleSheet, Text } from 'react-native';
 import MonthCard from './MonthCard';
 import moment from 'moment';
+import { colors } from '../theme/colors';
 
 interface YearSectionProps {
   year: number;
@@ -29,9 +29,9 @@ const YearSection: React.FC<YearSectionProps> = ({ year, onMonthSelect }) => {
 
   return (
     <View style={styles.container}>
-      <ThemedText variant="header" style={styles.yearTitle}>
+      <Text style={styles.yearTitle}>
         {year}
-      </ThemedText>
+      </Text>
       
       <View style={styles.monthsGrid}>
         {getMonthsForYear(year).map((month, index) => (
@@ -56,6 +56,9 @@ const styles = StyleSheet.create({
   yearTitle: {
     marginHorizontal: 16,
     marginBottom: 16,
+    color: colors.base.white,
+    fontSize: 24,
+    fontWeight: 'bold',
   },
   monthsGrid: {
     flexDirection: 'row',

@@ -13,6 +13,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ParticipantCard from '../../components/Dashboard/ParticipantCard';
 import TimelineView from '../../components/Dashboard/TimelineView';
 import InfoCard from '../../components/Dashboard/InfoCard';
+import ThemedView from '../../components/ThemedView';
 
 type EventDetailScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'EventDetail'>;
 type EventDetailScreenRouteProp = RouteProp<RootStackParamList, 'EventDetail'>;
@@ -49,14 +50,13 @@ const EventDetailScreen = () => {
   }, [isTimelineExpanded]);
 
   return (
-    <View style={[styles.container, { backgroundColor: theme === 'dark' ? colors.base.darkGray : colors.main.primary }]}>
-      <StatusBar
-        barStyle="light-content"
-        backgroundColor="transparent"
-        translucent
+    <ThemedView style={{ flex: 1, backgroundColor: theme === 'dark' ? colors.base.darkGray : colors.main.primary }} useSafeArea>
+      <StatusBar 
+        barStyle="light-content" 
+        backgroundColor={colors.main.primary} 
       />
       
-      <View style={styles.header}>
+      <View style={{ paddingBottom: 16 }}>
         <DashboardHeader
           title={moment(event.startDate).format('MMMM')}
           showBackButton
@@ -138,18 +138,11 @@ const EventDetailScreen = () => {
           />
         )}
       </ScrollView>
-    </View>
+    </ThemedView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-  },
-  header: {
-    width: '100%',
-  },
   content: {
     flex: 1,
     paddingHorizontal: 20,

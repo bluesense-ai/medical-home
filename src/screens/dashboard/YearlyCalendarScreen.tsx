@@ -3,6 +3,7 @@ import {
   View,
   ScrollView,
   Platform,
+  StatusBar,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -10,9 +11,9 @@ import { RootStackParamList } from '../../navigation/types';
 import moment from 'moment';
 import { useTheme } from '../../store/useTheme';
 import ThemedView from '../../components/ThemedView';
-import ThemedStatusBar from '../../components/ThemedStatusBar';
 import DashboardHeader from '../../components/DashboardHeader';
 import YearSection from '../../components/YearSection';
+import { colors } from '../../theme/colors';
 
 type YearlyCalendarScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
@@ -32,8 +33,11 @@ const YearlyCalendarScreen: React.FC = () => {
   };
 
   return (
-    <ThemedView style={{ flex: 1 }} useSafeArea>
-      <ThemedStatusBar />
+    <ThemedView style={{ flex: 1, backgroundColor: colors.main.primary }} useSafeArea>
+      <StatusBar 
+        barStyle="light-content" 
+        backgroundColor={colors.main.primary} 
+      />
       
       <View style={{ paddingBottom: 16 }}>
         <DashboardHeader

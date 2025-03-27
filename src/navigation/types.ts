@@ -52,6 +52,7 @@ export type RootStackParamList = {
   YearlyCalendar: undefined;
   EventForm: { selectedDate?: string };
   TestRegisterLogin: undefined;
+  ProviderBottomTabs: { screen?: string };
 };
 
 export type BottomTabParamList = {
@@ -59,4 +60,11 @@ export type BottomTabParamList = {
   Calendar: undefined;
   Profile: undefined;
   Settings: undefined;
+};
+
+export type ProviderBottomTabParamList = {
+  Dashboard: undefined;
+  Calendar: undefined;
+  'Visits': undefined;
+  'Database': undefined;
 }; 

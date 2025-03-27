@@ -33,33 +33,29 @@ const EventItem: React.FC<EventItemProps> = ({ event, onPress }) => {
         <View style={styles.contentContainer}>
           <View style={styles.infoContainer}>
             <ThemedText 
-              variant="subtitle" 
-              style={{ color: theme === 'dark' ? colors.base.white : colors.base.white }}
+              style={styles.titleText}
             >
               {event.title}
             </ThemedText>
             {event.meetingDetails && (
               <ThemedText 
-                variant="caption" 
-                style={{ color: 'rgba(255,255,255,0.6)' }} 
+                style={styles.detailsText} 
                 numberOfLines={1} 
                 ellipsizeMode="tail"
               >
-                Meeting details
+                {event.meetingDetails}
               </ThemedText>
             )}
           </View>
           
           <View style={styles.timeContainer}>
             <ThemedText 
-              variant="caption" 
-              style={{ color: colors.base.white }}
+              style={styles.startTimeText}
             >
               {moment(event.startDate).format('h:mm A')}
             </ThemedText>
             <ThemedText 
-              variant="caption" 
-              style={{ color: 'rgba(255,255,255,0.6)' }}
+              style={styles.endTimeText}
             >
               {moment(event.endDate).format('h:mm A')}
             </ThemedText>
@@ -78,11 +74,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     overflow: 'hidden',
     backgroundColor: 'transparent',
+    justifyContent:"center",
+    alignItems:"center"
   },
   colorIndicator: {
     width: 4,
-    height: '100%',
-    borderRadius: 2,
+    height: 40,
+    borderRadius: 12,
   },
   contentContainer: {
     flex: 1,
@@ -98,6 +96,26 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     marginLeft: 8,
   },
+  titleText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.base.white,
+  },
+  detailsText: {
+    fontSize: 12,
+    fontWeight: 'normal',
+    color: colors.legacy.lightGray,
+  },
+  startTimeText: {
+    fontSize: 12,
+    fontWeight: 'normal',
+    color: colors.base.white,
+  },
+  endTimeText: {
+    fontSize: 12,
+    fontWeight: 'normal',
+    color: 'rgba(255,255,255,0.6)',
+  }
 });
 
 export default EventItem; 

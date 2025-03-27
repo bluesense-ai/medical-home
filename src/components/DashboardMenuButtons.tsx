@@ -17,16 +17,22 @@ const DashboardMenuButtons: React.FC = () => {
     <AnimatedSection isInitial delay={300} style={styles.menuContainer}>
       <TouchableOpacity 
         style={styles.button}
-        onPress={() => navigation.navigate('DashboardEventsScreen', { selectedDate: undefined })}
+        onPress={() => navigation.navigate('ProviderBottomTabs', { screen: 'Dashboard' })}
       >
         <Text style={styles.buttonText}>Dashboard</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AIVisitsLanding')}>
+      <TouchableOpacity 
+        style={styles.button} 
+        onPress={() => navigation.navigate('ProviderBottomTabs', { screen: 'AI Visits' })}
+      >
         <Text style={styles.buttonText}>AI Visits</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity 
+        style={styles.button}
+        onPress={() => navigation.navigate('ProviderBottomTabs', { screen: 'Patient Database' })}
+      >
         <Text style={styles.buttonText}>Patient Database</Text>
       </TouchableOpacity>
     </AnimatedSection>
