@@ -129,9 +129,11 @@ const ProfileScreen = () => {
         </TouchableOpacity>
 
         {/* Logout Button, not in figma :( */}
-        {/* <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-          <Text style={styles.logoutButtonText}>Logout</Text>
-        </TouchableOpacity> */}
+        {__DEV__ && (
+          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+            <Text style={styles.logoutButtonText}>Logout</Text>
+          </TouchableOpacity>
+        )}
       </ScrollView>
     </SafeAreaView>
   );

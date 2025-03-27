@@ -9,13 +9,19 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
 import { useSelectedProvider } from "../../store/useProvider";
 import { useTheme } from "../../store/useTheme";
+import { usePatientStore, useProviderStore } from "../../store/useUserStore";
 
 const WelcomeScreen: React.FC = () => {
-  const provider = useSelectedProvider((state) => state.provider);
+  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
+  const providerState = useSelectedProvider((state) => state.provider);
   const toggleProvider = useSelectedProvider((state) => state.toggleProvider);
+
   const theme = useTheme((state) => state.theme);
   const toggleTheme = useTheme((state) => state.toggleTheme);
-  const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
+
+  const provider = useProviderStore((state) => state.provider);
+  const patient = usePatientStore((state) => state.patient);
 
   // Store animation values in useRef to prevent unnecessary re-renders
   const fadeAnim1 = useRef(new Animated.Value(1)).current;
@@ -37,14 +43,14 @@ const WelcomeScreen: React.FC = () => {
             useNativeDriver: true,
           }),
           Animated.timing(slideAnim, {
-            toValue: provider === "doctor" ? 50 : -50,
+            toValue: providerState === "doctor" ? 50 : -50,
             duration: 200,
             useNativeDriver: true,
           }),
         ]),
         // Provider change animation
         Animated.timing(bgColorAnim, {
-          toValue: provider === "doctor" ? 0 : 1,
+          toValue: providerState === "doctor" ? 0 : 1,
           duration: 300,
           useNativeDriver: false,
         }),
@@ -52,7 +58,7 @@ const WelcomeScreen: React.FC = () => {
     ]).start(() => {
       toggleProvider();
       // Move content to new position
-      slideAnim.setValue(provider === "doctor" ? -50 : 50);
+      slideAnim.setValue(providerState === "doctor" ? -50 : 50);
 
       // Fade in and slide animation
       Animated.parallel([
@@ -71,14 +77,19 @@ const WelcomeScreen: React.FC = () => {
   };
 
   const handleLogin = () => {
-    if (provider == "patient") {
-      // if (user && user.preferred_clinic_id) {
-      //   navigation.navigate("MainTabs");
-      //   return;
-      // }
+    if (providerState == "patient") {
+      if (__DEV__ && patient) {
+        console.log("Fast login as patient:", patient);
+        navigation.navigate("MainTabs");
+        return;
+      }
       navigation.navigate("ProvideInformation");
-    }
-    else {
+    } else {
+      if (__DEV__ && provider) {
+        console.log("Fast login as provider:", provider);
+        navigation.navigate("DashboardScreen");
+        return;
+      }
       navigation.navigate("LoginPage");
     }
   };
@@ -141,8 +152,8 @@ const WelcomeScreen: React.FC = () => {
         <View style={styles.topBar}>
           <View style={styles.toggleContainer}>
             <Toggle
-              isEnabled={provider === "doctor"}
-              text={provider === "doctor" ? "Provider" : "Patient"}
+              isEnabled={providerState === "doctor"}
+              text={providerState === "doctor" ? "Provider" : "Patient"}
               onToggle={toggleSwitch}
             />
           </View>
@@ -155,7 +166,7 @@ const WelcomeScreen: React.FC = () => {
             transform: [{ translateX: slideAnim }],
           }}
         >
-          {provider === "patient" && (
+          {providerState === "patient" && (
             <WelcomeHeader
               title="Hello!"
               subtitle="Welcome to medical home."
@@ -188,13 +199,15 @@ const WelcomeScreen: React.FC = () => {
               title="Log in"
               onPress={handleLogin}
               variant="outline"
-              style={provider === "doctor" ? styles.doctorButton : undefined}
+              style={
+                providerState === "doctor" ? styles.doctorButton : undefined
+              }
               textStyle={
-                provider === "doctor" ? styles.doctorButtonText : undefined
+                providerState === "doctor" ? styles.doctorButtonText : undefined
               }
             />
 
-            {provider === "patient" && (
+            {providerState === "patient" && (
               <AuthButton title="Register" onPress={handleRegister} />
             )}
           </View>
