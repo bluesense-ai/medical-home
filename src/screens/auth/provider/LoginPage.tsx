@@ -18,11 +18,11 @@ import { useTheme } from "../../../store/useTheme";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../navigation/types";
-import { useProviderLogin } from "../../../api/auth";
+import { useProviderLogin } from "../../../api/mutations";
 import {
   shakeAnimation,
   transitionInAnimation,
-  transitionOutAnimation
+  transitionOutAnimation,
 } from "../../../utils/animations";
 import { colors } from "../../../theme/colors";
 import AuthHeader from "../../../components/Header/AuthHeader";
@@ -84,8 +84,11 @@ const Login = () => {
         onError: () => {
           // Shake animation for error
           shakeAnimation(slideAnim).start();
-          Alert.alert("Error", "An error occurred during login. Please try again.");
-        }
+          Alert.alert(
+            "Error",
+            "An error occurred during login. Please try again."
+          );
+        },
       }
     );
   };
@@ -99,17 +102,8 @@ const Login = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={containerStyle}>
-        <AuthHeader
-          navigation={navigation}
-          currentStep={1}
-          totalSteps={4}
-        />
-        <Animated.View
-          style={[
-            styles.imageContainer,
-            { opacity: fadeAnim }
-          ]}
-        >
+        <AuthHeader navigation={navigation} currentStep={1} totalSteps={4} />
+        <Animated.View style={[styles.imageContainer, { opacity: fadeAnim }]}>
           <Image
             source={require("../../../../assets/images/ProviderLogin1.png")}
             style={styles.image}
@@ -123,14 +117,20 @@ const Login = () => {
             styles.card,
             {
               transform: [{ translateY: slideAnim }],
-              opacity: fadeAnim
-            }
+              opacity: fadeAnim,
+            },
           ]}
         >
           <Text style={styles.cardTitle}>Log In</Text>
           <Text style={styles.creditSubTitle}>Enter your username</Text>
 
-          <Animated.View style={{ opacity: inputFadeAnim, width: "100%", alignItems: "center" }}>
+          <Animated.View
+            style={{
+              opacity: inputFadeAnim,
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
             <TextInput
               style={styles.input}
               placeholder="Enter Username"

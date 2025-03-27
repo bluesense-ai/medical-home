@@ -6,7 +6,7 @@ interface ProviderState {
   resetProvider: () => void;
 }
 
-export const useProvider = create<ProviderState>((set) => ({
+export const useSelectedProvider = create<ProviderState>((set) => ({
   provider: "patient",
   resetProvider: () => set({ provider: "patient" }),
   toggleProvider: () =>

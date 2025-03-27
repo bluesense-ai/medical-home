@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import {
-  View,
   Text,
   TextInput,
   Pressable,
@@ -14,20 +13,18 @@ import {
   Keyboard,
   ActivityIndicator,
 } from "react-native";
-import { useProvider } from "../../../store/useProvider";
-import { useUserStore } from "../../../store/useUserStore";
-import { api } from "../../../api/fetch";
-import { useNavigation } from "@react-navigation/native";
-import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
+import { useSelectedProvider } from "../../../store/useProvider";
+import { StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../navigation/types";
 import { useTheme } from "../../../store/useTheme";
 import { colors } from "../../../theme/colors";
-import { 
-  shakeAnimation, 
-  transitionInAnimation, 
-  fadeOutAnimation 
+import {
+  shakeAnimation,
+  transitionInAnimation,
+  fadeOutAnimation,
 } from "../../../utils/animations";
 import AuthHeader from "../../../components/Header/AuthHeader";
+import { useVerifyProviderAccessCode } from "../../../api/mutations";
 
 const { height, width } = Dimensions.get("window");
 
@@ -53,9 +50,7 @@ const LoginSwitchVerification = (props: Props) => {
   const inputFadeAnim = useState(new Animated.Value(0))[0];
 
   const [accessCode, setAccessCode] = useState("");
-  const provider = useProvider((state) => state.provider);
-  const setUser = useUserStore((state) => state.setUser);
-  const [isPending, setIsPending] = useState(false);
+  const provider = useSelectedProvider((state) => state.provider);
 
   // Initialize animations when component mounts
   useEffect(() => {
@@ -63,63 +58,7 @@ const LoginSwitchVerification = (props: Props) => {
     transitionInAnimation(fadeAnim, slideAnim, inputFadeAnim);
   }, []);
 
-  const { mutate, isPending: apiPending } = api.useMutation(
-    "post",
-    "/auth/verify-verification-code-provider",
-    {
-      onSuccess: ({ data }) => {
-        // Animate out before navigation
-        fadeOutAnimation(fadeAnim).start(() => {
-          Alert.alert("Success", "Access code verified!");
-
-          if (!data) throw new Error("No data returned from the server");
-          console.log("API Response Data:", JSON.stringify(data, null, 2));
-
-          // API yanıtını User tipine dönüştür
-          const userData = {
-            id: data.user.id || "",
-            first_name: data.user.first_name,
-            last_name: data.user.last_name,
-            // pronouns: undefined,
-            // sex: undefined,
-            // picture: undefined,
-            date_of_birth: "",
-            email_address: data.user.email_address,
-            health_card_number: "",
-            phone_number: data.user.phone_number || "",
-            registered: true,
-            preferred_clinic_id: "",
-            // marital_status: undefined,
-            // address: undefined,
-            // city_id: undefined,
-            // country_id: undefined,
-            // postal_code: undefined,
-            // preferred_provider_type: undefined,
-            access_token: data.access_token || ""
-          };
-
-          setUser(userData);
-
-          if (provider === "doctor") {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: "DashboardScreen" }],
-            });
-          } else {
-            navigation.reset({
-              index: 0,
-              routes: [{ name: "MainTabs" }],
-            });
-          }
-        });
-      },
-      onError: (error) => {
-        // Shake animation for error
-        shakeAnimation(slideAnim).start();
-        Alert.alert("Error", "Invalid verification code. Please try again.");
-      },
-    }
-  );
+  const { mutate, isPending } = useVerifyProviderAccessCode();
 
   const handleVerification = async () => {
     if (!accessCode) {
@@ -129,24 +68,42 @@ const LoginSwitchVerification = (props: Props) => {
       return;
     }
 
-    setIsPending(true);
-
-    try {
-      mutate({
+    mutate(
+      {
         body: {
           accessCode,
           otpChannel: params.otpChannel,
           username: params.userName,
         },
-      });
-    } catch (error) {
-      console.error("API Error:", error);
-      Alert.alert("Error", "Verification failed");
-      shakeAnimation(slideAnim);
-    } finally {
-      setIsPending(false);
-    }
+      },
+      { onSuccess, onError }
+    );
   };
+
+  function onSuccess() {
+    // Animate out before navigation
+    fadeOutAnimation(fadeAnim).start(() => {
+      Alert.alert("Success", "Access code verified!");
+
+      if (provider === "doctor") {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "DashboardScreen" }],
+        });
+      } else {
+        navigation.reset({
+          index: 0,
+          routes: [{ name: "MainTabs" }],
+        });
+      }
+    });
+  }
+
+  function onError() {
+    // Shake animation for error
+    shakeAnimation(slideAnim).start();
+    Alert.alert("Error", "Invalid verification code. Please try again.");
+  }
 
   // Only apply theme to the container background
   const containerStyle = {
@@ -157,40 +114,37 @@ const LoginSwitchVerification = (props: Props) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={containerStyle}>
-        <AuthHeader 
-          navigation={navigation}
-          currentStep={2}
-          totalSteps={5}
-        />
-        <Animated.View 
-          style={[
-            styles.imageContainer,
-            { opacity: fadeAnim }
-          ]}
-        >
-          <Image 
-            source={require("../../../../assets/images/ProviderLogin2.png")} 
+        <AuthHeader navigation={navigation} currentStep={2} totalSteps={5} />
+        <Animated.View style={[styles.imageContainer, { opacity: fadeAnim }]}>
+          <Image
+            source={require("../../../../assets/images/ProviderLogin2.png")}
             style={styles.image}
             resizeMode="cover"
           />
         </Animated.View>
-        
+
         {/* Card at the bottom of the screen */}
-        <Animated.View 
+        <Animated.View
           style={[
             styles.card,
             {
               transform: [{ translateY: slideAnim }],
-              opacity: fadeAnim
-            }
+              opacity: fadeAnim,
+            },
           ]}
         >
           <Text style={styles.cardTitle}>Verification</Text>
           <Text style={styles.creditSubTitle}>
             Find your access code via SMS in your phone or via email
           </Text>
-          
-          <Animated.View style={{ opacity: inputFadeAnim, width: "100%", alignItems: "center" }}>
+
+          <Animated.View
+            style={{
+              opacity: inputFadeAnim,
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
             <TextInput
               style={styles.input}
               placeholder="Access Code"
@@ -199,7 +153,7 @@ const LoginSwitchVerification = (props: Props) => {
               onChangeText={setAccessCode}
               keyboardType="numeric"
             />
-            
+
             <Pressable
               style={styles.submitButton}
               onPress={handleVerification}

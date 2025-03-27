@@ -16,14 +16,14 @@ import AnimatedSection from "../../components/AnimatedSection";
 import DashboardMenuButtons from "../../components/DashboardMenuButtons";
 import { useTheme } from "../../store/useTheme";
 import { Ionicons } from "@expo/vector-icons";
-import { useUserStore } from "../../store/useUserStore";
+import { useProviderStore } from "../../store/useUserStore";
 
 const DashboardScreen: React.FC = () => {
   const theme = useTheme((state) => state.theme);
   const styles = theme === "dark" ? stylesDark : stylesLight;
 
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const provider = useUserStore(state => state.user)
+  const provider = useProviderStore(state => state.provider)
   
   const scrollY = useRef(new Animated.Value(0)).current;
 

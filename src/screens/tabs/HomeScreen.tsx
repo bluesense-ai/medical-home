@@ -1,14 +1,13 @@
 import React, { useRef } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, TouchableOpacity, Image, Dimensions, ScrollView, Linking, Animated } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Image, Dimensions, Animated } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import type { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import type { BottomTabParamList } from '../../navigation/BottomTabs';
 import { colors } from '../../theme/colors';
-import { useUserStore } from '../../store/useUserStore';
+import { usePatientStore } from '../../store/useUserStore';
 import BackgroundShape from '../../components/BackgroundShape';
 import ActionButton from '../../components/Buttons/ActionButton';
 import DoctorCard from '../../components/DoctorCard';
-import ScrollAnimatedView from '../../components/ScrollAnimatedView';
 import { DOCTORS } from '../../data/doctors';
 import AnimatedSection from '../../components/AnimatedSection';
 
@@ -19,7 +18,7 @@ const HERO_IMAGE_HEIGHT = 447;
 const HomeScreen = () => {
   const navigation = useNavigation<BottomTabNavigationProp<BottomTabParamList>>();
   const scrollY = useRef(new Animated.Value(0)).current;
-  const user = useUserStore((state) => state.user);
+  const patient = usePatientStore((state) => state.patient);
 
   const handlePhysicianPress = () => {
     // Navigate to physicians list
@@ -46,8 +45,8 @@ const HomeScreen = () => {
           <View style={styles.profileContainer}>
             <TouchableOpacity style={styles.profileButton} onPress={() => navigation.navigate('Profile')}>
             <Image
-              source={user?.picture ? { uri: user.picture } : require("../../../assets/icons/avatar.png")}
-              style={user?.picture ? styles.profileImage : styles.profileIcon}
+              source={patient?.picture ? { uri: patient.picture } : require("../../../assets/icons/avatar.png")}
+              style={patient?.picture ? styles.profileImage : styles.profileIcon}
             />
             </TouchableOpacity>
           </View>

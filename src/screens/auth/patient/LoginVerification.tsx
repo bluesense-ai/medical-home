@@ -18,11 +18,12 @@ import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../navigation/types";
 import { api } from "../../../api/fetch";
 import { colors } from "../../../theme/colors";
-import { 
-  shakeAnimation, 
-  transitionInAnimation, 
-  transitionOutAnimation 
+import {
+  shakeAnimation,
+  transitionInAnimation,
+  transitionOutAnimation,
 } from "../../../utils/animations";
+import { usePatientLogin } from "../../../api/mutations";
 
 const { height, width } = Dimensions.get("window");
 
@@ -30,7 +31,7 @@ type Props = StackScreenProps<RootStackParamList, "LoginVerification">;
 
 const LoginVerification = (props: Props) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  
+
   // Animation values
   const fadeAnim = useState(new Animated.Value(0))[0];
   const slideAnim = useState(new Animated.Value(50))[0];
@@ -65,13 +66,7 @@ const LoginVerification = (props: Props) => {
     ]).start();
   }, []);
 
-  const { mutate, isPending } = api.useMutation("post", "/auth/patient-login", {
-    onError: (error, variables) => {
-      console.error(error, variables);
-      // Shake animation for error
-      shakeAnimation(slideAnim).start();
-    },
-  });
+  const { mutate, isPending } = usePatientLogin();
 
   const handleSubmit = (kind: "email" | "sms") => {
     if (kind === "email") {
@@ -102,6 +97,10 @@ const LoginVerification = (props: Props) => {
               });
             });
           },
+          onError: () => {
+            // Shake animation for error
+            shakeAnimation(slideAnim).start();
+          },
         }
       );
     }
@@ -110,43 +109,47 @@ const LoginVerification = (props: Props) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
-        <AuthHeader
-          navigation={navigation}
-          currentStep={4}
-          totalSteps={5}
-        />
-        
+        <AuthHeader navigation={navigation} currentStep={4} totalSteps={5} />
+
         {/* Image Section - Animated */}
-        <Animated.View 
+        <Animated.View
           style={[
             styles.imageContainer,
-            { 
+            {
               opacity: fadeAnim,
-              transform: [{ translateY: imageSlideAnim }] 
-            }
+              transform: [{ translateY: imageSlideAnim }],
+            },
           ]}
         >
-          <Image 
-            source={require("../../../../assets/images/bgimgrg2.jpg")} 
+          <Image
+            source={require("../../../../assets/images/bgimgrg2.jpg")}
             style={styles.image}
             resizeMode="contain"
           />
         </Animated.View>
 
         {/* Card at the bottom of the screen */}
-        <Animated.View 
+        <Animated.View
           style={[
             styles.card,
             {
               opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }]
-            }
+              transform: [{ translateY: slideAnim }],
+            },
           ]}
         >
           <Text style={styles.cardTitle}>Verification</Text>
-          <Text style={styles.cardSubTitle}>Choose your Verification method</Text>
-          
-          <Animated.View style={{ opacity: inputFadeAnim, width: "100%", alignItems: "center" }}>
+          <Text style={styles.cardSubTitle}>
+            Choose your Verification method
+          </Text>
+
+          <Animated.View
+            style={{
+              opacity: inputFadeAnim,
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
             <Pressable
               style={styles.phoneButton}
               onPress={() => handleSubmit("sms")}
@@ -158,13 +161,15 @@ const LoginVerification = (props: Props) => {
                 <Text style={styles.buttonText}>Phone Number</Text>
               )}
             </Pressable>
-            
+
             <Pressable
               style={styles.emailButton}
               onPress={() => handleSubmit("email")}
               disabled={isPending}
             >
-              <Text style={[styles.buttonText, styles.emailButtonText]}>Email Address</Text>
+              <Text style={[styles.buttonText, styles.emailButtonText]}>
+                Email Address
+              </Text>
             </Pressable>
           </Animated.View>
         </Animated.View>

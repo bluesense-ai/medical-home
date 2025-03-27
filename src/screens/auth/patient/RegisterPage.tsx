@@ -22,7 +22,6 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../navigation/types";
 import { colors } from "../../../theme/colors";
 import { api } from "../../../api/fetch";
-import { useClinics } from "../../../api/auth";
 
 const { height, width } = Dimensions.get("window");
 
@@ -39,13 +38,13 @@ const ClinicStatus = ({ status }: { status: string }) => {
 
   return (
     <View style={styles.statusContainer}>
-      <View style={[
-        styles.statusDot,
-        { backgroundColor: isAccepting ? "#32CD32" : "#FF3B30" }
-      ]} />
-      <Text style={styles.statusText}>
-        Status: {status}
-      </Text>
+      <View
+        style={[
+          styles.statusDot,
+          { backgroundColor: isAccepting ? "#32CD32" : "#FF3B30" },
+        ]}
+      />
+      <Text style={styles.statusText}>Status: {status}</Text>
     </View>
   );
 };
@@ -53,25 +52,21 @@ const ClinicStatus = ({ status }: { status: string }) => {
 // Status note component
 const StatusNote = () => (
   <Text style={styles.statusNote}>
-    If we don't have availability when you register, you will be notified when we assign you a new provider.
+    If we don't have availability when you register, you will be notified when
+    we assign you a new provider.
   </Text>
 );
 
 // Clinic selector component
 const ClinicSelector = ({
   selectedName,
-  onPress
+  onPress,
 }: {
   selectedName: string;
   onPress: () => void;
 }) => (
-  <TouchableOpacity
-    style={styles.clinicSelector}
-    onPress={onPress}
-  >
-    <Text style={styles.clinicText}>
-      {selectedName || "Select a clinic"}
-    </Text>
+  <TouchableOpacity style={styles.clinicSelector} onPress={onPress}>
+    <Text style={styles.clinicText}>{selectedName || "Select a clinic"}</Text>
     <View style={styles.dropdownIcon}>
       <Text style={{ color: "black" }}>▼</Text>
     </View>
@@ -81,24 +76,27 @@ const ClinicSelector = ({
 // Clinic item component for modal
 const ClinicItem = ({
   clinic,
-  onSelect
+  onSelect,
 }: {
   clinic: Clinic;
   onSelect: (id: string, name: string, status: string) => void;
 }) => (
   <TouchableOpacity
     style={styles.clinicItem}
-    onPress={() => onSelect(
-      clinic.id,
-      clinic.name,
-      clinic.status || "Available"
-    )}
+    onPress={() =>
+      onSelect(clinic.id, clinic.name, clinic.status || "Available")
+    }
   >
     <Text style={styles.clinicItemText}>{clinic.name}</Text>
-    <View style={[
-      styles.clinicStatusDot,
-      { backgroundColor: clinic.status === "Not accepting patients" ? "#FF3B30" : "#32CD32" }
-    ]} />
+    <View
+      style={[
+        styles.clinicStatusDot,
+        {
+          backgroundColor:
+            clinic.status === "Not accepting patients" ? "#FF3B30" : "#32CD32",
+        },
+      ]}
+    />
   </TouchableOpacity>
 );
 
@@ -123,77 +121,77 @@ const RegisterPage = () => {
   const [clinicStatus, setClinicStatus] = useState("Available");
 
   // Fetch clinics from API
-  const { data: clinicsResponse, isLoading: isLoadingClinics } = useClinics();
+  const { data: clinicsResponse, isLoading: isLoadingClinics } = api.useQuery(
+    "get",
+    "/clinics/get-all-clinics"
+  );
   // Safely extract clinic data and ensure it's an array
   const clinics: Clinic[] = Array.isArray(clinicsResponse)
-    ? clinicsResponse.map(clinic => ({
-      id: clinic.id || "",
-      name: clinic.name || "",
-      status: clinic.status
-    }))
+    ? clinicsResponse.map((clinic) => ({
+        id: clinic.id || "",
+        name: clinic.name || "",
+        status: clinic.status,
+      }))
     : [];
 
   // API mutation for checking health card
-  const { mutate, isPending } = api.useMutation(
-    "post",
-    "/auth/patient-login",
-    {
-      onSuccess: (response: any) => {
-        // Successful response, health card is already registered
-        Alert.alert(
-          "Account Found",
-          "This health card is already registered. You will be redirected to login.",
-          [
-            {
-              text: "OK",
-              onPress: () => {
-                navigation.navigate("WeFoundYou", {
-                  healthCardNumber,
-                  otpChannel: "email",
-                  patientId: response.patientId
-                });
-              }
-            }
-          ]
-        );
-      },
-      onError: (error: any) => {
-        // If error is 403 (Invalid Credentials), health card is not found
-        // In this case, we can proceed with registration
-        if (error?.status === 403 || error?.message?.includes("Invalid Credentials") || error?.error?.includes("Invalid Credentials")) {
-          console.log("Health card not found, proceeding with registration");
-          // Health card not found, proceed with registration
-          Animated.parallel([
-            Animated.timing(fadeAnim, {
-              toValue: 0,
-              duration: 300,
-              useNativeDriver: true,
-            }),
-            Animated.timing(slideAnim, {
-              toValue: 100,
-              duration: 300,
-              useNativeDriver: true,
-            }),
-          ]).start(() => {
-            // Navigate to next screen with parameters
-            navigation.navigate("RegisterPage2", {
-              healthCardNumber,
-              clinicId: selectedClinicId
-            });
+  const { mutate, isPending } = api.useMutation("post", "/auth/patient-login", {
+    onSuccess: (response: any) => {
+      // Successful response, health card is already registered
+      Alert.alert(
+        "Account Found",
+        "This health card is already registered. You will be redirected to login.",
+        [
+          {
+            text: "OK",
+            onPress: () => {
+              navigation.navigate("WeFoundYou", {
+                healthCardNumber,
+                otpChannel: "email",
+                patientId: response.patientId,
+              });
+            },
+          },
+        ]
+      );
+    },
+    onError: (error: any) => {
+      // If error is 403 (Invalid Credentials), health card is not found
+      // In this case, we can proceed with registration
+      if (
+        error?.status === 403 ||
+        error?.message?.includes("Invalid Credentials") ||
+        error?.error?.includes("Invalid Credentials")
+      ) {
+        console.log("Health card not found, proceeding with registration");
+        // Health card not found, proceed with registration
+        Animated.parallel([
+          Animated.timing(fadeAnim, {
+            toValue: 0,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+          Animated.timing(slideAnim, {
+            toValue: 100,
+            duration: 300,
+            useNativeDriver: true,
+          }),
+        ]).start(() => {
+          // Navigate to next screen with parameters
+          navigation.navigate("RegisterPage2", {
+            healthCardNumber,
+            clinicId: selectedClinicId,
           });
-        } else {
-          // Other API errors
-          console.error("API Error:", error);
-          Alert.alert(
-            "Error",
-            error?.error || "Failed to verify health card"
-          );
-          // Shake animation for error
-          shakeAnimation();
-        }
-      },
-    }
-  );
+        });
+      } else {
+        // Other API errors
+        console.error("API Error:", error);
+        Alert.alert("Error", error?.error || "Failed to verify health card");
+        // Shake animation for error
+        shakeAnimation();
+      }
+    },
+  });
 
   // Initialize animations when component mounts
   useEffect(() => {
@@ -266,12 +264,16 @@ const RegisterPage = () => {
     mutate({
       body: {
         healthCardNumber: healthCardNumber.trim(),
-        otpChannel: "email"
-      }
+        otpChannel: "email",
+      },
     });
   };
 
-  const selectClinic = (id: string, name: string, status: string = "Available") => {
+  const selectClinic = (
+    id: string,
+    name: string,
+    status: string = "Available"
+  ) => {
     setSelectedClinicId(id);
     setSelectedClinicName(name);
     setClinicStatus(status);
@@ -297,10 +299,7 @@ const RegisterPage = () => {
               data={clinics}
               keyExtractor={(item) => item.id}
               renderItem={({ item }) => (
-                <ClinicItem
-                  clinic={item}
-                  onSelect={selectClinic}
-                />
+                <ClinicItem clinic={item} onSelect={selectClinic} />
               )}
             />
           )}
@@ -319,11 +318,7 @@ const RegisterPage = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
-        <AuthHeader
-          navigation={navigation}
-          currentStep={1}
-          totalSteps={4}
-        />
+        <AuthHeader navigation={navigation} currentStep={1} totalSteps={4} />
 
         {/* Image Section - Animated */}
         <Animated.View
@@ -331,8 +326,8 @@ const RegisterPage = () => {
             styles.imageContainer,
             {
               opacity: fadeAnim,
-              transform: [{ translateY: imageSlideAnim }]
-            }
+              transform: [{ translateY: imageSlideAnim }],
+            },
           ]}
         >
           <Image
@@ -348,14 +343,22 @@ const RegisterPage = () => {
             styles.card,
             {
               opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }]
-            }
+              transform: [{ translateY: slideAnim }],
+            },
           ]}
         >
           <Text style={styles.cardTitle}>Register</Text>
-          <Text style={styles.cardSubTitle}>Provide your health card number</Text>
+          <Text style={styles.cardSubTitle}>
+            Provide your health card number
+          </Text>
 
-          <Animated.View style={{ opacity: inputFadeAnim, width: "100%", alignItems: "center" }}>
+          <Animated.View
+            style={{
+              opacity: inputFadeAnim,
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
             <TextInput
               style={styles.input}
               placeholder="Health Card Number"
@@ -372,9 +375,7 @@ const RegisterPage = () => {
               onPress={() => setModalVisible(true)}
             />
 
-            {selectedClinicId && (
-              <ClinicStatus status={clinicStatus} />
-            )}
+            {selectedClinicId && <ClinicStatus status={clinicStatus} />}
 
             {selectedClinicId && clinicStatus === "Not accepting patients" && (
               <StatusNote />

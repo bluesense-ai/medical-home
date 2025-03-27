@@ -1,12 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import {
-  View,
-  StyleSheet,
-  SafeAreaView,
-  Animated,
-  TouchableOpacity,
-  Text,
-} from "react-native";
+import { View, StyleSheet, SafeAreaView, Animated } from "react-native";
 import { colors } from "../../theme/colors";
 import Toggle from "../../components/Toggle/Toggle";
 import AuthButton from "../../components/Buttons/AuthButton";
@@ -14,17 +7,15 @@ import WelcomeHeader from "../../components/Header/WelcomeHeader";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
-import { useProvider } from "../../store/useProvider";
+import { useSelectedProvider } from "../../store/useProvider";
 import { useTheme } from "../../store/useTheme";
-import { useUserStore } from "../../store/useUserStore";
 
 const WelcomeScreen: React.FC = () => {
-  const provider = useProvider((state) => state.provider);
-  const toggleProvider = useProvider((state) => state.toggleProvider);
+  const provider = useSelectedProvider((state) => state.provider);
+  const toggleProvider = useSelectedProvider((state) => state.toggleProvider);
   const theme = useTheme((state) => state.theme);
   const toggleTheme = useTheme((state) => state.toggleTheme);
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const user = useUserStore((state) => state.user);
 
   // Store animation values in useRef to prevent unnecessary re-renders
   const fadeAnim1 = useRef(new Animated.Value(1)).current;

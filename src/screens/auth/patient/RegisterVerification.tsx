@@ -19,7 +19,7 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../navigation/types";
 import { colors } from "../../../theme/colors";
-import { api } from "../../../api/fetch";
+import { usePatientRegister } from "../../../api/mutations";
 
 const { height, width } = Dimensions.get("window");
 
@@ -39,7 +39,7 @@ const RegisterVerification = (props: Props) => {
     lastName,
     dateOfBirth,
     sex,
-    pronouns
+    pronouns,
   } = props.route.params;
 
   // Animation values
@@ -51,35 +51,12 @@ const RegisterVerification = (props: Props) => {
   // Form state
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  const [verificationMethod, setVerificationMethod] = useState<"email" | "sms">("sms");
+  const [verificationMethod, setVerificationMethod] = useState<"email" | "sms">(
+    "sms"
+  );
 
   // API mutation for patient registration
-  const { mutate, isPending } = api.useMutation(
-    "post",
-    "/auth/patient-register",
-    {
-      onSuccess: (response: any) => {
-        if (response?.success) {
-          // Navigate to verification code screen
-          navigation.navigate("VerificationCode", {
-            patientId: response.patientId,
-            otpChannel: verificationMethod
-          });
-        } else {
-          Alert.alert("Error", response?.message || "Failed to register");
-          shakeAnimation();
-        }
-      },
-      onError: (error: any) => {
-        console.error("API Error:", error);
-        Alert.alert(
-          "Error",
-          error?.error || "Failed to register"
-        );
-        shakeAnimation();
-      },
-    }
-  );
+  const { mutate, isPending } = usePatientRegister();
 
   // Initialize animations when component mounts
   useEffect(() => {
@@ -158,30 +135,48 @@ const RegisterVerification = (props: Props) => {
     }
 
     // Call API to register patient
-    mutate({
-      body: {
-        firstName,
-        lastName,
-        dateOfBirth,
-        healthCardNumber,
-        preferredClinicId: clinicId,
-        mobileNumber: phoneNumber,
-        emailAddress: email,
-        otpChannel: verificationMethod,
-        sex,
-        pronouns
+    mutate(
+      {
+        body: {
+          firstName,
+          lastName,
+          dateOfBirth,
+          healthCardNumber,
+          preferredClinicId: clinicId,
+          mobileNumber: phoneNumber,
+          emailAddress: email,
+          otpChannel: verificationMethod,
+          sex,
+          // @ts-ignore - missing?
+          pronouns,
+        },
+      },
+      {
+        onSuccess: (response) => {
+          if (response?.success) {
+            // Navigate to verification code screen
+            navigation.navigate("VerificationCode", {
+              patientId: response.patientId!,
+              otpChannel: verificationMethod,
+            });
+          } else {
+            Alert.alert("Error", response?.message || "Failed to register");
+            shakeAnimation();
+          }
+        },
+        onError: (error) => {
+          console.error("API Error:", error);
+          Alert.alert("Error", error?.error || "Failed to register");
+          shakeAnimation();
+        },
       }
-    });
+    );
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
-        <AuthHeader
-          navigation={navigation}
-          currentStep={3}
-          totalSteps={4}
-        />
+        <AuthHeader navigation={navigation} currentStep={3} totalSteps={4} />
 
         {/* Image Section - Animated */}
         <Animated.View
@@ -189,8 +184,8 @@ const RegisterVerification = (props: Props) => {
             styles.imageContainer,
             {
               opacity: fadeAnim,
-              transform: [{ translateY: imageSlideAnim }]
-            }
+              transform: [{ translateY: imageSlideAnim }],
+            },
           ]}
         >
           <Image
@@ -206,13 +201,19 @@ const RegisterVerification = (props: Props) => {
             styles.card,
             {
               opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }]
-            }
+              transform: [{ translateY: slideAnim }],
+            },
           ]}
         >
           <Text style={styles.cardTitle}>Register</Text>
 
-          <Animated.View style={{ opacity: inputFadeAnim, width: "100%", alignItems: "center" }}>
+          <Animated.View
+            style={{
+              opacity: inputFadeAnim,
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
             <Text style={styles.inputLabel}>Email</Text>
             <TextInput
               style={styles.input}
@@ -234,7 +235,9 @@ const RegisterVerification = (props: Props) => {
               keyboardType="phone-pad"
             />
 
-            <Text style={styles.inputLabel}>How would you like to verify your account?</Text>
+            <Text style={styles.inputLabel}>
+              How would you like to verify your account?
+            </Text>
 
             <View style={styles.radioContainer}>
               <TouchableOpacity
@@ -242,7 +245,9 @@ const RegisterVerification = (props: Props) => {
                 onPress={() => setVerificationMethod("sms")}
               >
                 <View style={styles.radioCircle}>
-                  {verificationMethod === "sms" && <View style={styles.selectedRadio} />}
+                  {verificationMethod === "sms" && (
+                    <View style={styles.selectedRadio} />
+                  )}
                 </View>
                 <Text style={styles.radioText}>Phone number</Text>
               </TouchableOpacity>
@@ -252,7 +257,9 @@ const RegisterVerification = (props: Props) => {
                 onPress={() => setVerificationMethod("email")}
               >
                 <View style={styles.radioCircle}>
-                  {verificationMethod === "email" && <View style={styles.selectedRadio} />}
+                  {verificationMethod === "email" && (
+                    <View style={styles.selectedRadio} />
+                  )}
                 </View>
                 <Text style={styles.radioText}>Email address</Text>
               </TouchableOpacity>

@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import API from "../api/types";
 import { storage } from "./asyncStorage";
+import { useSelectedProvider } from "./useProvider";
 
 type PatientResponse = NonNullable<
   API.paths["/auth/access_code_verification_patient/{uid}"]["post"]["responses"]["200"]["content"]["application/json"]["data"]
@@ -11,46 +12,10 @@ type ProviderResponse = NonNullable<
   API.paths["/auth/verify-verification-code-provider"]["post"]["responses"]["200"]["content"]["application/json"]["data"]
 >;
 
-export type UserState = {
-  user:
-  | ({
-    id: string;
-    email_address: string;
-    phone_number: string;
-    username: string;
-    first_name: string;
-    last_name: string;
-    health_card_number: string;
-    date_of_birth: string;
-    sex: string;
-    clinic: string;
-    access_token: string;
-    //   createdAt: string;
-    //   updatedAt: string;
-  } & PatientResponse)
-  | null;
-  setUser: (user: Partial<UserState["user"]>) => void;
-};
-
-export const useUserStore = create<UserState>()(
-  persist(
-    (set) => ({
-      user: null,
-      setUser: (user) =>
-        set({
-          user: (user === null ? null : { ...user }) as UserState["user"],
-        }),
-    }),
-    {
-      name: "user-storage",
-      storage,
-    }
-  )
-);
-
 export type PatientState = {
   patient: PatientResponse | null;
   setPatient: (patient: PatientResponse | null) => void;
+  updatePatient: (patient: Partial<PatientResponse>) => void;
 };
 
 export const usePatientStore = create<PatientState>()(
@@ -58,6 +23,7 @@ export const usePatientStore = create<PatientState>()(
     (set) => ({
       patient: null,
       setPatient: (patient) => set({ patient }),
+      updatePatient: (patient) => set(s => ({ patient: { ...s.patient!, ...patient } }))
     }),
     {
       name: "patient-storage",
@@ -75,14 +41,17 @@ export type ProviderState = {
   setProvider: (provider: ProviderResponse | null) => void;
 };
 
-
 export const useProviderStore = create<ProviderState>()(
   persist(
     (set) => ({
       provider: null,
-      setProvider: (provider) => set({
-        provider: provider === null ? null : { ...provider.user, access_token: provider.access_token }
-      }),
+      setProvider: (provider) =>
+        set({
+          provider:
+            provider === null
+              ? null
+              : { ...provider.user, access_token: provider.access_token },
+        }),
     }),
     {
       name: "provider-storage",
@@ -90,3 +59,20 @@ export const useProviderStore = create<ProviderState>()(
     }
   )
 );
+
+export function getAccessToken() {
+  const provider = useSelectedProvider.getState().provider;
+  const state =
+    provider === "patient"
+      ? usePatientStore.getState().patient
+      : useProviderStore.getState().provider;
+  return state?.access_token;
+}
+export function deleteUser() {
+  const provider = useSelectedProvider.getState().provider;
+  if (provider === "patient") {
+    usePatientStore.getState().setPatient(null)
+  } else {
+    useProviderStore.getState().setProvider(null)
+  }
+}

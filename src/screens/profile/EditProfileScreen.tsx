@@ -15,114 +15,56 @@ import { colors } from "../../theme/colors";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { useUserStore } from "../../store/useUserStore";
-import { useMutation } from "@tanstack/react-query";
-import { api } from "../../api/fetch";
+import { usePatientStore } from "../../store/useUserStore";
 import type { RootStackParamList } from "../../navigation/types";
 import * as ImagePicker from "expo-image-picker";
+import { useUpdateCurrentPatientProfile } from "../../api/mutations";
 
 const EditProfileScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const user = useUserStore((state) => state.user);
-  const setUser = useUserStore((state) => state.setUser);
+  const patient = usePatientStore((state) => state.patient)!;
+
   const [formData, setFormData] = useState({
-    first_name: user?.first_name || "",
-    last_name: user?.last_name || "",
-    sex: user?.sex || "",
-    pronouns: user?.pronouns || "",
-    date_of_birth: user?.date_of_birth || "",
-    email_address: user?.email_address || "",
-    phone_number: user?.phone_number || "",
-    picture: user?.picture || null
+    first_name: patient.first_name,
+    last_name: patient.last_name,
+    sex: patient.sex,
+    pronouns: patient.pronouns,
+    date_of_birth: patient.date_of_birth,
+    email_address: patient.email_address,
+    phone_number: patient.phone_number,
+    picture: patient.picture,
   });
   const [image, setImage] = React.useState<string | null>(null);
 
-  const updateProfileMutation = useMutation({
-    mutationFn: async (formData: any) => {
-      if (!user?.health_card_number) {
-        throw new Error('Health card number is missing');
-      }
-      console.log("Sending Profile Update:", formData);
-      const response = await fetch(`https://sandbox-backend.medicalhome.cloud/api/patients/patient-update/${user.health_card_number}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${user.access_token}`,
-        },
-        body: JSON.stringify({
-          first_name: formData.first_name,
-          last_name: formData.last_name,
-          middle_name: formData.middle_name,
-          sex: formData.sex,
-          pronouns: formData.pronouns,
-          date_of_birth: formData.date_of_birth,
-          email_address: formData.email_address,
-          phone_number: formData.phone_number,
-          picture: formData.picture
-        }),
-      });
-      
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Failed to update profile');
-      }
-      
-      const data = await response.json();
-      console.log("Raw API Response:", data);
-      
-      if (data.success && data.patient) {
-        return {
-          ...user,
-          first_name: data.patient.first_name || user.first_name,
-          last_name: data.patient.last_name || user.last_name,
-          sex: data.patient.sex || user.sex,
-          pronouns: data.patient.pronouns || user.pronouns,
-          date_of_birth: data.patient.date_of_birth || user.date_of_birth,
-          email_address: data.patient.email_address || user.email_address,
-          phone_number: data.patient.phone_number || user.phone_number,
-          picture: data.patient.picture || user.picture,
-          access_token: user.access_token
-        };
-      }
-      
-      throw new Error('Invalid response format from server');
-    },
-    onSuccess: (response) => {
-      console.log("Profile Update Response:", response);
-      setUser(response);
-      
-      Alert.alert(
-        "Success",
-        "Profile updated successfully",
-        [
-          {
-            text: "OK",
-            onPress: () => {
-              navigation.navigate("MainTabs");
-            },
-          },
-        ]
-      );
-    },
-    onError: (error: any) => {
-      console.error("Update Error Details:", {
-        error: error.message,
-        healthCardNumber: user?.health_card_number,
-      });
-      Alert.alert(
-        "Error",
-        "Failed to update profile. Please try again."
-      );
-    },
-  });
+  const updateProfileMutation = useUpdateCurrentPatientProfile();
 
-  const handleUpdateProfile = (formData: any) => {
+  const handleUpdateProfile = () => {
     console.log("Handling profile update with data:", formData);
-    updateProfileMutation.mutate(formData);
+    if (!patient.health_card_number) {
+      Alert.alert("Health card number is missing");
+      return;
+    }
+
+    updateProfileMutation.mutate(
+      {
+        params: { path: { health_card_number: patient.health_card_number } },
+        body: formData as any,
+      },
+      {
+        onSuccess() {
+          Alert.alert("Success", "Profile updated successfully", [
+            { text: "OK", onPress: () => navigation.navigate("MainTabs") },
+          ]);
+        },
+        onError() {
+          Alert.alert("Error", "Failed to update profile. Please try again.");
+        },
+      }
+    );
   };
 
   const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
   const pickImage = async () => {
@@ -167,8 +109,8 @@ const EditProfileScreen = () => {
               source={
                 image
                   ? { uri: image }
-                  : user?.picture
-                  ? { uri: user.picture }
+                  : patient.picture
+                  ? { uri: patient.picture }
                   : require("../../../assets/icons/avatar.png")
               }
               style={styles.profileImage}
@@ -181,46 +123,46 @@ const EditProfileScreen = () => {
 
         {/* Form Fields */}
         <View style={styles.form}>
-          <InputField 
-            label="First name" 
+          <InputField
+            label="First name"
             value={formData.first_name}
             onChangeText={(value) => handleInputChange("first_name", value)}
           />
-          <InputField 
-            label="Middle name (Optional)" 
-          />
-          <InputField 
-            label="Last name" 
+          <InputField label="Middle name (Optional)" />
+          <InputField
+            label="Last name"
             value={formData.last_name}
             onChangeText={(value) => handleInputChange("last_name", value)}
           />
-          <InputField 
-            label="Sex" 
+          <InputField
+            label="Sex"
             value={formData.sex || ""}
             onChangeText={(value) => handleInputChange("sex", value)}
           />
-          <InputField 
-            label="Pronouns" 
+          <InputField
+            label="Pronouns"
             value={formData.pronouns || ""}
             onChangeText={(value) => handleInputChange("pronouns", value)}
           />
-          <InputField 
-            label="Date of birth" 
+          <InputField
+            label="Date of birth"
             value={formData.date_of_birth}
             onChangeText={(value) => handleInputChange("date_of_birth", value)}
           />
-          <InputField 
+          <InputField
             label="Health card number"
-            value={user?.health_card_number || "Not provided"}
-            onChangeText={(value) => handleInputChange("health_card_number", value)} 
+            value={patient.health_card_number || "Not provided"}
+            onChangeText={(value) =>
+              handleInputChange("health_card_number", value)
+            }
           />
-          <InputField 
-            label="Email" 
+          <InputField
+            label="Email"
             value={formData.email_address}
             onChangeText={(value) => handleInputChange("email_address", value)}
           />
-          <InputField 
-            label="Phone" 
+          <InputField
+            label="Phone"
             value={formData.phone_number}
             onChangeText={(value) => handleInputChange("phone_number", value)}
           />
@@ -229,7 +171,7 @@ const EditProfileScreen = () => {
         {/* Done Button */}
         <TouchableOpacity
           style={styles.doneButton}
-          onPress={() => handleUpdateProfile(formData)}
+          onPress={() => handleUpdateProfile()}
           disabled={updateProfileMutation.isPending}
         >
           {updateProfileMutation.isPending ? (
@@ -249,14 +191,18 @@ interface InputFieldProps {
   onChangeText?: (text: string) => void;
 }
 
-const InputField: React.FC<InputFieldProps> = ({ label, value, onChangeText }) => (
+const InputField: React.FC<InputFieldProps> = ({
+  label,
+  value,
+  onChangeText,
+}) => (
   <View style={styles.inputContainer}>
     <Text style={styles.inputLabel}>{label}</Text>
-    <TextInput 
-      style={styles.input} 
-      value={value} 
+    <TextInput
+      style={styles.input}
+      value={value}
       onChangeText={onChangeText}
-      placeholder="" 
+      placeholder=""
     />
   </View>
 );

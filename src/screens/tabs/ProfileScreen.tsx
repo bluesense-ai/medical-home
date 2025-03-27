@@ -13,22 +13,22 @@ import { colors } from "../../theme/colors";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../navigation/types";
-import { useUserStore } from "../../store/useUserStore";
+import { usePatientStore } from "../../store/useUserStore";
 import moment from "moment";
-import { useProvider } from "../../store/useProvider";
+import { useSelectedProvider } from "../../store/useProvider";
 
 const ProfileScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const user = useUserStore((state) => state.user);
-  const setUser = useUserStore((state) => state.setUser);
+  const patient = usePatientStore((state) => state.patient);
+  const setPatient = usePatientStore((state) => state.setPatient);
 
-  const resetProvider = useProvider((state) => state.resetProvider);
+  const resetProvider = useSelectedProvider((state) => state.resetProvider);
 
   React.useEffect(() => {
-    if (user) {
-      console.log("ProfileScreen - Current User Data:", user);
+    if (patient) {
+      console.log("ProfileScreen - Current Patient Data:", patient);
     }
-  }, [user]);
+  }, [patient]);
 
   // Format date to display in a readable format
   const formatDate = useMemo(
@@ -53,7 +53,7 @@ const ProfileScreen = () => {
         {
           text: "Logout",
           onPress: () => {
-            setUser(null);
+            setPatient(null);
             resetProvider();
             navigation.reset({
               index: 0,
@@ -67,7 +67,7 @@ const ProfileScreen = () => {
     );
   };
 
-  if (!user) {
+  if (!patient) {
     return null;
   }
 
@@ -82,33 +82,41 @@ const ProfileScreen = () => {
             <View style={styles.profileContainer}>
               <Image
                 source={
-                  user?.picture
-                    ? { uri: user.picture }
+                  patient.picture
+                    ? { uri: patient.picture }
                     : require("../../../assets/icons/avatar.png")
                 }
-                style={user?.picture ? styles.profileImage : styles.profileIcon}
+                style={
+                  patient.picture ? styles.profileImage : styles.profileIcon
+                }
               />
             </View>
             <Text
               style={styles.name}
-            >{`${user.first_name} ${user.last_name}`}</Text>
+            >{`${patient.first_name} ${patient.last_name}`}</Text>
           </View>
 
           {/* Info Card */}
           <InfoItem
             label="Health card number"
-            value={user.health_card_number || "Not provided"}
+            value={patient.health_card_number || "Not provided"}
           />
           <InfoItem
             label="Date of birth"
-            value={formatDate(user.date_of_birth) || "Not provided"}
+            value={formatDate(patient.date_of_birth) || "Not provided"}
           />
-          <InfoItem label="Sex" value={user.sex || "Not provided"} />
-          <InfoItem label="Pronouns" value={user.pronouns || "Not provided"} />
-          <InfoItem label="Phone" value={user.phone_number || "Not provided"} />
+          <InfoItem label="Sex" value={patient.sex || "Not provided"} />
+          <InfoItem
+            label="Pronouns"
+            value={patient.pronouns || "Not provided"}
+          />
+          <InfoItem
+            label="Phone"
+            value={patient.phone_number || "Not provided"}
+          />
           <InfoItem
             label="Email"
-            value={user.email_address || "Not provided"}
+            value={patient.email_address || "Not provided"}
           />
         </View>
 

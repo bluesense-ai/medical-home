@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import {
-  View,
   Text,
   TextInput,
   TouchableOpacity,
@@ -18,8 +17,8 @@ import AuthHeader from "../../../components/Header/AuthHeader";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../navigation/types";
-import { api } from "../../../api/fetch";
 import { colors } from "../../../theme/colors";
+import { usePatientLogin } from "../../../api/mutations";
 
 const { height, width } = Dimensions.get("window");
 
@@ -36,50 +35,7 @@ const ProvideInformation = () => {
   const [otpChannel] = useState("email");
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
 
-  const { mutate, isPending, error } = api.useMutation(
-    "post",
-    "/auth/patient-login",
-    {
-      onSuccess: (response: any) => {
-        if (!response?.patientId) {
-          Alert.alert("Error", "Patient ID not found");
-          return;
-        }
-
-        // Animate out before navigation
-        Animated.parallel([
-          Animated.timing(fadeAnim, {
-            toValue: 0,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-          Animated.timing(slideAnim, {
-            toValue: 100,
-            duration: 300,
-            useNativeDriver: true,
-          }),
-        ]).start(() => {
-          navigation.navigate("WeFoundYou", {
-            healthCardNumber,
-            otpChannel,
-            patientId: response.patientId
-          });
-        });
-      },
-      onError: (error: any) => {
-        console.error("API Error:", error);
-        if (error?.status === 403 || error?.message?.includes("Invalid Credentials")) {
-          navigation.navigate("WantToRegister");
-        } else {
-          Alert.alert(
-            "Error",
-            error?.error || "Failed to verify health card"
-          );
-        }
-      },
-    }
-  );
-
+  const { mutate, isPending, error } = usePatientLogin();
   // Initialize animations when component mounts
   useEffect(() => {
     // Start animations
@@ -109,7 +65,7 @@ const ProvideInformation = () => {
 
     // Keyboard listeners
     const keyboardDidShowListener = Keyboard.addListener(
-      'keyboardDidShow',
+      "keyboardDidShow",
       () => {
         setKeyboardVisible(true);
         // Slide the card up when keyboard appears
@@ -121,7 +77,7 @@ const ProvideInformation = () => {
       }
     );
     const keyboardDidHideListener = Keyboard.addListener(
-      'keyboardDidHide',
+      "keyboardDidHide",
       () => {
         setKeyboardVisible(false);
         // Slide the card back down when keyboard hides
@@ -171,22 +127,61 @@ const ProvideInformation = () => {
     }
 
     // Prepare data for API call
-    mutate({
-      body: {
-        healthCardNumber: healthCardNumber.trim(),
-        otpChannel,
+    mutate(
+      {
+        body: {
+          healthCardNumber: healthCardNumber.trim(),
+          otpChannel,
+        },
+      },
+      {
+        onSuccess: (response) => {
+          if (!response?.patientId) {
+            Alert.alert("Error", "Patient ID not found");
+            return;
+          }
+
+          // Animate out before navigation
+          Animated.parallel([
+            Animated.timing(fadeAnim, {
+              toValue: 0,
+              duration: 300,
+              useNativeDriver: true,
+            }),
+            Animated.timing(slideAnim, {
+              toValue: 100,
+              duration: 300,
+              useNativeDriver: true,
+            }),
+          ]).start(() => {
+            navigation.navigate("WeFoundYou", {
+              healthCardNumber,
+              otpChannel,
+              patientId: response.patientId!,
+            });
+          });
+        },
+        onError: (error: any) => {
+          if (
+            error?.status === 403 ||
+            error?.message?.includes("Invalid Credentials")
+          ) {
+            navigation.navigate("WantToRegister");
+          } else {
+            Alert.alert(
+              "Error",
+              error?.error || "Failed to verify health card"
+            );
+          }
+        },
       }
-    });
+    );
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
-        <AuthHeader
-          navigation={navigation}
-          currentStep={1}
-          totalSteps={5}
-        />
+        <AuthHeader navigation={navigation} currentStep={1} totalSteps={5} />
 
         {/* Image Section - Animated */}
         <Animated.View
@@ -194,8 +189,8 @@ const ProvideInformation = () => {
             styles.imageContainer,
             {
               opacity: fadeAnim,
-              transform: [{ translateY: imageSlideAnim }]
-            }
+              transform: [{ translateY: imageSlideAnim }],
+            },
           ]}
         >
           <Image
@@ -211,16 +206,23 @@ const ProvideInformation = () => {
             styles.card,
             {
               opacity: fadeAnim,
-              transform: [{ translateY: slideAnim }]
-            }
+              transform: [{ translateY: slideAnim }],
+            },
           ]}
         >
           <Text style={styles.cardTitle}>Provide your information</Text>
           <Text style={styles.cardSubTitle}>
-            We use your health card number to find your information in our system
+            We use your health card number to find your information in our
+            system
           </Text>
 
-          <Animated.View style={{ opacity: inputFadeAnim, width: "100%", alignItems: "center" }}>
+          <Animated.View
+            style={{
+              opacity: inputFadeAnim,
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
             <TextInput
               style={styles.input}
               placeholder="Enter your health card number"
