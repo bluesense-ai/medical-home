@@ -78,22 +78,8 @@ const WelcomeScreen: React.FC = () => {
       // }
       navigation.navigate("ProvideInformation");
     }
-    // if (provider == "doctor") {
-    //   navigation.navigate("LoginPage");
-    // }
-
-    // THIS SHOULD BE DELETED
-
-    if (provider === "doctor") {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "DashboardScreen" }],
-      });
-    } else {
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "MainTabs" }],
-      });
+    else {
+      navigation.navigate("LoginPage");
     }
   };
 
