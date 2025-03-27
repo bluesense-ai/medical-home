@@ -27,10 +27,12 @@ import VisitPatient from '../screens/ai-visits/VisitPatient';
 import VisitsPage from '../screens/ai-visits/VisitsPage';
 import Dashboard from '../screens/ai-visits/Dashboard';
 
-// Placeholder for Patient Database
-const PatientDatabase = () => {
-  return null;
-};
+// Patient Database Screen
+import PatientDBScreen from '../screens/patient-db/PatientDBScreen';
+import PatientDetailScreen from '../screens/patient-db/components/PatientDetailScreen';
+import PatientHistoryScreen from '../screens/patient-db/components/PatientHistoryScreen';
+import PatientHistoryDetailScreen from '../screens/patient-db/components/PatientHistoryDetailScreen';
+import PatientSoapNotesScreen from '../screens/patient-db/components/PatientSoapNotesScreen';
 
 // AIVisitPatient type helper
 type AIVisitPatientProps = {
@@ -66,7 +68,11 @@ const AIVisitsStackScreen = () => (
 const PatientDatabaseStack = createStackNavigator();
 const PatientDatabaseStackScreen = () => (
   <PatientDatabaseStack.Navigator screenOptions={{ headerShown: false }}>
-    <PatientDatabaseStack.Screen name="PatientDatabaseMain" component={PatientDatabase} />
+    <PatientDatabaseStack.Screen name="PatientDatabaseMain" component={PatientDBScreen} />
+    <PatientDatabaseStack.Screen name="PatientDetail" component={PatientDetailScreen} />
+    <PatientDatabaseStack.Screen name="PatientHistory" component={PatientHistoryScreen} />
+    <PatientDatabaseStack.Screen name="PatientHistoryDetail" component={PatientHistoryDetailScreen} />
+    <PatientDatabaseStack.Screen name="PatientSoapNotes" component={PatientSoapNotesScreen} />
   </PatientDatabaseStack.Navigator>
 );
 

@@ -1,14 +1,75 @@
-import React, { useRef } from "react";
-import { View, StyleSheet, SafeAreaView, Animated } from "react-native";
+import React, { useRef, useState, useEffect } from "react";
+import { 
+  View, 
+  StyleSheet, 
+  SafeAreaView, 
+  Animated, 
+  Text 
+} from "react-native";
 import { colors } from "../../theme/colors";
 import DashboardBackground from "../../components/DashboardBackground";
 import { useTheme } from "../../store/useTheme";
+import PatientList from "./components/PatientList";
+import { Patient } from "./components/PatientCard";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
+// Mock data for testing, will be replaced with API call
+const MOCK_PATIENTS: Patient[] = [
+  { id: '1', name: 'Dami Egbeyemi', lastVisit: '8/28/2024' },
+  { id: '2', name: 'John Smith', lastVisit: '8/28/2024' },
+  { id: '3', name: 'Jose Pena', lastVisit: '8/28/2024' },
+  { id: '4', name: 'Isabel Garcia', lastVisit: '8/28/2024' },
+  { id: '5', name: 'Michael Johnson', lastVisit: '8/27/2024' },
+  { id: '6', name: 'Sarah Williams', lastVisit: '8/26/2024' },
+  { id: '7', name: 'David Lee', lastVisit: '8/25/2024' },
+  { id: '8', name: 'Emma Thompson', lastVisit: '8/24/2024' },
+];
+
+/**
+ * PatientDBScreen Component
+ * Main screen for displaying the patient database
+ */
 const PatientDBScreen: React.FC = () => {
   const theme = useTheme((state) => state.theme);
   const styles = theme === "dark" ? stylesDark : stylesLight;
-
   const scrollY = useRef(new Animated.Value(0)).current;
+  const navigation = useNavigation<StackNavigationProp<any>>();
+  
+  // State for patient data
+  const [patients, setPatients] = useState<Patient[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  // Fetch patients data
+  useEffect(() => {
+    // This would be replaced with an actual API call
+    const fetchPatients = async () => {
+      try {
+        // Simulate API loading delay
+        setTimeout(() => {
+          setPatients(MOCK_PATIENTS);
+          setIsLoading(false);
+        }, 1000);
+        
+        // When we have a real API, we would do:
+        // const response = await fetch('api_endpoint_here');
+        // const data = await response.json();
+        // setPatients(data);
+      } catch (err) {
+        setError('Failed to load patients');
+        setIsLoading(false);
+      }
+    };
+
+    fetchPatients();
+  }, []);
+
+  // Handle patient selection
+  const handlePatientSelect = (patient: Patient) => {
+    // Navigate to patient details screen with the selected patient data
+    navigation.navigate('PatientDetail', { patient });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -26,13 +87,28 @@ const PatientDBScreen: React.FC = () => {
           <DashboardBackground fill={colors.main.secondary} />
         </View>
 
-        {/* Menu Buttons */}
-        <View style={styles.content}></View>
+        <View style={styles.content}>
+          <Text style={styles.title}>Patient Database</Text>
+          
+          {error ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.errorText}>{error}</Text>
+            </View>
+          ) : (
+            <PatientList 
+              patients={patients} 
+              onPatientSelect={handlePatientSelect}
+              isLoading={isLoading}
+              theme={theme}
+            />
+          )}
+        </View>
       </Animated.ScrollView>
     </SafeAreaView>
   );
 };
 
+// Dark theme styles
 const stylesDark = StyleSheet.create({
   container: {
     flex: 1,
@@ -42,7 +118,7 @@ const stylesDark = StyleSheet.create({
     flex: 1,
   },
   scrollViewContent: {
-    flex: 1,
+    flexGrow: 1,
     paddingBottom: 40,
   },
   backgroundContainer: {
@@ -55,48 +131,32 @@ const stylesDark = StyleSheet.create({
     transformOrigin: "bottom left",
     zIndex: -1,
   },
-  header: {
-    paddingHorizontal: 24,
-    paddingTop: 74,
-    paddingBottom: 19,
-    alignItems: "flex-end",
-    zIndex: 1,
-  },
-  profileButton: {
-    width: 58,
-    height: 58,
-    overflow: "hidden",
-    borderRadius: 29,
-    elevation: 5,
-    shadowColor: colors.base.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  profileImage: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 29,
-  },
   content: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 75,
+    paddingHorizontal: 24,
+    paddingTop: 40,
   },
-  defaultAvatarContainer: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 29,
-    backgroundColor: colors.base.white,
-    justifyContent: "center",
-    alignItems: "center",
+  title: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: colors.base.white,
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  errorContainer: {
+    padding: 20,
+    backgroundColor: 'rgba(255,0,0,0.1)',
+    borderRadius: 8,
+    marginTop: 20,
+  },
+  errorText: {
+    color: colors.main.error,
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
 
+// Light theme styles
 const stylesLight = StyleSheet.create({
   container: {
     flex: 1,
@@ -106,7 +166,7 @@ const stylesLight = StyleSheet.create({
     flex: 1,
   },
   scrollViewContent: {
-    flex: 1,
+    flexGrow: 1,
     paddingBottom: 40,
   },
   backgroundContainer: {
@@ -119,45 +179,28 @@ const stylesLight = StyleSheet.create({
     transformOrigin: "bottom left",
     zIndex: -1,
   },
-  header: {
-    paddingHorizontal: 24,
-    paddingTop: 74,
-    paddingBottom: 19,
-    alignItems: "flex-end",
-    zIndex: 1,
-  },
-  profileButton: {
-    width: 58,
-    height: 58,
-    overflow: "hidden",
-    borderRadius: 29,
-    elevation: 5,
-    shadowColor: colors.base.black,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-  },
-  profileImage: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 29,
-  },
   content: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    paddingHorizontal: 70,
+    paddingHorizontal: 24,
+    paddingTop: 40,
   },
-  defaultAvatarContainer: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 29,
-    backgroundColor: colors.base.white,
-    justifyContent: "center",
-    alignItems: "center",
+  title: {
+    fontSize: 32,
+    fontWeight: '700',
+    color: colors.base.white,
+    marginBottom: 24,
+    textAlign: 'center',
+  },
+  errorContainer: {
+    padding: 20,
+    backgroundColor: 'rgba(255,0,0,0.1)',
+    borderRadius: 8,
+    marginTop: 20,
+  },
+  errorText: {
+    color: colors.main.error,
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
 

@@ -24,14 +24,14 @@ const DashboardMenuButtons: React.FC = () => {
 
       <TouchableOpacity 
         style={styles.button} 
-        onPress={() => navigation.navigate('ProviderBottomTabs', { screen: 'AI Visits' })}
+        onPress={() => navigation.navigate('ProviderBottomTabs', { screen: 'Visits' })}
       >
         <Text style={styles.buttonText}>AI Visits</Text>
       </TouchableOpacity>
 
       <TouchableOpacity 
         style={styles.button}
-        onPress={() => navigation.navigate('PatientDBScreen')}
+        onPress={() => navigation.navigate('ProviderBottomTabs', { screen: 'Database' })}
       >
         <Text style={styles.buttonText}>Patient Database</Text>
       </TouchableOpacity>
