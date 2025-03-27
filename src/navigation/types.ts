@@ -28,18 +28,7 @@ export type RootStackParamList = {
   ProvideInformation: undefined;
   WeFoundYou: { healthCardNumber: string, otpChannel: string, patientId: string };
   LoginVerification: { healthCardNumber: string, otpChannel: string, patientId: string };
-  DashboardScreen: {
-    provider?: {
-      id: string;
-      first_name: string;
-      last_name: string;
-      user_name: string;
-      picture: string;
-      provider_type: string;
-      provider_status: string;
-      patient_count: number;
-    }
-  };
+  DashboardScreen: undefined;
   DashboardEventsScreen: { selectedDate?: string };
   HomeScreen: undefined;
   LoginPage: undefined;

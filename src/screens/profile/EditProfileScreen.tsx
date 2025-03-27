@@ -22,17 +22,17 @@ import { useUpdateCurrentPatientProfile } from "../../api/mutations";
 
 const EditProfileScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const patient = usePatientStore((state) => state.patient)!;
+  const patient = usePatientStore((state) => state.patient);
 
   const [formData, setFormData] = useState({
-    first_name: patient.first_name,
-    last_name: patient.last_name,
-    sex: patient.sex,
-    pronouns: patient.pronouns,
-    date_of_birth: patient.date_of_birth,
-    email_address: patient.email_address,
-    phone_number: patient.phone_number,
-    picture: patient.picture,
+    first_name: patient?.first_name,
+    last_name: patient?.last_name,
+    sex: patient?.sex,
+    pronouns: patient?.pronouns,
+    date_of_birth: patient?.date_of_birth,
+    email_address: patient?.email_address,
+    phone_number: patient?.phone_number,
+    picture: patient?.picture,
   });
   const [image, setImage] = React.useState<string | null>(null);
 
@@ -40,7 +40,7 @@ const EditProfileScreen = () => {
 
   const handleUpdateProfile = () => {
     console.log("Handling profile update with data:", formData);
-    if (!patient.health_card_number) {
+    if (!patient?.health_card_number) {
       Alert.alert("Health card number is missing");
       return;
     }
@@ -86,6 +86,11 @@ const EditProfileScreen = () => {
       setImage(result.assets[0].uri);
     }
   };
+
+  if (!patient || !patient.first_name) {
+    navigation.navigate("LoginPage");
+    return <Text>Redirecting to login page...</Text>;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
