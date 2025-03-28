@@ -94,7 +94,7 @@ const EditProfileScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
+      {/* Fixed Header */}
       <View style={styles.header}>
         <TouchableOpacity
           onPress={() => navigation.goBack()}
@@ -110,16 +110,16 @@ const EditProfileScreen = () => {
         {/* Profile Image */}
         <View style={styles.profileImageContainer}>
           <TouchableOpacity onPress={pickImage} style={styles.imageWrapper}>
-            <Image
-              source={
-                image
-                  ? { uri: image }
-                  : patient.picture
-                  ? { uri: patient.picture }
-                  : require("../../../assets/icons/avatar.png")
-              }
-              style={styles.profileImage}
-            />
+            <View style={styles.profileContainer}>
+              <Image
+                source={
+                  patient.picture
+                    ? { uri: patient.picture }
+                    : require("../../../assets/icons/avatar.png")
+                }
+                style={patient.picture ? styles.profileImage : styles.profileIcon}
+              />
+            </View>
             <View style={styles.editImageButton}>
               <Ionicons name="camera" size={20} color={colors.base.white} />
             </View>
@@ -221,8 +221,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomColor: colors.base.lightGray,
+    paddingTop: 50,
+    backgroundColor: colors.base.white,
   },
   backButton: {
     padding: 8,
@@ -232,38 +232,54 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     lineHeight: 61,
     color: colors.base.black,
-    marginBottom: 28,
+    marginBottom: 16,
     textAlign: "center",
     alignSelf: "center",
   },
   scrollContent: {
     flexGrow: 1,
-    paddingHorizontal: 24,
+    paddingHorizontal: 43,
     paddingTop: 20,
     paddingBottom: 40,
     gap: 16,
   },
   profileImageContainer: {
     alignItems: "center",
+    marginBottom: 16,
   },
   imageWrapper: {
     position: "relative",
   },
-  profileImage: {
-    width: 100,
-    height: 100,
+  profileContainer: {
+    width: 80,
+    height: 80,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: colors.main.secondary,
     borderRadius: 50,
+    overflow: "hidden",
+  },
+  profileImage: {
+    width: "100%",
+    height: "100%",
+    borderRadius: 50,
+  },
+  profileIcon: {
+    width: 32,
+    height: 32,
   },
   editImageButton: {
     position: "absolute",
-    right: 0,
-    bottom: 0,
-    backgroundColor: colors.main.secondary,
+    right: -4,
+    bottom: -4,
+    backgroundColor: colors.main.primary,
     width: 32,
     height: 32,
     borderRadius: 16,
     justifyContent: "center",
     alignItems: "center",
+    borderWidth: 2,
+    borderColor: colors.base.white,
   },
   form: {
     width: "100%",
@@ -278,7 +294,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   inputLabel: {
-    fontSize: 14,
+    fontSize: 12,
+    fontWeight: "500",
     color: colors.base.black,
   },
   input: {
@@ -289,7 +306,8 @@ const styles = StyleSheet.create({
     backgroundColor: colors.base.white,
     borderRadius: 8,
     paddingHorizontal: 16,
-    fontSize: 16,
+    fontSize: 12,
+    fontWeight: "500",
   },
   doneButton: {
     backgroundColor: colors.main.secondary,
@@ -299,7 +317,7 @@ const styles = StyleSheet.create({
     width: 114,
     alignItems: "center",
     marginBottom: 45,
-    marginTop: 45,
+    marginTop: 32,
     alignSelf: "center",
   },
   doneButtonText: {
