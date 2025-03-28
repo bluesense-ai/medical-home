@@ -54,6 +54,7 @@ export const colors = {
   base: {
     black: "#000000",
     white: "#FFFFFF",
+    gray: "#E0E0E0",
     darkGray: "#272727",
     lightGray: "rgba(0, 0, 0, 0.3)",
   },
