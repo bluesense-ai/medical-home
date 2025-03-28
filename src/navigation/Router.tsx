@@ -27,6 +27,8 @@ import AIVisitsPage from '../screens/ai-visits/VisitsPage';
 import AIVisitPatient from '../screens/ai-visits/VisitPatient';
 import EventDetailScreen from '../screens/dashboard/EventDetailScreen';
 import YearlyCalendarScreen from '../screens/dashboard/YearlyCalendarScreen';
+import ProviderProfileScreen from '../screens/profile/ProviderProfileScreen';
+import EditProviderProfileScreen from '../screens/profile/EditProviderProfileScreen';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import EventFormScreen from '../screens/dashboard/EventFormScreen';
@@ -65,6 +67,8 @@ const Router = () => {
         <Stack.Screen name="EventDetail" component={EventDetailScreen} />
         <Stack.Screen name="YearlyCalendar" component={YearlyCalendarScreen} />
         <Stack.Screen name="EventForm" component={EventFormScreen} />
+        <Stack.Screen name="ProviderProfileScreen" component={ProviderProfileScreen} />
+        <Stack.Screen name="EditProviderProfileScreen" component={EditProviderProfileScreen} />
       </Stack.Navigator>
     </QueryClientProvider>
   );

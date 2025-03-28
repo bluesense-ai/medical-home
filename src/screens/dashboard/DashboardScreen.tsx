@@ -50,7 +50,7 @@ const DashboardScreen: React.FC = () => {
         <AnimatedSection isInitial delay={100} style={styles.header}>
           <TouchableOpacity
             style={styles.profileButton}
-            onPress={() => navigation.navigate("EditProfile")}
+            onPress={() => navigation.navigate("ProviderProfileScreen")}
           >
             {provider && provider.picture ? (
               <Image
