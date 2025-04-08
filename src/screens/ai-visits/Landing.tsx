@@ -122,7 +122,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginBottom: 10,
-    color: "gray",
+    // color: "gray",
     fontWeight: "500",
   },
   headlines: {
@@ -134,13 +134,16 @@ const styles = StyleSheet.create({
     marginTop: 20,
     backgroundColor: 'white',
     borderRadius: 10,
-    height: 200
+    height: 200,
+    padding: 12,
   },
   dictationResults: {
     marginTop: 20,
     backgroundColor: 'white',
     borderRadius: 10,
     height: 400,
+    padding: 12,
+
   },
 })
 
