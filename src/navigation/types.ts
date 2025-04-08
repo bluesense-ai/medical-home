@@ -42,6 +42,8 @@ export type RootStackParamList = {
   EventForm: { selectedDate?: string };
   TestRegisterLogin: undefined;
   ProviderBottomTabs: { screen?: string };
+  ProviderProfileScreen: undefined;
+  EditProviderProfileScreen: undefined;
 };
 
 export type BottomTabParamList = {

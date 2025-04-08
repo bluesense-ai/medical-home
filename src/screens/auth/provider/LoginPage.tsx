@@ -122,23 +122,19 @@ const Login = () => {
           ]}
         >
           <Text style={styles.cardTitle}>Log In</Text>
-          <Text style={styles.creditSubTitle}>Enter your username</Text>
-
-          <Animated.View
-            style={{
-              opacity: inputFadeAnim,
-              width: "100%",
-              alignItems: "center",
-            }}
-          >
-            <TextInput
-              style={styles.input}
-              placeholder="Enter Username"
-              placeholderTextColor="black"
-              value={userName}
-              onChangeText={setLocalUsername}
-              autoCapitalize="none"
-            />
+          <View style={styles.formContainer}>
+            <View style={styles.inputGroup}>
+              <Text style={styles.inputSubtitle}>Enter your username</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your username"
+                placeholderTextColor={colors.base.lightGray}
+                value={userName}
+                onChangeText={setLocalUsername}
+                autoCapitalize="none"
+                autoCorrect={false}
+              />
+            </View>
 
             <Pressable
               style={styles.submitButton}
@@ -151,7 +147,7 @@ const Login = () => {
                 <Text style={styles.submitButtonText}>Next</Text>
               )}
             </Pressable>
-          </Animated.View>
+          </View>
         </Animated.View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -164,9 +160,10 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     alignSelf: "center",
-    width: 333,
+    width: "100%",
+    paddingHorizontal: 30,
     height: 414,
-    marginTop: 15,
+    marginTop: 31,
     borderRadius: 15,
     overflow: "hidden",
   },
@@ -179,46 +176,53 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: "100%",
     height: height * 0.5,
+    paddingBottom: 30,
     backgroundColor: "white",
-    padding: 20,
     justifyContent: "center",
     alignItems: "center",
     borderTopLeftRadius: 10,
     borderTopRightRadius: 10,
   },
   cardTitle: {
-    fontSize: 36,
-    fontWeight: "bold",
+    fontSize: 34,
+    fontWeight: "medium",
+    lineHeight: 42,
     color: "black",
-    textAlign: "center",
-    marginBottom: 10,
-    paddingBottom: 15,
+    paddingTop: 56,
+    paddingBottom: 49,
   },
-  creditSubTitle: {
-    fontSize: 18,
-    textAlign: "center",
-    paddingBottom: 45,
+  formContainer: {
+    width: "100%",
+    paddingHorizontal: 30,
+  },
+  inputGroup: {
+    marginBottom: 76,
+  },
+  inputSubtitle: {
+    fontSize: 14,
+    color: colors.base.darkGray,
+    marginBottom: 12,
+    textAlign: 'left',
   },
   input: {
-    alignContent: "center",
-    width: "90%",
-    height: 60,
-    backgroundColor: "white",
-    borderRadius: 10,
-    paddingHorizontal: 15,
-    fontSize: 16,
-    color: "black",
-    marginBottom: 20,
-    borderWidth: 2,
-    borderColor: "black",
+    width: "100%",
+    height: 50,
+    backgroundColor: colors.base.white,
+    borderRadius: 12,
+    paddingHorizontal: 20,
+    fontSize: 14,
+    color: colors.base.black,
+    borderWidth: 1,
+    borderColor: colors.base.darkGray,
   },
   submitButton: {
-    width: "90%",
-    height: 50,
-    backgroundColor: "#32CD32",
+    width: "100%",
+    height: 44,
+    backgroundColor: colors.main.secondary,
     justifyContent: "center",
-    borderRadius: 15,
+    borderRadius: 20,
     alignItems: "center",
+    alignSelf: "center",
     marginTop: 35,
   },
   submitButtonText: {

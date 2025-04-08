@@ -155,7 +155,6 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingHorizontal: 24,
     paddingTop: 20,
-    paddingBottom: 200,
     alignItems: "center",
   },
   title: {
@@ -221,12 +220,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: 114,
     alignItems: "center",
-    marginBottom: 20,
+    marginBottom: 120,
   },
   editButtonText: {
     color: colors.base.white,
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: "600",  
   },
   logoutButton: {
     backgroundColor: "#FF3B30",
@@ -235,7 +234,6 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     width: 114,
     alignItems: "center",
-    marginBottom: 80,
   },
   logoutButtonText: {
     color: colors.base.white,

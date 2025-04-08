@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 15,
     width: "100%",
-    marginTop: 40,
+    marginTop: 50,
   },
   iconContainer: {
     width: 30,
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   stepIndicator: {
-    width: 40,
+    width: 30,
     height: 4,
     backgroundColor: "#e0e0e0",
     borderRadius: 2,

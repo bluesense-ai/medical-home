@@ -28,7 +28,6 @@ const WelcomeScreen: React.FC = () => {
   const fadeAnim2 = useRef(new Animated.Value(0)).current;
   const contentFadeAnim = useRef(new Animated.Value(1)).current;
   const slideAnim = useRef(new Animated.Value(0)).current;
-  const bgColorAnim = useRef(new Animated.Value(0)).current;
 
   const toggleSwitch = () => {
     // Start all animations at once
@@ -48,12 +47,6 @@ const WelcomeScreen: React.FC = () => {
             useNativeDriver: true,
           }),
         ]),
-        // Provider change animation
-        Animated.timing(bgColorAnim, {
-          toValue: providerState === "doctor" ? 0 : 1,
-          duration: 300,
-          useNativeDriver: false,
-        }),
       ]),
     ]).start(() => {
       toggleProvider();
@@ -106,49 +99,37 @@ const WelcomeScreen: React.FC = () => {
         Animated.parallel([
           Animated.timing(fadeAnim1, {
             toValue: 0,
-            duration: 2000,
+            duration: 3000,
             useNativeDriver: true,
           }),
           Animated.timing(fadeAnim2, {
             toValue: 1,
-            duration: 2000,
+            duration: 3000,
             useNativeDriver: true,
           }),
         ]),
-        Animated.delay(3000),
+        Animated.delay(4000),
         Animated.parallel([
           Animated.timing(fadeAnim1, {
             toValue: 1,
-            duration: 2000,
+            duration: 3000,
             useNativeDriver: true,
           }),
           Animated.timing(fadeAnim2, {
             toValue: 0,
-            duration: 2000,
+            duration: 3000,
             useNativeDriver: true,
           }),
         ]),
-        Animated.delay(3000),
+        Animated.delay(4000),
       ]).start(() => animate());
     };
 
     animate();
   }, []);
 
-  const backgroundColor = bgColorAnim.interpolate({
-    inputRange: [0, 1],
-    outputRange: [colors.base.white, colors.base.darkGray],
-  });
-
   return (
-    <Animated.View
-      style={[
-        styles.container,
-        {
-          backgroundColor,
-        },
-      ]}
-    >
+    <View style={styles.container}>
       <SafeAreaView style={{ flex: 1 }}>
         <View style={styles.topBar}>
           <View style={styles.toggleContainer}>
@@ -167,45 +148,44 @@ const WelcomeScreen: React.FC = () => {
             transform: [{ translateX: slideAnim }],
           }}
         >
-          {providerState === "patient" && (
-            <WelcomeHeader
-              title="Hello!"
-              subtitle="Welcome to medical home."
-              titleColor="black"
-              subtitleColor="black"
-            />
-          )}
+          <WelcomeHeader
+            title="Hello!"
+            subtitle="Welcome to medical home."
+            titleColor="black"
+            subtitleColor="black"
+          />
 
-          <View style={styles.imageContainer}>
-            <Animated.Image
-              source={require("../../../assets/images/welcome.png")}
-              style={[
-                styles.welcomeImage,
-                { opacity: fadeAnim1, position: "absolute" },
-              ]}
-              resizeMode="contain"
-            />
-            <Animated.Image
-              source={require("../../../assets/images/doctor-patient.png")}
-              style={[
-                styles.welcomeImage,
-                { opacity: fadeAnim2, position: "absolute" },
-              ]}
-              resizeMode="contain"
-            />
+          <View style={styles.imageWrapper}>
+            <View style={styles.imageContainer}>
+              <Animated.Image
+                source={require("../../../assets/images/welcome.png")}
+                style={[
+                  styles.welcomeImage,
+                  { opacity: fadeAnim1 },
+                ]}
+                resizeMode="contain"
+              />
+              <Animated.Image
+                source={require("../../../assets/images/doctor-patient.png")}
+                style={[
+                  styles.welcomeImage,
+                  { opacity: fadeAnim2 },
+                ]}
+                resizeMode="contain"
+              />
+            </View>
           </View>
 
-          <View style={styles.buttonContainer}>
+          <View style={[
+            styles.buttonContainer,
+            providerState === "doctor" ? styles.providerButtonContainer : styles.patientButtonContainer
+          ]}>
             <AuthButton
               title="Log in"
               onPress={handleLogin}
-              variant="outline"
-              style={
-                providerState === "doctor" ? styles.doctorButton : undefined
-              }
-              textStyle={
-                providerState === "doctor" ? styles.doctorButtonText : undefined
-              }
+              variant={providerState === "doctor" ? undefined : "outline"}
+              style={providerState === "doctor" ? styles.providerLoginButton : undefined}
+              textStyle={providerState === "doctor" ? styles.providerLoginButtonText : undefined}
             />
 
             {providerState === "patient" && (
@@ -214,16 +194,17 @@ const WelcomeScreen: React.FC = () => {
           </View>
         </Animated.View>
       </SafeAreaView>
-    </Animated.View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.base.white,
   },
   topBar: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 32,
     paddingTop: 50,
     flexDirection: "row",
     justifyContent: "flex-end",
@@ -231,44 +212,41 @@ const styles = StyleSheet.create({
   toggleContainer: {
     alignItems: "flex-end",
   },
-  imageContainer: {
+  imageWrapper: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
     paddingHorizontal: 20,
-    position: "relative",
+    marginTop: 63,
+  },
+  imageContainer: {
+    width: '100%',
+    height: 330,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   welcomeImage: {
-    width: "100%",
-    height: "100%",
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
   },
   buttonContainer: {
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
+    bottom: 30,
     justifyContent: "center",
-    flex: 1,
-    paddingBottom: 40,
     gap: 16,
   },
-  doctorButton: {
-    width: "100%",
-    height: 50,
-    backgroundColor: colors.legacy.lightGray,
-    borderRadius: 12,
-    justifyContent: "center",
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 3.84,
-    elevation: 5,
+  providerButtonContainer: {
+    paddingBottom: 27,
   },
-  doctorButtonText: {
-    fontSize: 20,
-    fontWeight: "semibold",
-    color: colors.base.black,
+  patientButtonContainer: {
+    paddingBottom: 20,
+  },
+  providerLoginButton: {
+    backgroundColor: colors.main.secondary,
+  },
+  providerLoginButtonText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: colors.base.white,
   },
 });
 
