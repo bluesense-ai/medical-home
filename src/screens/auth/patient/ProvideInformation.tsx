@@ -96,83 +96,97 @@ const ProvideInformation = () => {
     };
   }, []);
 
-  const handleSubmit = async () => {
-    if (!healthCardNumber || healthCardNumber.length < 3) {
-      Alert.alert("Error", "Please enter a valid health card number");
+  /**
+   * Animation helpers
+   */
+  const shakeAnimation = (animValue: Animated.Value) => {
+    return Animated.sequence([
+      Animated.timing(animValue, {
+        toValue: -10,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+      Animated.timing(animValue, {
+        toValue: 10,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+      Animated.timing(animValue, {
+        toValue: -10,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+      Animated.timing(animValue, {
+        toValue: 0,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+    ]);
+  };
 
-      // Shake animation for empty input
-      Animated.sequence([
-        Animated.timing(slideAnim, {
-          toValue: -10,
-          duration: 50,
-          useNativeDriver: true,
-        }),
-        Animated.timing(slideAnim, {
-          toValue: 10,
-          duration: 50,
-          useNativeDriver: true,
-        }),
-        Animated.timing(slideAnim, {
-          toValue: -10,
-          duration: 50,
-          useNativeDriver: true,
-        }),
-        Animated.timing(slideAnim, {
-          toValue: 0,
-          duration: 50,
-          useNativeDriver: true,
-        }),
-      ]).start();
+  const fadeOutAnimation = (animValue: Animated.Value) => {
+    return Animated.parallel([
+      Animated.timing(animValue, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 100,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]);
+  };
+
+  /**
+   * Validates health card number format
+   * Health card number must be between 9 and 11 characters
+   */
+  const validateHealthCardNumber = (number: string) => {
+    if (!number) return false;
+    return number.length >= 9 && number.length <= 11;
+  };
+
+  /**
+   * Handle form submission
+   * Validates input and makes API call
+   */
+  const handleSubmit = () => {
+    // Validate health card number
+    if (!validateHealthCardNumber(healthCardNumber)) {
+      Alert.alert("Error", "Health card number must be between 9 and 11 characters");
+      shakeAnimation(slideAnim).start();
       return;
     }
 
-    // Prepare data for API call
+    // Proceed with login
     mutate(
       {
         body: {
-          healthCardNumber: healthCardNumber.trim(),
-          otpChannel,
+          healthCardNumber: healthCardNumber,
+          otpChannel: otpChannel,
         },
       },
       {
-        onSuccess: (response) => {
-          if (!response?.patientId) {
-            Alert.alert("Error", "Patient ID not found");
-            return;
-          }
-
+        onSuccess: (data) => {
+          console.log("Login success, patient ID:", data.patientId);
           // Animate out before navigation
-          Animated.parallel([
-            Animated.timing(fadeAnim, {
-              toValue: 0,
-              duration: 300,
-              useNativeDriver: true,
-            }),
-            Animated.timing(slideAnim, {
-              toValue: 100,
-              duration: 300,
-              useNativeDriver: true,
-            }),
-          ]).start(() => {
+          fadeOutAnimation(fadeAnim).start(() => {
             navigation.navigate("WeFoundYou", {
-              healthCardNumber,
-              otpChannel,
-              patientId: response.patientId!,
+              healthCardNumber: healthCardNumber,
+              otpChannel: otpChannel,
+              patientId: data.patientId as string,
             });
           });
         },
-        onError: (error: any) => {
-          if (
-            error?.status === 403 ||
-            error?.message?.includes("Invalid Credentials")
-          ) {
-            navigation.navigate("WantToRegister");
-          } else {
-            Alert.alert(
-              "Error",
-              error?.error || "Failed to verify health card"
-            );
-          }
+        onError: () => {
+          // Shake animation for error
+          shakeAnimation(slideAnim).start();
+          Alert.alert(
+            "Error",
+            "Could not find a patient with this health card number."
+          );
         },
       }
     );

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import {
   Text,
   TextInput,
@@ -34,7 +34,7 @@ type Props = StackScreenProps<RootStackParamList, "LoginSwitchVerification">;
 /**
  * LoginSwitchVerification Component
  * Handles verification code input for login
- * while preserving the original design
+ * with updated design
  */
 const LoginSwitchVerification = (props: Props) => {
   const {
@@ -50,8 +50,37 @@ const LoginSwitchVerification = (props: Props) => {
   const slideAnim = useState(new Animated.Value(50))[0];
   const inputFadeAnim = useState(new Animated.Value(0))[0];
 
+  // Code input reference
+  const codeInputRef = useRef<TextInput>(null);
+  
+  // Code state
   const [accessCode, setAccessCode] = useState("");
+  const [timer, setTimer] = useState(60);
+  const [isResending, setIsResending] = useState(false);
+  
   const provider = useSelectedProvider((state) => state.provider);
+
+  // Focus input on mount
+  useEffect(() => {
+    setTimeout(() => {
+      codeInputRef.current?.focus();
+    }, 500);
+  }, []);
+
+  // Start countdown timer
+  useEffect(() => {
+    const countdown = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdown);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(countdown);
+  }, [isResending]);
 
   // Initialize animations when component mounts
   useEffect(() => {
@@ -62,8 +91,8 @@ const LoginSwitchVerification = (props: Props) => {
   const { mutate, isPending } = useVerifyProviderAccessCode();
 
   const handleVerification = async () => {
-    if (!accessCode) {
-      Alert.alert("Error", "Please enter the access code");
+    if (accessCode.length !== 6) {
+      Alert.alert("Error", "Please enter the complete 6-digit verification code");
       // Shake animation for empty input
       shakeAnimation(slideAnim).start();
       return;
@@ -72,7 +101,7 @@ const LoginSwitchVerification = (props: Props) => {
     mutate(
       {
         body: {
-          accessCode,
+          accessCode: accessCode,
           otpChannel: params.otpChannel,
           username: params.userName,
         },
@@ -81,21 +110,25 @@ const LoginSwitchVerification = (props: Props) => {
     );
   };
 
-  function onSuccess() {
+  function onSuccess(response: any) {
     // Animate out before navigation
     fadeOutAnimation(fadeAnim).start(() => {
       Alert.alert("Success", "Access code verified!");
 
-      if (provider === "doctor") {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "DashboardScreen" }],
-        });
-      } else {
-        navigation.reset({
-          index: 0,
-          routes: [{ name: "MainTabs" }],
-        });
+      // Save provider data to store
+      const userData = response?.data;
+      if (userData) {
+        if (provider === "doctor") {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "DashboardScreen" }],
+          });
+        } else {
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "MainTabs" }],
+          });
+        }
       }
     });
   }
@@ -104,7 +137,24 @@ const LoginSwitchVerification = (props: Props) => {
     // Shake animation for error
     shakeAnimation(slideAnim).start();
     Alert.alert("Error", "Invalid verification code. Please try again.");
+    
+    // Clear input
+    setAccessCode("");
+    codeInputRef.current?.focus();
   }
+  
+  const handleResend = () => {
+    if (timer > 0) return;
+    
+    setIsResending(true);
+    // Reset timer
+    setTimer(60);
+    
+    setTimeout(() => {
+      setIsResending(false);
+      Alert.alert("Success", "Verification code resent successfully");
+    }, 1500);
+  };
 
   // Only apply theme to the container background
   const containerStyle = {
@@ -139,15 +189,25 @@ const LoginSwitchVerification = (props: Props) => {
             Find your access code via SMS in your phone or via email
           </Text>
 
-          <View style={styles.formContainer}>
-            <View style={styles.inputGroup}>
+          <Animated.View
+            style={{
+              opacity: inputFadeAnim,
+              width: "100%",
+              alignItems: "center",
+              marginTop: 20,
+            }}
+          >
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Access Code</Text>
               <TextInput
+                ref={codeInputRef}
                 style={styles.input}
-                placeholder="Access Code"
-                placeholderTextColor={colors.base.lightGray}
+                placeholder=""
+                keyboardType="number-pad"
+                maxLength={6}
                 value={accessCode}
                 onChangeText={setAccessCode}
-                keyboardType="numeric"
+                onSubmitEditing={handleVerification}
               />
             </View>
 
@@ -162,7 +222,7 @@ const LoginSwitchVerification = (props: Props) => {
                 <Text style={styles.submitButtonText}>Submit</Text>
               )}
             </Pressable>
-          </View>
+          </Animated.View>
         </Animated.View>
       </SafeAreaView>
     </TouchableWithoutFeedback>
@@ -200,48 +260,48 @@ const styles = StyleSheet.create({
   },
   cardTitle: {
     fontSize: 34,
-    fontFamily: "roboto-medium",
-    lineHeight: 42,
+    fontWeight: "bold",
     color: "black",
-    paddingTop: 56,
+    paddingTop: 30,
     paddingBottom: 24,
+    textAlign: "center",
   },
   inputSubtitle: {
     fontSize: 14,
-    fontFamily: "roboto-regular",
-    color: colors.base.lightGray,
-    marginBottom: 37,
+    color: colors.base.darkGray,
+    marginBottom: 20,
     textAlign: 'center',
-    width: width * 0.7,
+    width: width * 0.8,
     paddingHorizontal: 30,
   },
-  formContainer: {
-    width: "100%",
-    paddingHorizontal: 30,
+  inputContainer: {
+    width: "85%",
+    marginBottom: 30,
   },
-  inputGroup: {
-    marginBottom: 76,
+  inputLabel: {
+    fontSize: 14,
+    color: colors.base.darkGray,
+    marginBottom: 8,
   },
   input: {
     width: "100%",
-    height: 50,
-    backgroundColor: colors.base.white,
-    borderRadius: 12,
-    paddingHorizontal: 20,
-    fontSize: 14,
-    color: colors.base.black,
+    height: 43,
+    borderRadius: 8,
     borderWidth: 1,
     borderColor: colors.base.darkGray,
+    paddingHorizontal: 15,
+    fontSize: 14,
+    fontWeight: "regular",
+    color: colors.base.black,
   },
   submitButton: {
-    width: "100%",
-    height: 44,
+    width: "85%",
+    height: 50,
     backgroundColor: colors.main.secondary,
     justifyContent: "center",
-    borderRadius: 20,
+    borderRadius: 25,
     alignItems: "center",
     alignSelf: "center",
-    marginTop: 35,
   },
   submitButtonText: {
     color: "white",

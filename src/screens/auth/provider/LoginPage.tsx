@@ -45,8 +45,8 @@ const Login = () => {
   const inputFadeAnim = useState(new Animated.Value(0))[0];
 
   // Form state
-  const [userName, setLocalUsername] = useState("");
-  const [otpChannel, setOtpChannel] = useState("email");
+  const [userName, setUserName] = useState("");
+  const [otpChannel, setOtpChannel] = useState("sms");
 
   // API mutation hook
   const { mutate, isPending } = useProviderLogin();
@@ -56,6 +56,13 @@ const Login = () => {
     // Start animations using the animation utility
     transitionInAnimation(fadeAnim, slideAnim, inputFadeAnim);
   }, []);
+
+  /**
+   * Toggle OTP channel between SMS and Email
+   */
+  const toggleOtpChannel = () => {
+    setOtpChannel(otpChannel === "sms" ? "email" : "sms");
+  };
 
   /**
    * Handle login submission
@@ -128,13 +135,56 @@ const Login = () => {
               <TextInput
                 style={styles.input}
                 placeholder="Enter your username"
-                placeholderTextColor={colors.base.lightGray}
+                placeholderTextColor={colors.base.gray}
                 value={userName}
-                onChangeText={setLocalUsername}
+                onChangeText={setUserName}
                 autoCapitalize="none"
                 autoCorrect={false}
               />
             </View>
+
+            {/* Verification method - only visible in developer mode */}
+            {__DEV__ && (
+              <View style={styles.otpChannelContainer}>
+                <Text style={styles.otpChannelLabel}>
+                  Verification method:
+                </Text>
+                <View style={styles.otpButtonsContainer}>
+                  <Pressable
+                    style={[
+                      styles.otpButton,
+                      otpChannel === "sms" && styles.otpButtonActive,
+                    ]}
+                    onPress={() => setOtpChannel("sms")}
+                  >
+                    <Text
+                      style={[
+                        styles.otpButtonText,
+                        otpChannel === "sms" && styles.otpButtonTextActive,
+                      ]}
+                    >
+                      SMS
+                    </Text>
+                  </Pressable>
+                  <Pressable
+                    style={[
+                      styles.otpButton,
+                      otpChannel === "email" && styles.otpButtonActive,
+                    ]}
+                    onPress={() => setOtpChannel("email")}
+                  >
+                    <Text
+                      style={[
+                        styles.otpButtonText,
+                        otpChannel === "email" && styles.otpButtonTextActive,
+                      ]}
+                    >
+                      Email
+                    </Text>
+                  </Pressable>
+                </View>
+              </View>
+            )}
 
             <Pressable
               style={styles.submitButton}
@@ -196,7 +246,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 30,
   },
   inputGroup: {
-    marginBottom: 76,
+    marginBottom: 24,
   },
   inputSubtitle: {
     fontSize: 14,
@@ -206,7 +256,7 @@ const styles = StyleSheet.create({
   },
   input: {
     width: "100%",
-    height: 50,
+    height: 43,
     backgroundColor: colors.base.white,
     borderRadius: 12,
     paddingHorizontal: 20,
@@ -214,6 +264,41 @@ const styles = StyleSheet.create({
     color: colors.base.black,
     borderWidth: 1,
     borderColor: colors.base.darkGray,
+  },
+  otpChannelContainer: {
+    marginBottom: 30,
+  },
+  otpChannelLabel: {
+    fontSize: 14,
+    color: colors.base.darkGray,
+    marginBottom: 12,
+  },
+  otpButtonsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 8,
+  },
+  otpButton: {
+    flex: 1,
+    backgroundColor: colors.base.white,
+    padding: 12,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginHorizontal: 4,
+    borderWidth: 1,
+    borderColor: colors.base.lightGray,
+  },
+  otpButtonActive: {
+    backgroundColor: colors.main.primary,
+    borderColor: colors.main.primary,
+  },
+  otpButtonText: {
+    color: colors.base.darkGray,
+    fontWeight: '500',
+    fontSize: 14,
+  },
+  otpButtonTextActive: {
+    color: colors.base.white,
   },
   submitButton: {
     width: "100%",

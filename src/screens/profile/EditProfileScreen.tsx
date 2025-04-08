@@ -10,6 +10,10 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
+  KeyboardAvoidingView,
+  Platform,
+  Modal,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { colors } from "../../theme/colors";
 import { Ionicons } from "@expo/vector-icons";
@@ -19,6 +23,8 @@ import { usePatientStore } from "../../store/useUserStore";
 import type { RootStackParamList } from "../../navigation/types";
 import * as ImagePicker from "expo-image-picker";
 import { useUpdateCurrentPatientProfile } from "../../api/mutations";
+import CalendarPicker from 'react-native-calendar-picker';
+import moment from 'moment';
 
 const EditProfileScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -35,6 +41,7 @@ const EditProfileScreen = () => {
     picture: patient?.picture,
   });
   const [image, setImage] = React.useState<string | null>(null);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const updateProfileMutation = useUpdateCurrentPatientProfile();
 
@@ -65,6 +72,19 @@ const EditProfileScreen = () => {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleConfirmDate = (selectedDate: any) => {
+    if (selectedDate) {
+      // Convert date to YYYY-MM-DD format
+      const date = new Date(selectedDate);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+      handleInputChange("date_of_birth", formattedDate);
+      setShowDatePicker(false);
+    }
   };
 
   const pickImage = async () => {
@@ -104,88 +124,141 @@ const EditProfileScreen = () => {
         </TouchableOpacity>
       </View>
 
-      <ScrollView contentContainerStyle={styles.scrollContent}>
-        <Text style={styles.title}>Personal Information</Text>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent}>
+          <Text style={styles.title}>Personal Information</Text>
 
-        {/* Profile Image */}
-        <View style={styles.profileImageContainer}>
-          <TouchableOpacity onPress={pickImage} style={styles.imageWrapper}>
-            <View style={styles.profileContainer}>
-              <Image
-                source={
-                  patient.picture
-                    ? { uri: patient.picture }
-                    : require("../../../assets/icons/avatar.png")
-                }
-                style={patient.picture ? styles.profileImage : styles.profileIcon}
+          {/* Profile Image */}
+          <View style={styles.profileImageContainer}>
+            <TouchableOpacity onPress={pickImage} style={styles.imageWrapper}>
+              <View style={styles.profileContainer}>
+                <Image
+                  source={
+                    patient.picture
+                      ? { uri: patient.picture }
+                      : require("../../../assets/icons/avatar.png")
+                  }
+                  style={patient.picture ? styles.profileImage : styles.profileIcon}
+                />
+              </View>
+              <View style={styles.editImageButton}>
+                <Ionicons name="camera" size={20} color={colors.base.white} />
+              </View>
+            </TouchableOpacity>
+          </View>
+
+          {/* Form Fields */}
+          <View style={styles.form}>
+            <InputField
+              label="First name"
+              value={formData.first_name}
+              onChangeText={(value) => handleInputChange("first_name", value)}
+            />
+            <InputField label="Middle name (Optional)" />
+            <InputField
+              label="Last name"
+              value={formData.last_name}
+              onChangeText={(value) => handleInputChange("last_name", value)}
+            />
+            <InputField
+              label="Sex"
+              value={formData.sex || ""}
+              onChangeText={(value) => handleInputChange("sex", value)}
+            />
+            <InputField
+              label="Pronouns"
+              value={formData.pronouns || ""}
+              onChangeText={(value) => handleInputChange("pronouns", value)}
+            />
+            
+            {/* Date of Birth Field */}
+            <View style={styles.inputContainer}>
+              <Text style={styles.inputLabel}>Date of birth</Text>
+              <TouchableOpacity
+                style={styles.input}
+                onPress={() => setShowDatePicker(true)}
+              >
+                <Text style={formData.date_of_birth ? styles.dateText : styles.placeholderText}>
+                  {formData.date_of_birth || "Select date of birth"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+            
+            <InputField
+              label="Health card number"
+              value={patient.health_card_number || "Not provided"}
+              onChangeText={(value) =>
+                handleInputChange("health_card_number", value)
+              }
+              keyboardType="numeric"
+            />
+            <InputField
+              label="Email"
+              value={formData.email_address}
+              onChangeText={(value) => handleInputChange("email_address", value)}
+              keyboardType="email-address"
+            />
+            <InputField
+              label="Phone"
+              value={formData.phone_number}
+              onChangeText={(value) => handleInputChange("phone_number", value)}
+              keyboardType="phone-pad"
+            />
+          </View>
+
+          {/* Done Button */}
+          <TouchableOpacity
+            style={styles.doneButton}
+            onPress={() => handleUpdateProfile()}
+            disabled={updateProfileMutation.isPending}
+          >
+            {updateProfileMutation.isPending ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <Text style={styles.doneButtonText}>Done</Text>
+            )}
+          </TouchableOpacity>
+        </ScrollView>
+      </KeyboardAvoidingView>
+
+      {/* Date Picker Modal */}
+      <Modal
+        transparent={true}
+        visible={showDatePicker}
+        animationType="slide"
+      >
+        <TouchableWithoutFeedback onPress={() => setShowDatePicker(false)}>
+          <View style={styles.modalContainer}>
+            <View style={[styles.modalContent, { padding: 0 }]}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Select Date of Birth</Text>
+                <TouchableOpacity
+                  style={styles.modalCloseButton}
+                  onPress={() => setShowDatePicker(false)}
+                >
+                  <Text style={styles.modalCloseText}>Done</Text>
+                </TouchableOpacity>
+              </View>
+              <CalendarPicker
+                onDateChange={handleConfirmDate}
+                maxDate={new Date()}
+                minDate={new Date(1900, 0, 1)}
+                selectedDayColor={colors.main.primary}
+                selectedDayTextColor="#FFFFFF"
+                todayBackgroundColor="transparent"
+                months={['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']}
+                weekdays={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}
+                textStyle={{
+                  color: '#000000',
+                }}
               />
             </View>
-            <View style={styles.editImageButton}>
-              <Ionicons name="camera" size={20} color={colors.base.white} />
-            </View>
-          </TouchableOpacity>
-        </View>
-
-        {/* Form Fields */}
-        <View style={styles.form}>
-          <InputField
-            label="First name"
-            value={formData.first_name}
-            onChangeText={(value) => handleInputChange("first_name", value)}
-          />
-          <InputField label="Middle name (Optional)" />
-          <InputField
-            label="Last name"
-            value={formData.last_name}
-            onChangeText={(value) => handleInputChange("last_name", value)}
-          />
-          <InputField
-            label="Sex"
-            value={formData.sex || ""}
-            onChangeText={(value) => handleInputChange("sex", value)}
-          />
-          <InputField
-            label="Pronouns"
-            value={formData.pronouns || ""}
-            onChangeText={(value) => handleInputChange("pronouns", value)}
-          />
-          <InputField
-            label="Date of birth"
-            value={formData.date_of_birth}
-            onChangeText={(value) => handleInputChange("date_of_birth", value)}
-          />
-          <InputField
-            label="Health card number"
-            value={patient.health_card_number || "Not provided"}
-            onChangeText={(value) =>
-              handleInputChange("health_card_number", value)
-            }
-          />
-          <InputField
-            label="Email"
-            value={formData.email_address}
-            onChangeText={(value) => handleInputChange("email_address", value)}
-          />
-          <InputField
-            label="Phone"
-            value={formData.phone_number}
-            onChangeText={(value) => handleInputChange("phone_number", value)}
-          />
-        </View>
-
-        {/* Done Button */}
-        <TouchableOpacity
-          style={styles.doneButton}
-          onPress={() => handleUpdateProfile()}
-          disabled={updateProfileMutation.isPending}
-        >
-          {updateProfileMutation.isPending ? (
-            <ActivityIndicator color="white" />
-          ) : (
-            <Text style={styles.doneButtonText}>Done</Text>
-          )}
-        </TouchableOpacity>
-      </ScrollView>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -194,12 +267,14 @@ interface InputFieldProps {
   label: string;
   value?: string;
   onChangeText?: (text: string) => void;
+  keyboardType?: "default" | "number-pad" | "decimal-pad" | "numeric" | "email-address" | "phone-pad";
 }
 
 const InputField: React.FC<InputFieldProps> = ({
   label,
   value,
   onChangeText,
+  keyboardType = "default",
 }) => (
   <View style={styles.inputContainer}>
     <Text style={styles.inputLabel}>{label}</Text>
@@ -208,6 +283,7 @@ const InputField: React.FC<InputFieldProps> = ({
       value={value}
       onChangeText={onChangeText}
       placeholder=""
+      keyboardType={keyboardType}
     />
   </View>
 );
@@ -323,6 +399,53 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: colors.base.white,
     fontSize: 16,
+    fontWeight: "600",
+  },
+  dateText: {
+    fontSize: 12,
+    color: colors.base.black,
+    fontWeight: "500",
+    paddingVertical: 12,
+  },
+  placeholderText: {
+    fontSize: 12,
+    fontWeight: "500",
+    color: '#666',
+    paddingVertical: 12,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    maxHeight: '70%',
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#333",
+  },
+  modalCloseButton: {
+    padding: 8,
+  },
+  modalCloseText: {
+    fontSize: 16,
+    color: colors.main.primary,
     fontWeight: "600",
   },
 });

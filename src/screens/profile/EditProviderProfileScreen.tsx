@@ -10,6 +10,8 @@ import {
   TextInput,
   Alert,
   ActivityIndicator,
+  Modal,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { colors } from "../../theme/colors";
 import { Ionicons } from "@expo/vector-icons";
@@ -18,6 +20,8 @@ import { StackNavigationProp } from "@react-navigation/stack";
 import { useProviderStore } from "../../store/useUserStore";
 import type { RootStackParamList } from "../../navigation/types";
 import * as ImagePicker from "expo-image-picker";
+import CalendarPicker from 'react-native-calendar-picker';
+import moment from 'moment';
 
 const EditProviderProfileScreen = () => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
@@ -33,10 +37,12 @@ const EditProviderProfileScreen = () => {
     mnc_number: provider?.mnc_number,
     provider_status: provider?.provider_status,
     sex: provider?.sex || "",
+    date_of_birth: "",
     picture: provider?.picture,
   });
   const [image, setImage] = React.useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleUpdateProfile = () => {
     console.log("Handling provider profile update with data:", formData);
@@ -75,6 +81,19 @@ const EditProviderProfileScreen = () => {
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleConfirmDate = (selectedDate: any) => {
+    if (selectedDate) {
+      // Convert date to YYYY-MM-DD format
+      const date = new Date(selectedDate);
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+      handleInputChange("date_of_birth", formattedDate);
+      setShowDatePicker(false);
+    }
   };
 
   const pickImage = async () => {
@@ -159,6 +178,20 @@ const EditProviderProfileScreen = () => {
             value={formData.sex || ""}
             onChangeText={(value) => handleInputChange("sex", value)}
           />
+          
+          {/* Date of Birth Field */}
+          <View style={styles.inputContainer}>
+            <Text style={styles.inputLabel}>Date of birth</Text>
+            <TouchableOpacity
+              style={styles.input}
+              onPress={() => setShowDatePicker(true)}
+            >
+              <Text style={formData.date_of_birth ? styles.dateText : styles.placeholderText}>
+                {formData.date_of_birth || "Select date of birth"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          
           <InputField
             label="MNC Number"
             value={formData.mnc_number}
@@ -194,6 +227,42 @@ const EditProviderProfileScreen = () => {
           )}
         </TouchableOpacity>
       </ScrollView>
+
+      {/* Date Picker Modal */}
+      <Modal
+        transparent={true}
+        visible={showDatePicker}
+        animationType="slide"
+      >
+        <TouchableWithoutFeedback onPress={() => setShowDatePicker(false)}>
+          <View style={styles.modalContainer}>
+            <View style={[styles.modalContent, { padding: 0 }]}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Select Date of Birth</Text>
+                <TouchableOpacity
+                  style={styles.modalCloseButton}
+                  onPress={() => setShowDatePicker(false)}
+                >
+                  <Text style={styles.modalCloseText}>Done</Text>
+                </TouchableOpacity>
+              </View>
+              <CalendarPicker
+                onDateChange={handleConfirmDate}
+                maxDate={new Date()}
+                minDate={new Date(1900, 0, 1)}
+                selectedDayColor={colors.main.primary}
+                selectedDayTextColor="#FFFFFF"
+                todayBackgroundColor="transparent"
+                months={['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']}
+                weekdays={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}
+                textStyle={{
+                  color: '#000000',
+                }}
+              />
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -326,6 +395,54 @@ const styles = StyleSheet.create({
   doneButtonText: {
     color: colors.base.white,
     fontSize: 16,
+    fontWeight: "600",
+  },
+  dateText: {
+    fontSize: 12,
+    fontWeight: "500",
+    alignSelf: "center",
+    color: colors.base.black,
+    paddingVertical: 12,
+  },
+  placeholderText: {
+    fontSize: 12,
+    fontWeight: "500",
+    color: '#666',
+    paddingVertical: 12,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    maxHeight: '70%',
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#333",
+  },
+  modalCloseButton: {
+    padding: 8,
+  },
+  modalCloseText: {
+    fontSize: 16,
+    color: colors.main.primary,
     fontWeight: "600",
   },
 });

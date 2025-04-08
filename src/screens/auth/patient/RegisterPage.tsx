@@ -247,9 +247,23 @@ const RegisterPage = () => {
     ]).start();
   };
 
-  const handleNext = () => {
-    if (!healthCardNumber || healthCardNumber.length < 3) {
-      Alert.alert("Error", "Please enter a valid health card number");
+  /**
+   * Validates health card number format
+   * Health card number must be between 9 and 11 characters
+   */
+  const validateHealthCardNumber = (number: string) => {
+    if (!number) return false;
+    return number.length >= 9 && number.length <= 11;
+  };
+
+  /**
+   * Handles form submission
+   * Validates inputs and navigates to next step
+   */
+  const handleContinue = () => {
+    // Validate health card number
+    if (!validateHealthCardNumber(healthCardNumber)) {
+      Alert.alert("Error", "Health card number must be between 9 and 11 characters");
       shakeAnimation();
       return;
     }
@@ -383,7 +397,7 @@ const RegisterPage = () => {
 
             <TouchableOpacity
               style={styles.nextButton}
-              onPress={handleNext}
+              onPress={handleContinue}
               disabled={isPending}
             >
               {isPending ? (

@@ -179,7 +179,7 @@ const styles = StyleSheet.create({
   heroImage: {
     width: '100%',
     height: '100%',
-    transform: [{scale: 1.2}],
+    transform: [{scale: 1}],
   },
   buttonContainer: {
     width: '100%',

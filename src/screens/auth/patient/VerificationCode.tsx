@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -27,7 +27,6 @@ type Props = StackScreenProps<RootStackParamList, "VerificationCode">;
 
 const VerificationCode = (props: Props) => {
   const navigation = useNavigation<StackNavigationProp<RootStackParamList>>();
-  const { patientId, otpChannel } = props.route.params;
 
   // Animation values
   const fadeAnim = useState(new Animated.Value(0))[0];
@@ -35,11 +34,47 @@ const VerificationCode = (props: Props) => {
   const imageSlideAnim = useState(new Animated.Value(20))[0];
   const inputFadeAnim = useState(new Animated.Value(0))[0];
 
-  const [accessCode, setAccessCode] = useState("");
+  // Code input references
+  const input1Ref = useRef<TextInput>(null);
+  const input2Ref = useRef<TextInput>(null);
+  const input3Ref = useRef<TextInput>(null);
+  const input4Ref = useRef<TextInput>(null);
+  const input5Ref = useRef<TextInput>(null);
+  const input6Ref = useRef<TextInput>(null);
+  
+  // Code state
+  const [code1, setCode1] = useState("");
+  const [code2, setCode2] = useState("");
+  const [code3, setCode3] = useState("");
+  const [code4, setCode4] = useState("");
+  const [code5, setCode5] = useState("");
+  const [code6, setCode6] = useState("");
+  const [isResending, setIsResending] = useState(false);
+  const [timer, setTimer] = useState(60);
 
-  const verify = useVerifyPatientAccessCode();
+  // Focus first input on mount
+  useEffect(() => {
+    setTimeout(() => {
+      input1Ref.current?.focus();
+    }, 500);
+  }, []);
 
-  // Initialize animations when component mounts
+  // Start countdown timer
+  useEffect(() => {
+    const countdown = setInterval(() => {
+      setTimer((prev) => {
+        if (prev <= 1) {
+          clearInterval(countdown);
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+
+    return () => clearInterval(countdown);
+  }, [isResending]);
+
+  // Start animations when component mounts
   useEffect(() => {
     // Start animations
     Animated.parallel([
@@ -67,9 +102,69 @@ const VerificationCode = (props: Props) => {
     ]).start();
   }, []);
 
-  // Shake animation function
+  const { mutate, isPending } = useVerifyPatientAccessCode();
+
+  const handleVerify = () => {
+    const fullCode = `${code1}${code2}${code3}${code4}${code5}${code6}`;
+    
+    if (fullCode.length !== 6) {
+      Alert.alert("Error", "Please enter the complete verification code");
+      shakeAnimation().start();
+      return;
+    }
+
+    mutate(
+      {
+        params: { 
+          path: { uid: props.route.params.patientId } 
+        },
+        body: {
+          accessCode: fullCode,
+          otpChannel: props.route.params.otpChannel,
+        },
+      },
+      {
+        onSuccess: () => {
+          fadeOutAnimation().start(() => {
+            navigation.reset({
+              index: 0,
+              routes: [{ name: "MainTabs" }],
+            });
+          });
+        },
+        onError: () => {
+          Alert.alert("Error", "Invalid verification code");
+          shakeAnimation().start();
+          
+          // Clear inputs and focus first input
+          setCode1("");
+          setCode2("");
+          setCode3("");
+          setCode4("");
+          setCode5("");
+          setCode6("");
+          input1Ref.current?.focus();
+        },
+      }
+    );
+  };
+
+  const handleResend = () => {
+    if (timer > 0) return;
+    
+    setIsResending(true);
+    // Reset timer
+    setTimer(60);
+    
+    setTimeout(() => {
+      setIsResending(false);
+      Alert.alert("Success", "Verification code resent successfully");
+    }, 1500);
+  };
+
+  // Animation functions
   const shakeAnimation = () => {
-    Animated.sequence([
+    return Animated.sequence([
       Animated.timing(slideAnim, {
         toValue: -10,
         duration: 50,
@@ -90,39 +185,28 @@ const VerificationCode = (props: Props) => {
         duration: 50,
         useNativeDriver: true,
       }),
-    ]).start();
+    ]);
   };
 
-  const handleSubmit = () => {
-    if (!accessCode) {
-      shakeAnimation();
-      Alert.alert("Error", "Please enter the access code");
-      return;
-    }
-
-    verify.mutate(
-      {
-        params: { path: { uid: patientId } },
-        body: { accessCode, otpChannel },
-      },
-      {
-        onSuccess() {
-          navigation.reset({
-            index: 0,
-            routes: [{ name: "MainTabs" }],
-          });
-        },
-        onError() {
-          shakeAnimation();
-        },
-      }
-    );
+  const fadeOutAnimation = () => {
+    return Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 0,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+      Animated.timing(slideAnim, {
+        toValue: 100,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+    ]);
   };
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaView style={styles.container}>
-        <AuthHeader navigation={navigation} currentStep={4} totalSteps={4} />
+        <AuthHeader navigation={navigation} currentStep={5} totalSteps={5} />
 
         {/* Image Section - Animated */}
         <Animated.View
@@ -137,7 +221,7 @@ const VerificationCode = (props: Props) => {
           <Image
             source={require("../../../../assets/images/bgimgrg2.jpg")}
             style={styles.image}
-            resizeMode="cover"
+            resizeMode="contain"
           />
         </Animated.View>
 
@@ -151,9 +235,10 @@ const VerificationCode = (props: Props) => {
             },
           ]}
         >
-          <Text style={styles.cardTitle}>Verification</Text>
+          <Text style={styles.cardTitle}>Verification Code</Text>
           <Text style={styles.cardSubTitle}>
-            Enter the access code provided
+            Enter the 6-digit verification code we sent to your 
+            {props.route.params.otpChannel === "email" ? " email" : " phone"}
           </Text>
 
           <Animated.View
@@ -163,25 +248,96 @@ const VerificationCode = (props: Props) => {
               alignItems: "center",
             }}
           >
-            <TextInput
-              style={styles.input}
-              placeholder="Access Code"
-              placeholderTextColor="rgba(255, 255, 255, 0.7)"
-              value={accessCode}
-              onChangeText={setAccessCode}
-              keyboardType="numeric"
-              maxLength={6}
-            />
+            <View style={styles.codeContainer}>
+              <TextInput
+                ref={input1Ref}
+                style={styles.codeInput}
+                maxLength={1}
+                keyboardType="number-pad"
+                value={code1}
+                onChangeText={(text) => {
+                  setCode1(text);
+                  if (text) input2Ref.current?.focus();
+                }}
+              />
+              <TextInput
+                ref={input2Ref}
+                style={styles.codeInput}
+                maxLength={1}
+                keyboardType="number-pad"
+                value={code2}
+                onChangeText={(text) => {
+                  setCode2(text);
+                  if (text) input3Ref.current?.focus();
+                  else if (text === "") input1Ref.current?.focus();
+                }}
+              />
+              <TextInput
+                ref={input3Ref}
+                style={styles.codeInput}
+                maxLength={1}
+                keyboardType="number-pad"
+                value={code3}
+                onChangeText={(text) => {
+                  setCode3(text);
+                  if (text) input4Ref.current?.focus();
+                  else if (text === "") input2Ref.current?.focus();
+                }}
+              />
+              <TextInput
+                ref={input4Ref}
+                style={styles.codeInput}
+                maxLength={1}
+                keyboardType="number-pad"
+                value={code4}
+                onChangeText={(text) => {
+                  setCode4(text);
+                  if (text) input5Ref.current?.focus();
+                  else if (text === "") input3Ref.current?.focus();
+                }}
+              />
+              <TextInput
+                ref={input5Ref}
+                style={styles.codeInput}
+                maxLength={1}
+                keyboardType="number-pad"
+                value={code5}
+                onChangeText={(text) => {
+                  setCode5(text);
+                  if (text) input6Ref.current?.focus();
+                  else if (text === "") input4Ref.current?.focus();
+                }}
+              />
+              <TextInput
+                ref={input6Ref}
+                style={styles.codeInput}
+                maxLength={1}
+                keyboardType="number-pad"
+                value={code6}
+                onChangeText={(text) => {
+                  setCode6(text);
+                  if (text) Keyboard.dismiss();
+                  else if (text === "") input5Ref.current?.focus();
+                }}
+                onSubmitEditing={handleVerify}
+              />
+            </View>
+
+            <TouchableOpacity style={styles.resendContainer} onPress={handleResend}>
+              <Text style={[styles.resendText, timer > 0 && styles.disabledText]}>
+                {timer > 0 ? `Resend code in ${timer}s` : "Resend code"}
+              </Text>
+            </TouchableOpacity>
 
             <TouchableOpacity
-              style={styles.submitButton}
-              onPress={handleSubmit}
-              disabled={verify.isPending}
+              style={styles.verifyButton}
+              onPress={handleVerify}
+              disabled={isPending}
             >
-              {verify.isPending ? (
-                <ActivityIndicator color="white" />
+              {isPending ? (
+                <ActivityIndicator color="white" size="small" />
               ) : (
-                <Text style={styles.submitButtonText}>Submit</Text>
+                <Text style={styles.verifyButtonText}>Verify</Text>
               )}
             </TouchableOpacity>
           </Animated.View>
@@ -198,8 +354,10 @@ const styles = StyleSheet.create({
   },
   imageContainer: {
     width: width * 0.9,
-    height: height * 0.45,
+    height: height * 0.5,
     alignSelf: "center",
+    alignItems: "center",
+    justifyContent: "center",
     marginTop: 46,
     borderRadius: 12,
     overflow: "hidden",
@@ -207,12 +365,13 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "100%",
+    alignSelf: "center",
   },
   card: {
     position: "absolute",
     bottom: 0,
     width: "100%",
-    height: height * 0.55,
+    height: height * 0.5,
     backgroundColor: colors.main.primary,
     padding: 20,
     justifyContent: "center",
@@ -234,29 +393,41 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     color: "white",
   },
-  input: {
+  codeContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     width: "90%",
-    height: 50,
+    marginBottom: 30,
+  },
+  codeInput: {
+    width: 45,
+    height: 55,
+    borderRadius: 12,
     backgroundColor: "rgba(255, 255, 255, 0.2)",
-    borderRadius: 25,
-    paddingHorizontal: 15,
-    fontSize: 16,
     color: "white",
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: "white",
+    fontSize: 24,
+    fontWeight: "bold",
     textAlign: "center",
   },
-  submitButton: {
+  resendContainer: {
+    marginBottom: 20,
+  },
+  resendText: {
+    color: colors.main.secondary,
+    fontSize: 16,
+  },
+  disabledText: {
+    color: "rgba(255, 255, 255, 0.5)",
+  },
+  verifyButton: {
     width: "90%",
     height: 50,
-    backgroundColor: "#32CD32",
+    backgroundColor: colors.main.secondary,
     justifyContent: "center",
     borderRadius: 25,
     alignItems: "center",
-    marginTop: 20,
   },
-  submitButtonText: {
+  verifyButtonText: {
     color: "white",
     fontSize: 18,
     fontWeight: "bold",
@@ -264,3 +435,4 @@ const styles = StyleSheet.create({
 });
 
 export default VerificationCode;
+
