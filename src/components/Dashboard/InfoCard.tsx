@@ -32,13 +32,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 14,
+    fontWeight: '500',
     marginBottom: 12,
     color: colors.base.white,
   },
   noteText: {
-    fontSize: 16,
+    fontSize: 12,
     lineHeight: 24,
     color: colors.base.white,
   },

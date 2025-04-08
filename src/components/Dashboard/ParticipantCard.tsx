@@ -119,8 +119,8 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   avatarPlaceholder: {
-    width: 40,
-    height: 40,
+    width: 24,
+    height: 24,
     borderRadius: 20,
     backgroundColor: '#444',
     justifyContent: 'center',
@@ -129,7 +129,8 @@ const styles = StyleSheet.create({
   },
   avatarText: {
     color: colors.base.white,
-    fontSize: 18,
+    fontSize: 12,
+    alignSelf: "center",
     fontWeight: '500',
   },
   participantInfo: {
@@ -144,8 +145,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 20,
-    paddingTop: 16
+    paddingTop: 18
   },
   iconGroup: {
     flexDirection: 'row',

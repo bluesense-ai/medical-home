@@ -77,7 +77,7 @@ const WelcomeScreen: React.FC = () => {
         return;
       }
       // navigation.navigate("ProvideInformation");
-      navigation.navigate("DashboardScreen");
+      navigation.navigate("ProvideInformation");
     } else {
       if (__DEV__ && provider) {
         console.log("Fast login as provider:", provider);

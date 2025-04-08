@@ -235,10 +235,9 @@ const VerificationCode = (props: Props) => {
             },
           ]}
         >
-          <Text style={styles.cardTitle}>Verification Code</Text>
+          <Text style={styles.cardTitle}>Verification</Text>
           <Text style={styles.cardSubTitle}>
-            Enter the 6-digit verification code we sent to your 
-            {props.route.params.otpChannel === "email" ? " email" : " phone"}
+            Enter the access code provided
           </Text>
 
           <Animated.View
@@ -248,86 +247,29 @@ const VerificationCode = (props: Props) => {
               alignItems: "center",
             }}
           >
-            <View style={styles.codeContainer}>
-              <TextInput
-                ref={input1Ref}
-                style={styles.codeInput}
-                maxLength={1}
-                keyboardType="number-pad"
-                value={code1}
-                onChangeText={(text) => {
-                  setCode1(text);
-                  if (text) input2Ref.current?.focus();
-                }}
-              />
-              <TextInput
-                ref={input2Ref}
-                style={styles.codeInput}
-                maxLength={1}
-                keyboardType="number-pad"
-                value={code2}
-                onChangeText={(text) => {
-                  setCode2(text);
-                  if (text) input3Ref.current?.focus();
-                  else if (text === "") input1Ref.current?.focus();
-                }}
-              />
-              <TextInput
-                ref={input3Ref}
-                style={styles.codeInput}
-                maxLength={1}
-                keyboardType="number-pad"
-                value={code3}
-                onChangeText={(text) => {
-                  setCode3(text);
-                  if (text) input4Ref.current?.focus();
-                  else if (text === "") input2Ref.current?.focus();
-                }}
-              />
-              <TextInput
-                ref={input4Ref}
-                style={styles.codeInput}
-                maxLength={1}
-                keyboardType="number-pad"
-                value={code4}
-                onChangeText={(text) => {
-                  setCode4(text);
-                  if (text) input5Ref.current?.focus();
-                  else if (text === "") input3Ref.current?.focus();
-                }}
-              />
-              <TextInput
-                ref={input5Ref}
-                style={styles.codeInput}
-                maxLength={1}
-                keyboardType="number-pad"
-                value={code5}
-                onChangeText={(text) => {
-                  setCode5(text);
-                  if (text) input6Ref.current?.focus();
-                  else if (text === "") input4Ref.current?.focus();
-                }}
-              />
-              <TextInput
-                ref={input6Ref}
-                style={styles.codeInput}
-                maxLength={1}
-                keyboardType="number-pad"
-                value={code6}
-                onChangeText={(text) => {
-                  setCode6(text);
-                  if (text) Keyboard.dismiss();
-                  else if (text === "") input5Ref.current?.focus();
-                }}
-                onSubmitEditing={handleVerify}
-              />
-            </View>
-
-            <TouchableOpacity style={styles.resendContainer} onPress={handleResend}>
-              <Text style={[styles.resendText, timer > 0 && styles.disabledText]}>
-                {timer > 0 ? `Resend code in ${timer}s` : "Resend code"}
-              </Text>
-            </TouchableOpacity>
+            {/* Single Access Code Input */}
+            <TextInput
+              style={styles.accessCodeInput}
+              placeholder="Access Code"
+              placeholderTextColor="rgba(255, 255, 255, 0.5)"
+              keyboardType="number-pad"
+              secureTextEntry={false}
+              maxLength={6}
+              value={`${code1}${code2}${code3}${code4}${code5}${code6}`}
+              onChangeText={(text) => {
+                // Split text into individual characters
+                const chars = text.split('');
+                
+                // Update state for each character
+                setCode1(chars[0] || '');
+                setCode2(chars[1] || '');
+                setCode3(chars[2] || '');
+                setCode4(chars[3] || '');
+                setCode5(chars[4] || '');
+                setCode6(chars[5] || '');
+              }}
+              onSubmitEditing={handleVerify}
+            />
 
             <TouchableOpacity
               style={styles.verifyButton}
@@ -337,7 +279,7 @@ const VerificationCode = (props: Props) => {
               {isPending ? (
                 <ActivityIndicator color="white" size="small" />
               ) : (
-                <Text style={styles.verifyButtonText}>Verify</Text>
+                <Text style={styles.verifyButtonText}>Submit</Text>
               )}
             </TouchableOpacity>
           </Animated.View>
@@ -393,31 +335,18 @@ const styles = StyleSheet.create({
     marginBottom: 30,
     color: "white",
   },
-  codeContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
+  accessCodeInput: {
     width: "90%",
-    marginBottom: 30,
-  },
-  codeInput: {
-    width: 45,
     height: 55,
     borderRadius: 12,
-    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.5)",
+    backgroundColor: "transparent",
     color: "white",
-    fontSize: 24,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  resendContainer: {
-    marginBottom: 20,
-  },
-  resendText: {
-    color: colors.main.secondary,
     fontSize: 16,
-  },
-  disabledText: {
-    color: "rgba(255, 255, 255, 0.5)",
+    textAlign: "left",
+    paddingHorizontal: 15,
+    marginBottom: 30,
   },
   verifyButton: {
     width: "90%",

@@ -59,7 +59,7 @@ const FormInput: React.FC<FormInputProps> = ({
 const stylesLight = StyleSheet.create({
   sectionTitle: {
     fontSize: 12,
-    fontWeight: 'medium',
+    fontWeight: '500',
     color: colors.base.black,
     marginBottom: 16,
   },
@@ -93,7 +93,7 @@ const stylesLight = StyleSheet.create({
 const stylesDark = StyleSheet.create({
   sectionTitle: {
     fontSize: 12,
-    fontWeight: 'medium',
+    fontWeight: '500',
     color: colors.base.white,
     marginBottom: 16,
   },

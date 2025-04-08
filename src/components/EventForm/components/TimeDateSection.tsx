@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 import TimeSelector from '../TimeSelector';
+import { colors } from '../../../theme/colors';
 
 /**
  * Props for TimeDateSection component
@@ -33,7 +34,7 @@ const TimeDateSection: React.FC<TimeDateSectionProps> = ({
 }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Event Time</Text>
+      <Text style={[styles.sectionTitle, theme === 'dark' && styles.darkTitle]}>Event Time</Text>
       
       <View style={styles.timeContainer}>
         <TimeSelector
@@ -60,8 +61,12 @@ const styles = StyleSheet.create({
   },
   sectionTitle: {
     fontSize: 12,
-    fontWeight: 'medium',
+    fontWeight: '500',
     marginBottom: 16,
+    color: colors.base.black,
+  },
+  darkTitle: {
+    color: colors.base.white,
   },
   timeContainer: {
     flexDirection: 'column',

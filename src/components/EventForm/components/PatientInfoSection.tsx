@@ -44,7 +44,6 @@ const PatientInfoSection: React.FC<PatientInfoSectionProps> = ({
       </Text>
       
       <FormInput
-        label="Name"
         value={name}
         onChangeText={onNameChange}
         placeholder="Patient name"
@@ -54,7 +53,6 @@ const PatientInfoSection: React.FC<PatientInfoSectionProps> = ({
       <View style={styles.row}>
         <View style={styles.halfField}>
           <FormInput
-            label="Email"
             value={email}
             onChangeText={onEmailChange}
             placeholder="Email address"
@@ -67,7 +65,6 @@ const PatientInfoSection: React.FC<PatientInfoSectionProps> = ({
         
         <View style={styles.halfField}>
           <FormInput
-            label="Phone"
             value={phone}
             onChangeText={onPhoneChange}
             placeholder="Phone number"
@@ -85,8 +82,8 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: '600',
+    fontSize: 12,
+    fontWeight: '500',
     marginBottom: 16,
     color: colors.base.black,
   },

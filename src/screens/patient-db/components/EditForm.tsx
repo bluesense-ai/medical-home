@@ -147,7 +147,7 @@ const EditForm: React.FC<EditFormProps> = ({
                 />
               </View>
               
-              <View style={styles.field}>
+              <View style={[styles.field, styles.lastField]}>
                 <Text style={styles.label}>Link</Text>
                 <TextInput
                   style={styles.input}
@@ -217,6 +217,9 @@ const styles = StyleSheet.create({
   },
   field: {
     marginBottom: 20,
+  },
+  lastField: {
+    marginBottom: 40,
   },
   label: {
     fontSize: 12,

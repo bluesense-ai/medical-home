@@ -34,6 +34,8 @@ const EventFormScreen: React.FC = () => {
         startDate: data.startDate,
         endDate: data.endDate,
         meetingDetails: data.meetingDetails || '',
+        color: data.color || '#fff', // Ensure color is always defined
+        title: data.title || `Appointment with ${data.patientName}`, // Ensure title is always defined
       };
       
       // Add the event to the store

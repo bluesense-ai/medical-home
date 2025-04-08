@@ -314,7 +314,7 @@ const styles = StyleSheet.create({
     width: "90%",
     height: 50,
     backgroundColor: "rgba(255, 255, 255, 0.2)",
-    borderRadius: 25,
+    borderRadius: 8,
     paddingHorizontal: 15,
     fontSize: 16,
     color: "white",

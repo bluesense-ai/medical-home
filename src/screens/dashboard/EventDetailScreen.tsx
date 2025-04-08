@@ -12,7 +12,6 @@ import { colors } from '../../theme/colors';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import ParticipantCard from '../../components/Dashboard/ParticipantCard';
 import TimelineView from '../../components/Dashboard/TimelineView';
-import InfoCard from '../../components/Dashboard/InfoCard';
 import ThemedView from '../../components/ThemedView';
 
 type EventDetailScreenNavigationProp = NativeStackNavigationProp<RootStackParamList, 'EventDetail'>;
@@ -121,22 +120,6 @@ const EventDetailScreen = () => {
           event={event} 
           theme={theme}
         />
-        
-        {/* Notes Card */}
-        {event.notes && (
-          <InfoCard 
-            title="Notes"
-            content={event.notes}
-          />
-        )}
-        
-        {/* Meeting Details Card */}
-        {event.meetingDetails && (
-          <InfoCard 
-            title="Meeting Details"
-            content={event.meetingDetails}
-          />
-        )}
       </ScrollView>
     </ThemedView>
   );
@@ -148,9 +131,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   title: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: 'bold',
-    marginBottom: 24,
+    marginBottom: 14,
   },
   separator: {
     height: 1,
@@ -158,7 +141,7 @@ const styles = StyleSheet.create({
     marginBottom: 24,
   },
   dateSection: {
-    marginBottom: 32,
+    marginBottom: 18,
   },
   dateText: {
     fontSize: 18,

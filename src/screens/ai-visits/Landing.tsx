@@ -11,6 +11,7 @@ import {
   ImageBackground,
   ImageSourcePropType,
   TextInput,
+  ScrollView,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useTheme } from "../../store/useTheme";
@@ -42,11 +43,11 @@ const AIVisitsLanding: React.FC<AIVisitsLandingScreenProps> = ({
       style={styles.backgroundImage}
       imageStyle={styles.imageStyle}
     >
-      <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.container}>
         <StatusBar
           barStyle={theme === "dark" ? "light-content" : "dark-content"}
         />
-        <View style={styles.content}>
+        <SafeAreaView style={styles.content}>
           <View style={styles.actionContainer}>
             <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
               <TouchableOpacity style={styles.actionButtonGroup} onPress={action}>
@@ -73,8 +74,8 @@ const AIVisitsLanding: React.FC<AIVisitsLandingScreenProps> = ({
             placeholder="Type Here..."
             textAlignVertical="top"
           />
-        </View>
-      </SafeAreaView>
+        </SafeAreaView>
+      </ScrollView>
     </ImageBackground>
   );
 };
@@ -96,6 +97,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
     justifyContent: "flex-start",
+    paddingBottom: Platform.OS === "android" ? 150 : 0,
   },
   actionButtonGroup: {
     flexWrap: "wrap",

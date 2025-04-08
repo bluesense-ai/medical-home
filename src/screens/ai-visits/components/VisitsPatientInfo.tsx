@@ -5,6 +5,8 @@ import {
   TextInput,
   StyleSheet,
   TouchableOpacity,
+  Modal,
+  TouchableWithoutFeedback,
 } from "react-native";
 import type { Patient } from "../../../data/patients";
 import { Ionicons } from "@expo/vector-icons";
@@ -12,6 +14,8 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { RootStackParamList } from "../../../navigation/types";
 import { useTheme } from "../../../store/useTheme";
+import CalendarPicker from 'react-native-calendar-picker';
+import { colors } from "../../../theme/colors";
 
 type Props = {
   patient: Patient;
@@ -28,6 +32,7 @@ const VisitsPatientInfoForm: React.FC<Props> = ({ patient }) => {
   const [clinic, setClinic] = useState("");
   const [assessment, setAssessment] = useState("");
   const [editable, setEditable] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   function onCancel() {
     setPatientName(patient.name);
@@ -37,6 +42,26 @@ const VisitsPatientInfoForm: React.FC<Props> = ({ patient }) => {
     setAssessment("");
     setEditable(false);
   }
+
+  const handleConfirmDate = (selectedDate: any) => {
+    if (selectedDate) {
+      // Convert date to YYYY-MM-DD format
+      const dateObj = new Date(selectedDate);
+      const year = dateObj.getFullYear();
+      const month = String(dateObj.getMonth() + 1).padStart(2, '0');
+      const day = String(dateObj.getDate()).padStart(2, '0');
+      const formattedDate = `${year}-${month}-${day}`;
+      setDateTime(formattedDate);
+      setShowDatePicker(false);
+    }
+  };
+
+  // Open date picker only if the field is editable
+  const handleDatePress = () => {
+    if (editable) {
+      setShowDatePicker(true);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -94,12 +119,13 @@ const VisitsPatientInfoForm: React.FC<Props> = ({ patient }) => {
 
       <View style={styles.inputGroup}>
         <Text style={styles.label}>Date</Text>
-        <TextInput
+        <TouchableOpacity 
           style={styles.input}
-          value={dateTime}
-          onChangeText={setDateTime}
-          editable={editable}
-        />
+          onPress={handleDatePress}
+          disabled={!editable}
+        >
+          <Text style={styles.dateTimeText}>{dateTime}</Text>
+        </TouchableOpacity>
       </View>
 
       <View style={styles.inputGroup}>
@@ -143,6 +169,7 @@ const VisitsPatientInfoForm: React.FC<Props> = ({ patient }) => {
             padding: 10,
             borderRadius: 8,
             alignItems: "center",
+            marginTop: 20,
           }}
         >
           <Text style={{ color: "black", fontWeight: "bold", fontSize: 16 }}>
@@ -150,6 +177,42 @@ const VisitsPatientInfoForm: React.FC<Props> = ({ patient }) => {
           </Text>
         </TouchableOpacity>
       )}
+
+      {/* Date Picker Modal */}
+      <Modal
+        transparent={true}
+        visible={showDatePicker}
+        animationType="slide"
+      >
+        <TouchableWithoutFeedback onPress={() => setShowDatePicker(false)}>
+          <View style={styles.modalContainer}>
+            <View style={[styles.modalContent, { padding: 0 }]}>
+              <View style={styles.modalHeader}>
+                <Text style={styles.modalTitle}>Select Date</Text>
+                <TouchableOpacity
+                  style={styles.modalCloseButton}
+                  onPress={() => setShowDatePicker(false)}
+                >
+                  <Text style={styles.modalCloseText}>Done</Text>
+                </TouchableOpacity>
+              </View>
+              <CalendarPicker
+                onDateChange={handleConfirmDate}
+                maxDate={new Date()}
+                minDate={new Date(1900, 0, 1)}
+                selectedDayColor={colors.main.primary}
+                selectedDayTextColor="#FFFFFF"
+                todayBackgroundColor="transparent"
+                months={['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']}
+                weekdays={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}
+                textStyle={{
+                  color: '#000000',
+                }}
+              />
+            </View>
+          </View>
+        </TouchableWithoutFeedback>
+      </Modal>
     </View>
   );
 };
@@ -209,6 +272,11 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     color: "black",
+    justifyContent: 'center',
+    minHeight: 43,
+  },
+  dateTimeText: {
+    color: 'black',
   },
   inputArea: {
     backgroundColor: "white",
@@ -243,6 +311,41 @@ const styles = StyleSheet.create({
     color: '#004F62',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    padding: 20,
+    maxHeight: '70%',
+  },
+  modalHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+    paddingHorizontal: 20,
+    paddingVertical: 15,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: "600",
+    color: "#333",
+  },
+  modalCloseButton: {
+    padding: 8,
+  },
+  modalCloseText: {
+    fontSize: 16,
+    color: colors.main.primary,
+    fontWeight: "600",
   },
 });
 

@@ -1,24 +1,35 @@
 import React, { useState } from 'react';
-import { Alert } from 'react-native';
+import { Alert, Modal, View, Text, TouchableWithoutFeedback, TouchableOpacity, StyleSheet } from 'react-native';
 import moment from 'moment';
 import { EventType } from '../../store/useCalendarStore';
 import { BUSINESS_HOURS } from '../../data/mockEvents';
 import { useTheme } from '../../store/useTheme';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { Platform } from 'react-native';
+import { colors } from '../../theme/colors';
 
 // Import FormLayout and components
 import FormLayout from './FormLayout';
-import EventDetailsSection from './components/EventDetailsSection';
 import PatientInfoSection from './components/PatientInfoSection';
 import TimeDateSection from './components/TimeDateSection';
-import TimePickerModal from './TimePickerModal';
 import StaffSelector from './StaffSelector';
-import { EVENT_TYPES } from './EventTypeSelector';
 import FormInput from './FormInput';
+
+// Array of random colors for events
+const EVENT_COLORS = [
+  '#FF5252', // Red
+  '#FF9800', // Orange
+  '#FFEB3B', // Yellow
+  '#4CAF50', // Green
+  '#2196F3', // Blue
+  '#673AB7', // Purple
+  '#F06292', // Pink
+];
 
 // Event form data interface
 export interface EventFormData {
-  title: string;
-  color: string;
+  title?: string;
+  color?: string;
   patientName: string;
   email: string;
   phone: string;
@@ -46,10 +57,13 @@ export interface EventFormProps {
 const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialDate = new Date() }) => {
   const theme = useTheme(state => state.theme);
   
+  // Randomly select a color for the event
+  const randomColor = EVENT_COLORS[Math.floor(Math.random() * EVENT_COLORS.length)];
+  
   // Form state
   const [formData, setFormData] = useState<EventFormData>({
-    title: '',
-    color: EVENT_TYPES[0].color,
+    title: undefined,
+    color: randomColor,
     patientName: '',
     email: '',
     phone: '',
@@ -58,7 +72,7 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialDate =
     assignedStaff: 'Dami Egbeyemi',
     healthCardNumber: '',
     meetingDetails: '',
-    type: EVENT_TYPES[0].id as EventType,
+    type: 'short' as EventType,
   });
 
   // Time picker state
@@ -73,9 +87,20 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialDate =
       return;
     }
 
+    // If title is empty, use patient name as the title
+    if (!formData.title) {
+      setFormData(prev => ({ ...prev, title: `Appointment with ${formData.patientName}` }));
+    }
+
     setIsLoading(true);
     try {
-      await onSubmit(formData);
+      // Generate a new copy of formData for submission
+      const submissionData: EventFormData = {
+        ...formData,
+        // Ensure title is a string
+        title: formData.title || `Appointment with ${formData.patientName}`
+      };
+      await onSubmit(submissionData);
     } catch (error) {
       Alert.alert('Error', 'Failed to add event');
     } finally {
@@ -84,8 +109,7 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialDate =
   };
 
   // Validate time selection
-  const validateTime = (time: Date | undefined, isStartTime: boolean): boolean => {
-    if (!time) return false;
+  const validateTime = (time: Date, isStartTime: boolean): boolean => {
     const hour = time.getHours();
     const isValidHour = hour >= BUSINESS_HOURS.start && hour <= BUSINESS_HOURS.end;
     
@@ -106,42 +130,35 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialDate =
   };
 
   // Handle time change
-  const handleTimeChange = (selectedTime: Date, isStartTime: boolean) => {
-    if (!validateTime(selectedTime, isStartTime)) return;
-
-    if (isStartTime) {
-      const newStartDate = new Date(selectedTime);
-      newStartDate.setFullYear(formData.startDate.getFullYear());
-      newStartDate.setMonth(formData.startDate.getMonth());
-      newStartDate.setDate(formData.startDate.getDate());
-      
-      setFormData(prev => ({ ...prev, startDate: newStartDate }));
-      
-      const newEndDate = new Date(newStartDate);
-      newEndDate.setHours(newEndDate.getHours() + 1);
-      if (validateTime(newEndDate, false)) {
+  const handleTimeChange = (event: any, selectedTime?: Date) => {
+    if (showStartPicker) {
+      setShowStartPicker(Platform.OS === 'ios');
+      if (selectedTime && validateTime(selectedTime, true)) {
+        const newStartDate = new Date(formData.startDate);
+        newStartDate.setHours(selectedTime.getHours());
+        newStartDate.setMinutes(selectedTime.getMinutes());
+        
+        setFormData(prev => ({ ...prev, startDate: newStartDate }));
+        
+        // Automatically set end time to start time + 1 hour
+        const newEndDate = new Date(newStartDate);
+        newEndDate.setHours(newEndDate.getHours() + 1);
+        if (validateTime(newEndDate, false)) {
+          setFormData(prev => ({ ...prev, endDate: newEndDate }));
+        }
+      }
+    }
+    
+    if (showEndPicker) {
+      setShowEndPicker(Platform.OS === 'ios');
+      if (selectedTime && validateTime(selectedTime, false)) {
+        const newEndDate = new Date(formData.endDate);
+        newEndDate.setHours(selectedTime.getHours());
+        newEndDate.setMinutes(selectedTime.getMinutes());
+        
         setFormData(prev => ({ ...prev, endDate: newEndDate }));
       }
-      
-      setShowStartPicker(false);
-    } else {
-      const newEndDate = new Date(selectedTime);
-      newEndDate.setFullYear(formData.endDate.getFullYear());
-      newEndDate.setMonth(formData.endDate.getMonth());
-      newEndDate.setDate(formData.endDate.getDate());
-      
-      setFormData(prev => ({ ...prev, endDate: newEndDate }));
-      setShowEndPicker(false);
     }
-  };
-
-  // Handle event type selection
-  const handleEventTypeSelect = (typeId: EventType, typeColor: string) => {
-    setFormData(prev => ({ 
-      ...prev, 
-      type: typeId,
-      color: typeColor
-    }));
   };
 
   // Handle patient information change
@@ -155,20 +172,10 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialDate =
         onCancel={onCancel}
         onSubmit={handleSubmit}
         isLoading={isLoading}
-        isDisabled={!formData.title || !formData.patientName}
+        isDisabled={!formData.patientName}
         theme={theme}
         selectedDate={formData.startDate}
       >
-        {/* Event Details Section */}
-        <EventDetailsSection
-          title={formData.title}
-          onTitleChange={(text: string) => setFormData(prev => ({ ...prev, title: text }))}
-          selectedType={formData.type}
-          selectedColor={formData.color}
-          onTypeSelect={handleEventTypeSelect}
-          theme={theme}
-        />
-        
         {/* Patient Information Section */}
         <PatientInfoSection
           name={formData.patientName}
@@ -192,6 +199,7 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialDate =
         {/* Assigned Staff Section */}
         <StaffSelector
           staffName={formData.assignedStaff}
+          onStaffChange={(name: string) => setFormData(prev => ({ ...prev, assignedStaff: name }))}
           theme={theme}
         />
         
@@ -204,37 +212,29 @@ const EventForm: React.FC<EventFormProps> = ({ onSubmit, onCancel, initialDate =
           keyboardType="number-pad"
           theme={theme}
         />
-        
-        {/* Meeting Details */}
-        <FormInput
-          sectionTitle="Meeting Details"
-          placeholder="Add meeting details"
-          value={formData.meetingDetails}
-          onChangeText={(text: string) => setFormData(prev => ({ ...prev, meetingDetails: text }))}
-          multiline
-          numberOfLines={4}
-          theme={theme}
-        />
       </FormLayout>
       
-      {/* Time Picker Modals */}
-      <TimePickerModal
-        visible={showStartPicker}
-        isStartPicker={true}
-        currentTime={formData.startDate}
-        onClose={() => setShowStartPicker(false)}
-        onTimeSelected={handleTimeChange}
-        theme={theme}
-      />
+      {/* Start Time Picker */}
+      {showStartPicker && (
+        <DateTimePicker
+          value={formData.startDate}
+          mode="time"
+          is24Hour={false}
+          display="default"
+          onChange={handleTimeChange}
+        />
+      )}
       
-      <TimePickerModal
-        visible={showEndPicker}
-        isStartPicker={false}
-        currentTime={formData.endDate}
-        onClose={() => setShowEndPicker(false)}
-        onTimeSelected={handleTimeChange}
-        theme={theme}
-      />
+      {/* End Time Picker */}
+      {showEndPicker && (
+        <DateTimePicker
+          value={formData.endDate}
+          mode="time"
+          is24Hour={false}
+          display="default"
+          onChange={handleTimeChange}
+        />
+      )}
     </>
   );
 };

@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ImageBackground, Image, StatusBar, Platform } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView, ImageBackground, StatusBar, Platform } from 'react-native';
 import { colors } from '../../theme/colors';
+import { FontAwesome, MaterialIcons, Ionicons, FontAwesome6 } from '@expo/vector-icons';
 
 const ContactUsScreen = () => {
   return (
@@ -21,26 +22,26 @@ const ContactUsScreen = () => {
             
             <View style={styles.contacts}>
               <View style={styles.emailContainer}>
-                <Image source={require('../../../assets/icons/mail.png')} style={[styles.icon, { tintColor: 'white' }]} />
+                <MaterialIcons name="email" size={35} color="white" style={styles.icon} />
                 <Text style={styles.emailText}>reception@pacmc.com</Text>
               </View>
 
               <View style={styles.phoneContainer}>
-                <Image source={require('../../../assets/icons/call.png')} style={[styles.icon, { tintColor: 'white' }]} />
+                <MaterialIcons name="phone" size={35} color="white" style={styles.icon} />
                 <Text style={styles.phoneText}>306-922-2002</Text>
               </View>
 
               <View style={styles.locationContainer}>
-                <Image source={require('../../../assets/icons/distance.png')} style={[styles.icon, { tintColor: 'white' }]} />
+                <MaterialIcons name="location-on" size={35} color="white" style={styles.icon} />
                 <Text style={styles.locationText}>1135 Central Avenue</Text>
               </View>
             </View>
 
             <View style={styles.socialMediaContainer}>
-              <Image source={require('../../../assets/icons/linkedin.png')} style={[styles.socialMediaIcons, { tintColor: 'white' }]} />
-              <Image source={require('../../../assets/icons/x.png')} style={[styles.socialMediaIcons, { tintColor: 'white' }]} />
-              <Image source={require('../../../assets/icons/instagram.png')} style={[styles.socialMediaIcons, { tintColor: 'white' }]} />
-              <Image source={require('../../../assets/icons/facebook.png')} style={[styles.socialMediaIcons, { tintColor: 'white' }]} />
+              <FontAwesome name="linkedin-square" size={28} color="white" style={styles.socialMediaIcons} />
+              <FontAwesome6 name="x-twitter" size={28} color="white" style={styles.socialMediaIcons} />
+              <FontAwesome name="instagram" size={28} color="white" style={styles.socialMediaIcons} />
+              <FontAwesome name="facebook-square" size={28} color="white" style={styles.socialMediaIcons} />
             </View>
           </View>
         </SafeAreaView>
@@ -95,10 +96,7 @@ const styles = StyleSheet.create({
     marginBottom: 80,
   },
   icon: {
-    width: 35,
-    height: 35,
     marginRight: 10,
-    resizeMode: 'contain',
   },
   emailText: {
     fontSize: 22.5,
@@ -127,8 +125,6 @@ const styles = StyleSheet.create({
   },
   socialMediaIcons: {
     marginRight: 20,
-    width: 26,
-    height: 26,
   },
 });
 

@@ -4,7 +4,9 @@ import {
   StyleSheet, 
   SafeAreaView, 
   Animated, 
-  Text 
+  Text,
+  Platform,
+  StatusBar
 } from "react-native";
 import { colors } from "../../theme/colors";
 import DashboardBackground from "../../components/DashboardBackground";
@@ -113,6 +115,7 @@ const stylesDark = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.base.darkGray,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   scrollView: {
     flex: 1,
@@ -137,7 +140,7 @@ const stylesDark = StyleSheet.create({
     paddingTop: 40,
   },
   title: {
-    fontSize: 32,
+    fontSize: 36,
     fontWeight: '700',
     color: colors.base.white,
     marginBottom: 24,
@@ -161,6 +164,7 @@ const stylesLight = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.main.primary,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   scrollView: {
     flex: 1,

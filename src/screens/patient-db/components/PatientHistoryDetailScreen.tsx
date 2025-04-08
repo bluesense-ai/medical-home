@@ -124,6 +124,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.main.primary,
     paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
+    paddingBottom: Platform.OS === "android" ? 100 : 0,
   },
   backgroundContainer: {
     position: "absolute",
